@@ -1,20 +1,14 @@
-"use client";
-import { useSession } from "next-auth/react";
-import { signOut } from "next-auth/react";
-import Link from "next/link";
-const Home = () => {
-  const data = useSession();
-  console.log(data);
+"use client"
+import { signOut } from 'next-auth/react';
+import React from 'react';
+
+const homepage = () => {
   return (
     <div>
-      {data.status === "unauthenticated" ? (
-        <Link href="/login">Login</Link>
-      ) : (
-        <button onClick={() => signOut()}>signOut</button>
-      )}
-      <h1>Home Page</h1>
+      Home page
+      <button onClick={() => signOut()}>Sign out</button>
     </div>
   );
-};
+}
 
-export default Home;
+export default homepage;

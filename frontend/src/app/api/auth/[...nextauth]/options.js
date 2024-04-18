@@ -1,6 +1,9 @@
 import CredentialsProvider from "next-auth/providers/credentials";
 
 export const options = {
+  pages : {
+    signIn: '/login',
+  },
   providers: [
     CredentialsProvider({
       name: "Credentials",
@@ -36,11 +39,18 @@ export const options = {
   ],
   callbacks: {
     async jwt({ token, user }) {
-      if (user) token.role = user.role;
+      if (user){
+        token.name = "yash"
+        token.email = user.email
+        token.role = user.role;
+      }
       return token;
     },
     async session({ session, token }) {
-      if (session?.user) session.user.role = token.role;
+      if (token){
+        session.user.name = token.name
+        session.user.email = token.email
+      }
       return session;
     },
   },

@@ -23,11 +23,10 @@ const Login = () => {
   return (
     <div>
       <h1>Login page</h1>
-      {console.log(data)}
       <div>
         <form onSubmit={handleSubmit}>
           <label>
-            Email
+            Email Address
             <input type="text" name="email" />
           </label>
           <label>

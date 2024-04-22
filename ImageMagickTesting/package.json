@@ -1,0 +1,15 @@
+{
+  "name": "imagemagick-testing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node app.cjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "dependencies": {
+    "gm": "^1.25.0"
+  }
+}

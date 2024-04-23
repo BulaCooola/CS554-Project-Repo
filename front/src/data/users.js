@@ -97,26 +97,34 @@ const exportedMethods = {
     }
   },
   async loginUser(email, password) {
-    email = validation.validEmail(email, "Email ");
-    password = validation.validPassword(password);
+    try {
+      email = validation.validEmail(email, "Email ");
+      password = validation.validPassword(password);
 
-    const usersCollection = await users();
+      const usersCollection = await users();
 
-    const duplicateCheck = await usersCollection.findOne({ email });
-    if (!duplicateCheck)
-      throw `Either the email address or password is invalid`;
+      const duplicateCheck = await usersCollection.findOne({ email });
+      if (!duplicateCheck)
+        throw `Either the email address or password is invalid`;
 
-    const passwordCheck = await bcrypt.compare(
-      password,
-      duplicateCheck.password
-    );
+      const passwordCheck = await bcrypt.compare(
+        password,
+        duplicateCheck.password
+      );
 
-    if (!passwordCheck) throw `Either the email address or password is invalid`;
+      if (!passwordCheck)
+        throw `Either the email address or password is invalid`;
 
-    return {
-      _id: duplicateCheck._id,
-      email: duplicateCheck.email,
-    };
+      return {
+        _id: duplicateCheck._id,
+        email: duplicateCheck.email,
+        name: duplicateCheck.firstName,
+        password: duplicateCheck.password,
+        role: 'user'
+      };
+    } catch (e) {
+      return { error: e };
+    }
   },
   async checkIdArray(arr) {
     // Used to verify players during team creation

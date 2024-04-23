@@ -14,3 +14,5 @@ const getCollectionFn = (collection) => {
 };
 
 export const users = getCollectionFn("users");
+export const teams = getCollectionFn("teams");
+export const brackets = getCollectionFn("brackets");

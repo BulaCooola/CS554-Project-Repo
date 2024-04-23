@@ -28,9 +28,9 @@ export default function Form() {
         //   email,
         //   password,
         // });
-        // if (response.ok) {
-        //   router.replace("/");
-        // }
+        if (response.ok) {
+          router.replace("/");
+        }
       };
     return (
         <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-md mt-10">

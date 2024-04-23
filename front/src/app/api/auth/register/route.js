@@ -17,7 +17,7 @@ export async function POST(req) {
     await userData.registerUser(firstName, lastName, email, phoneNumber, password, confirmPassword);
 
     // return NextResponse.json({ message: 'User registered successfully' });
-    return NextResponse.redirect('/');
+    return NextResponse.redirect('http://localhost:3000/');
   } catch (e) {
     console.log({ e });
     return NextResponse.error(new Error('Registration failed'), { status: 500 });

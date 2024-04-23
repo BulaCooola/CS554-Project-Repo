@@ -19,7 +19,7 @@ export const authOptions = {
       name: "credentials",
       credentials: {
         // email: {label: "Emsail", placeholder: "Enter Email"},
-        password: {label: "Password", placeholder: "Enter Password"}
+        password: { label: "Password", placeholder: "Enter Password" },
       },
       async authorize(credentials) {
         try {
@@ -34,7 +34,7 @@ export const authOptions = {
             throw `User does not exist`;
           }
           if (user.error) {
-            throw `${response.error}`;
+            throw `${user.error}`;
           }
           return user;
         } catch (error) {
@@ -43,15 +43,16 @@ export const authOptions = {
         }
       },
     }),
+    // Google, Discord
   ],
   callbacks: {
     async jwt({ token, user, session, trigger }) {
-      console.log("jwt callback", { token, user, session });
+      // console.log("jwt callback", { token, user, session });
 
-    //   update session
-    if (trigger === "update" && session?.name) {
-        token.name = session.name
-    }  
+      //   update session
+      if (trigger === "update" && session?.name) {
+        token.name = session.name;
+      }
 
       // pass in _id and role
       if (user) {
@@ -63,15 +64,15 @@ export const authOptions = {
       return token;
     },
     async session({ session, token, user }) {
-      console.log("session callback", { token, user, session });
+      // console.log("session callback", { token, user, session });
       return {
         ...session,
         user: {
-            ...session.user,
-            _id: token._id,
-            email: token.email,
-            role: token.role
-        }
+          ...session.user,
+          _id: token._id,
+          email: token.email,
+          role: token.role,
+        },
       };
     },
   },

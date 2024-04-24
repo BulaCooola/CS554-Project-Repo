@@ -10,11 +10,17 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "cjs": "^0.0.11",
+    "cp": "^0.2.0",
+    "cross-spawn": "^7.0.3",
+    "fs": "^0.0.1-security",
+    "gm": "^1.25.0",
     "mongodb": "^6.5.0",
     "next": "14.2.2",
     "next-auth": "^4.24.7",
-    "react": "^18",
-    "react-dom": "^18"
+    "react": "^18.2.0",
+    "react-dom": "^18",
+    "spawn-sync": "^2.0.0"
   },
   "devDependencies": {
     "@types/node": "^20",

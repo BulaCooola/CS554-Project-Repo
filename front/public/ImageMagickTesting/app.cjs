@@ -4,11 +4,11 @@ function imageToPfp (imagePath)
 {
     //From the input, takes a path to an image, crops the center
     //300x300 area if it is larger than that.
-    gm(`${imagePath}`)
+    gm(imagePath)
     .gravity('Center')
     .crop(300,300)
     .write('./Pictures/NewPfp.png', function (err) {
-        if (err) console.log(err)
+        if (err) console.log("err1")
         else {
             //Then this resizes it to 200x200 (ignoring aspect ratio)
             //This shouldn't matter too much for quality if the image
@@ -17,6 +17,7 @@ function imageToPfp (imagePath)
             gm('./Pictures/NewPfp.png')
             .resize(200,200,"!")
             .write('./Pictures/NewPfp.png', function (err) {
+                if (err) console.log("err2")
                 //I don't know if all the parts can be
                 //combined, but this then takes wherever the previous
                 //image was saved, crops it into a circle using
@@ -28,12 +29,16 @@ function imageToPfp (imagePath)
                 .composite(`./mask.png`)
                 .alpha("Copy")
                 .write('./Pictures/NewPfp.png', function (err) {
-                    if (err) console.log(err)
+                    if (err) console.log("err3")
                 })
             })
         }
     });
+    return "/ImageMagickTesting/Pictures/NewPfp.png"
 }
 //I guess uncomment that line below and put in a filepath to an image
 //to test it for now? It saves over the newpfp image in there for now, in any case.
 //imageToPfp("filePath")
+module.exports = {
+    imageToPfp
+}

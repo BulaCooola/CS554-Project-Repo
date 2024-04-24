@@ -31,7 +31,6 @@ const exportedMethods = {
 
     // Object with inputs
     let newUser = {
-      id: new ObjectId(),
       profilePicture: undefined,
       firstName: firstName,
       lastName: lastName,
@@ -126,6 +125,20 @@ const exportedMethods = {
     } catch (e) {
       return { error: e };
     }
+  },
+  async checkIdArray(arr) {
+    // Used to verify players during team creation
+    if (!arr || !Array.isArray(arr)) throw `You must provide an array of Ids`;
+    for (let i in arr) {
+      try {
+        await this.getUserById(arr[i].toString());
+      } catch (error) {
+        console.error(`Server Error: ${e}`);
+        throw `Server Error: ${e}`;
+      }
+    }
+
+    return arr;
   },
 };
 

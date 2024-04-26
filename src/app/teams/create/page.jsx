@@ -59,7 +59,7 @@ function createTeam(props) {
 
           <div>
           <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='sport' id='sport' required>
-            <option disabled selected>Select a sport....</option>
+            <option defaultValue value="">Select a sport....</option>
             {sports &&
               sports.map((sport) => {
                 return (
@@ -73,13 +73,12 @@ function createTeam(props) {
             </div>
       
           <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='location' id='location' required>
-            <option disabled selected>Select a location....</option>
+            <option defaultValue value="">Select a location....</option>
             {countries &&
             Object.keys(countries).map((country) => {
-                console.log(country)
                 return (
                   <option
-                    key={countries[country]}
+                    key={countries[country]+country}
                     value={countries[country]}
                   >{countries[country]}</option>
                 );

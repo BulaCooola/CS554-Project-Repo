@@ -79,6 +79,104 @@ export async function addTeam(prevState, formData) {
 
 export async function editTeam() {}
 
-export async function addBracket(prevState, formData) {}
+export async function addTournament(prevState, formData) {
+  let name,
+    description,
+    startDate,
+    endDate,
+    organizerId,
+    sport,
+    bracketSize,
+    teams = null;
 
-export async function editBracket() {}
+  let success = false;
+  let errors = [];
+  let id = null;
+  console.log(formData);
+  name = formData.get("name");
+  description = formData.get("description");
+  startDate = formData.get("startDate");
+  endDate = formData.get("endDate");
+  //organizerId = ID FROM SESSION
+  sport = formData.get("sport");
+  bracketSize = parseInt(formData.get("bracketSize"));
+  teams = formData.getAll("teams");
+
+  try {
+    name = validation.checkString(name, "Tournament name");
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    startDate = startDate.replaceAll("-", "/").split("/");
+    startDate = `${startDate[1]}/${startDate[2]}/${startDate[0]}`;
+    startDate = validation.checkDateString(startDate);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    endDate = endDate.replaceAll("-", "/").split("/");
+    endDate = `${endDate[1]}/${endDate[2]}/${endDate[0]}`;
+    endDate = validation.checkDateString(endDate);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    //OrganizerId
+    await userData.getUserById("66294cb0e6e1e265512381dc");
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    sport = validation.checkSport(sport);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    bracketSize = validation.checkBracketSize(bracketSize);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    teams = await teamData.checkIdArray(teams, bracketSize);
+  } catch (error) {
+    errors.push(error);
+  }
+
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    try {
+      let newBracket = await bracketData.createBracket(
+        name,
+        description,
+        startDate,
+        endDate,
+        "66294cb0e6e1e265512381dc", //OrganizerId
+        sport,
+        bracketSize,
+        teams
+      );
+      id = newBracket._id.toString();
+      success = true;
+    } catch (error) {
+      errors.push(error);
+      return { message: errors };
+    } finally {
+      if (success) {
+        revalidatePath("/tournaments");
+        redirect(`/tournaments/${id}`);
+      }
+    }
+  }
+}
+
+export async function editTournament() {}

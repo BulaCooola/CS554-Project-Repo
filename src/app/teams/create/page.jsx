@@ -25,7 +25,6 @@ function createTeam(props) {
 
       const response3 = await fetch('/api/countries')
       const countries = await response3.json();
-      console.log(countries)
       setCountries(countries.countryListAlpha3)
       setLoading(false)
     }

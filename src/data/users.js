@@ -36,6 +36,15 @@ const exportedMethods = {
       email: email,
       phoneNumber: phoneNumber,
       password: password,
+      hometown: undefined,
+      statistics: {
+        games_played: 0,
+        wins: 0,
+        losses: 0,
+      },
+      ledTeams: [],
+      associatedTeams: [],
+      attendedTourneys: [],
       activity: undefined,
     };
 
@@ -45,14 +54,22 @@ const exportedMethods = {
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
-  async registerUser(
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    password,
-    confirmPassword
-  ) {
+  async editUser(profilePicture, firstName, lastName, email, phoneNumber, hometown) {
+    try {
+      firstName = validation.checkString(firstName, "First name");
+      lastName = validation.checkString(lastName, "Last name");
+      email = validation.checkString(email, "Email");
+      phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
+      password = validation.validPassword(password);
+    } catch (e) {
+      throw `Error: ${e}`;
+    }
+    return;
+  },
+  async deleteUser(id) {
+    return;
+  },
+  async registerUser(firstName, lastName, email, phoneNumber, password, confirmPassword) {
     try {
       firstName = validation.checkString(firstName, "First Name");
       lastName = validation.checkString(lastName, "Last Name");
@@ -82,13 +99,7 @@ const exportedMethods = {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // call addUser
-    const registeredUser = this.addUser(
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      hashedPassword
-    );
+    const registeredUser = this.addUser(firstName, lastName, email, phoneNumber, hashedPassword);
     if (!registeredUser) {
       throw `Registration Failed!`;
     } else {
@@ -103,16 +114,11 @@ const exportedMethods = {
       const usersCollection = await users();
 
       const duplicateCheck = await usersCollection.findOne({ email });
-      if (!duplicateCheck)
-        throw `Either the email address or password is invalid`;
+      if (!duplicateCheck) throw `Either the email address or password is invalid`;
 
-      const passwordCheck = await bcrypt.compare(
-        password,
-        duplicateCheck.password
-      );
+      const passwordCheck = await bcrypt.compare(password, duplicateCheck.password);
 
-      if (!passwordCheck)
-        throw `Either the email address or password is invalid`;
+      if (!passwordCheck) throw `Either the email address or password is invalid`;
 
       return {
         _id: duplicateCheck._id,

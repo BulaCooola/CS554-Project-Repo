@@ -108,10 +108,7 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(
-      description,
-      "Tournament description"
-    );
+    description = validation.checkLongText(description, "Tournament description");
   } catch (error) {
     errors.push(error);
   }

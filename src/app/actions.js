@@ -77,7 +77,70 @@ export async function addTeam(prevState, formData) {
   }
 }
 
-export async function editTeam() {}
+export async function editTeam(teamId, prevState, formData) {
+  let name,
+    sport,
+    location = null;
+  let success = false;
+  let errors = [];
+  let id = null;
+  console.log(formData);
+  name = formData.get("name");
+  sport = formData.get("sport");
+  location = formData.get("location");
+
+  try {
+    name = validation.checkString(name, "Team name");
+  } catch (error) {
+    console.log("NAME:", error);
+    errors.push(error);
+  }
+
+  try {
+    sport = validation.checkSport(sport);
+  } catch (error) {
+    console.log("SPORT:", error);
+    errors.push(error);
+  }
+
+  try {
+    location = validation.checkLocation(location);
+  } catch (error) {
+    console.log("LOCATION:", error);
+    errors.push(error);
+  }
+
+  try {
+    await teamData.getTeamById(teamId);
+  } catch (error) {
+    console.log("ID:", error);
+    errors.push(error);
+  }
+
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    let updateData = {
+      name: name,
+      sport: sport,
+      location: location,
+    };
+    try {
+      let updatedTeam = await teamData.editTeam(teamId, updateData);
+      id = updatedTeam._id.toString();
+      success = true;
+    } catch (error) {
+      console.log("EDIT:", error);
+      errors.push(error);
+      return { message: errors };
+    } finally {
+      if (success) {
+        revalidatePath("/teams");
+        redirect(`/teams/${id}`);
+      }
+    }
+  }
+}
 
 export async function addTournament(prevState, formData) {
   let name,
@@ -92,7 +155,6 @@ export async function addTournament(prevState, formData) {
   let success = false;
   let errors = [];
   let id = null;
-  console.log(formData);
   name = formData.get("name");
   description = formData.get("description");
   startDate = formData.get("startDate");
@@ -176,4 +238,85 @@ export async function addTournament(prevState, formData) {
   }
 }
 
-export async function editTournament() {}
+export async function editTournament(tournamentId, prevState, formData) {
+  let name,
+    description,
+    startDate,
+    endDate,
+    sport = null;
+
+  let success = false;
+  let errors = [];
+  let id = null;
+  name = formData.get("name");
+  description = formData.get("description");
+  startDate = formData.get("startDate");
+  endDate = formData.get("endDate");
+  sport = formData.get("sport");
+
+  try {
+    name = validation.checkString(name, "Tournament name");
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    startDate = startDate.replaceAll("-", "/").split("/");
+    startDate = `${startDate[1]}/${startDate[2]}/${startDate[0]}`;
+    startDate = validation.checkDateString(startDate);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    endDate = endDate.replaceAll("-", "/").split("/");
+    endDate = `${endDate[1]}/${endDate[2]}/${endDate[0]}`;
+    endDate = validation.checkDateString(endDate);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    sport = validation.checkSport(sport);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    await bracketData.getBracketById(tournamentId);
+  } catch (error) {
+    errors.push(error);
+  }
+
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    let updateData = {
+      name: name,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      sport: sport,
+    };
+    try {
+      let updatedBracket = await bracketData.editBracket(
+        tournamentId,
+        updateData
+      );
+      id = updatedBracket._id.toString();
+      success = true;
+    } catch (error) {
+      errors.push(error);
+      return { message: errors };
+    } finally {
+      if (success) {
+        revalidatePath("/tournaments");
+        redirect(`/tournaments/${id}`);
+      }
+    }
+  }
+}

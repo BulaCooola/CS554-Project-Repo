@@ -71,7 +71,7 @@ function createTournament(props) {
           </div>
           <div>
             <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='sport' id='sport' required>
-              <option disabled selected>Select a sport....</option>
+              <option defaultValue value="">Select a sport....</option>
               {sports && sports.map((sport) => {
                 return (
                   <option key={sport} value={sport}>{sport}</option>
@@ -81,7 +81,7 @@ function createTournament(props) {
           </div>
           <div>
             <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='bracketSize' id='bracketSize' required>
-              <option disabled selected>Number of teams....</option>
+              <option defaultValue value="">Number of teams....</option>
               <option key="4" value="4">4</option>
               <option key="8" value="8">8</option>
               <option key="16" value="16">16</option>

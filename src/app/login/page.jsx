@@ -1,15 +1,12 @@
-import { getServerSession } from 'next-auth'
-import { getSession } from 'next-auth/react';
-import Form from './form'
-import { redirect } from 'next/navigation';
+import { getServerSession } from "next-auth";
+import { getSession } from "next-auth/react";
+import Form from "./form";
+import { redirect } from "next/navigation";
 
 export default async function LoginPage() {
-    // const session = await getServerSession();
-    const session = await getSession();
-    if (session) {
-        redirect('/dashboard');
-    }
-    return (
-        <Form />
-    )
+  const session = await getServerSession();
+  if (session) {
+    redirect("/profile");
+  }
+  return <Form />;
 }

@@ -51,9 +51,7 @@ const exportedMethods = {
     const teamCollection = await teams();
     const newInsertInformation = await teamCollection.insertOne(newTeam);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
-    const team = await this.getTeamById(
-      newInsertInformation.insertedId.toString()
-    );
+    const team = await this.getTeamById(newInsertInformation.insertedId.toString());
     return team;
   },
   async editTeam(teamId, updatedTeam) {
@@ -68,10 +66,7 @@ const exportedMethods = {
     // Validate provided fields
     const updatedTeamData = {};
     if (updatedTeam.name) {
-      updatedTeamData.name = validation.checkString(
-        updatedTeam.name,
-        "Team name"
-      );
+      updatedTeamData.name = validation.checkString(updatedTeam.name, "Team name");
     }
     if (updatedTeam.sport) {
       updatedTeamData.sport = validation.checkSport(updatedTeam.sport);
@@ -86,9 +81,7 @@ const exportedMethods = {
       updatedTeamData.managerId = newManager._id.toString();
     }
     if (updatedTeam.playerIds) {
-      updatedTeamData.playerIds = await userData.checkIdArray(
-        updatedTeam.playerIds
-      );
+      updatedTeamData.playerIds = await userData.checkIdArray(updatedTeam.playerIds);
       updatedTeamData.numPlayers = updatedTeam.playerIds.length;
     }
 
@@ -108,6 +101,7 @@ const exportedMethods = {
       _id: new ObjectId(id),
     });
     if (!deletionInfo) throw `Could not delete team with id of ${id}`;
+    // Find all users associated with the team and delete the id
     return { ...deletionInfo, deleted: true };
   },
   async checkIdArray(arr, bracketSize) {

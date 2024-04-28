@@ -6,13 +6,15 @@ import { userData } from "@/data/index";
 export async function POST(req) {
   try {
     // Get inputs from the request
-    let { email, password, firstName, lastName, phoneNumber, confirmPassword } = await req.json();
+    let { email, password, firstName, lastName, username, phoneNumber, confirmPassword } =
+      await req.json();
 
     // Validating Inputs
     try {
       email = validation.validEmail(email, "Email");
       password = validation.validPassword(password, "Password");
       confirmPassword = validation.validPassword(confirmPassword, "Confirm Password");
+      username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
       lastName = validation.checkString(lastName, "Last Name");
       phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
@@ -29,6 +31,7 @@ export async function POST(req) {
 
     // Register new user to database
     const response = await userData.registerUser(
+      username,
       firstName,
       lastName,
       email,

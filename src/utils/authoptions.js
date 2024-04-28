@@ -18,7 +18,7 @@ export const authOptions = {
     CredentialsProvider({
       name: "credentials",
       credentials: {
-        // email: {label: "Emsail", placeholder: "Enter Email"},
+        email: { label: "Email", placeholder: "Enter Email" },
         password: { label: "Password", placeholder: "Enter Password" },
       },
       async authorize(credentials) {
@@ -26,20 +26,19 @@ export const authOptions = {
           if (!credentials || !credentials.email || !credentials.password) {
             throw `Either email or password was not provided`;
           }
-          const user = await userData.loginUser(
-            credentials.email,
-            credentials.password
-          );
-          if (!user) {
-            throw `User does not exist`;
-          }
+          const user = await userData.loginUser(credentials.email, credentials.password);
+
           if (user.error) {
             throw `${user.error}`;
           }
-          return user;
+          if (user) {
+            return user;
+          } else {
+            return null;
+          }
         } catch (error) {
-          console.log(error);
-          throw `${e}`;
+          console.error("Authentication error:", error);
+          throw `Failed to authenicate user`;
         }
       },
     }),
@@ -48,12 +47,10 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user, session, trigger }) {
       // console.log("jwt callback", { token, user, session });
-
       //   update session
       if (trigger === "update" && session?.name) {
         token.name = session.name;
       }
-
       // pass in _id and role
       if (user) {
         token.name = user.name;
@@ -61,19 +58,13 @@ export const authOptions = {
         token.email = user.email;
         token.role = user.role;
       }
-      return token;
+      return { ...token, ...user };
     },
     async session({ session, token, user }) {
       // console.log("session callback", { token, user, session });
-      return {
-        ...session,
-        user: {
-          ...session.user,
-          _id: token._id,
-          email: token.email,
-          role: token.role,
-        },
-      };
+      session.user.id = token._id;
+      session.user.role = token.role;
+      return session;
     },
   },
 };

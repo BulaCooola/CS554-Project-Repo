@@ -1,6 +1,6 @@
 import NextAuth from "next-auth";
 import { authOptions } from "@/utils/authoptions";
-// import CredentialsProvider from "next-auth/providers/credentials";
+// import Credent1lsProvider from "next-auth/providers/credentials";
 // import { userData } from "@/data/index";
 // import validation from "@/data/validation";
 // import jwt from "jsonwebtoken";

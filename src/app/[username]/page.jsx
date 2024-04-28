@@ -1,14 +1,14 @@
 "use client";
 import { useSession } from "next-auth/react";
 
-function playerProfile(props) {
+function PlayerProfile(props) {
   const session = useSession();
   return (
     <div>
       Personal Profile Page
-      <h2> Hi {session?.data.user.name}</h2>
+      <h2> Hi {session?.data?.user.name}</h2>
     </div>
   );
 }
 
-export default playerProfile;
+export default PlayerProfile;

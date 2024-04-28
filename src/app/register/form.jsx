@@ -10,6 +10,7 @@ export default function Form() {
     let email = e.target.email.value;
     let password = e.target.password.value;
     let confirmPassword = e.target.confirmPassword.value;
+    let username = e.target.username.value;
     let firstName = e.target.firstName.value;
     let lastName = e.target.lastName.value;
     let phoneNumber = e.target.phoneNumber.value;
@@ -19,13 +20,14 @@ export default function Form() {
         email: email,
         password: password,
         confirmPassword: confirmPassword,
+        username: username,
         firstName: firstName,
         lastName: lastName,
         phoneNumber: phoneNumber,
       }),
     });
     if (response.ok) {
-      router.replace("/");
+      router.replace("/login");
     }
   };
   return (
@@ -47,6 +49,12 @@ export default function Form() {
         type="text"
         name="lastName"
         placeholder="Last Name"
+      />
+      <input
+        className="border border-black text-black"
+        type="text"
+        name="username"
+        placeholder="Username"
       />
       <input
         className="border border-black text-black"

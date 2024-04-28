@@ -16,9 +16,10 @@ const exportedMethods = {
     if (!user) throw "Error: User not found";
     return user;
   },
-  async addUser(firstName, lastName, email, phoneNumber, password) {
+  async addUser(username, firstName, lastName, email, phoneNumber, password) {
     // Validate inputs
     try {
+      username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First name");
       lastName = validation.checkString(lastName, "Last name");
       email = validation.checkString(email, "Email");
@@ -31,6 +32,7 @@ const exportedMethods = {
     // Object with inputs
     let newUser = {
       profilePicture: undefined,
+      username: username,
       firstName: firstName,
       lastName: lastName,
       email: email,
@@ -45,7 +47,6 @@ const exportedMethods = {
       ledTeams: [],
       associatedTeams: [],
       attendedTourneys: [],
-      activity: undefined,
     };
 
     // Get collection and insert new user
@@ -54,23 +55,79 @@ const exportedMethods = {
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
-  async editUser(profilePicture, firstName, lastName, email, phoneNumber, hometown) {
+  async editUser(id, profilePicture, username, firstName, lastName, email, phoneNumber, hometown) {
     try {
-      firstName = validation.checkString(firstName, "First name");
-      lastName = validation.checkString(lastName, "Last name");
-      email = validation.checkString(email, "Email");
-      phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
-      password = validation.validPassword(password);
+      id = validation.checkId(id);
+      if (profilePicture) {
+        // profilePicture = validation.validImgurLink(profilePicture, "Profile Picture");
+      }
+      if (userName) {
+        username = validation.checkString(username, "Username");
+      }
+      if (firstName) {
+        firstName = validation.checkString(firstName, "First name");
+      }
+      if (lastName) {
+        lastName = validation.checkString(lastName, "Last name");
+      }
+      if (email) {
+        email = validation.checkString(email, "Email");
+      }
+      if (phoneNumber) {
+        phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
+      }
+      if (hometown) {
+        hometown = validation.checkLocaation(hometown);
+      }
     } catch (e) {
       throw `Error: ${e}`;
     }
-    return;
+
+    // fetch collection and find existing user
+    const userCollection = await users();
+    const existingUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (!existingUser) {
+      throw `Error: User does not exist. Cannot edit.`;
+    }
+
+    let updateFields = {};
+    if (profilePicture) {
+      updateFields.profilePicture = profilePicture;
+    }
+    if (username) {
+      updateFields.username = username;
+    }
+    if (firstName) {
+      updateFields.firstName = firstName;
+    }
+    if (lastName) {
+      updateFields.lastName = lastName;
+    }
+    if (email) {
+      updateFields.email = email;
+    }
+    if (phoneNumber) {
+      updateFields.phoneNumber = phoneNumber;
+    }
+    if (hometown) {
+      updateFields.hometown = hometown;
+    }
+
+    if (existingUser) {
+      const updateUser = await userCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: updateFields },
+        { returnDocument: "after" }
+      );
+      if (existingUser === updateUser) {
+        throw `Document did not update`;
+      }
+    }
+    return await this.getUserById(id);
   },
-  async deleteUser(id) {
-    return;
-  },
-  async registerUser(firstName, lastName, email, phoneNumber, password, confirmPassword) {
+  async registerUser(username, firstName, lastName, email, phoneNumber, password, confirmPassword) {
     try {
+      username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
       lastName = validation.checkString(lastName, "Last Name");
       email = validation.validEmail(email, "Email").toLowerCase();
@@ -99,7 +156,14 @@ const exportedMethods = {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // call addUser
-    const registeredUser = this.addUser(firstName, lastName, email, phoneNumber, hashedPassword);
+    const registeredUser = this.addUser(
+      username,
+      firstName,
+      lastName,
+      email,
+      phoneNumber,
+      hashedPassword
+    );
     if (!registeredUser) {
       throw `Registration Failed!`;
     } else {

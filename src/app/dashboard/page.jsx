@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 
 export default function DashboardPage() {
   const session = useSession();
+  console.log(session);
   return (
     <div>
       Private Dashboard = you need to be logged in

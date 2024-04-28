@@ -6,7 +6,7 @@ const initialState = {
   message: null,
 };
 
-function createTeam(props) {
+function CreateTeam(props) {
   const [state, formAction] = useFormState(addTeam, initialState);
   const [users, setUsers] = useState(undefined);
   const [sports, setSports] = useState(undefined);
@@ -146,4 +146,4 @@ function createTeam(props) {
   }
 }
 
-export default createTeam;
+export default CreateTeam;

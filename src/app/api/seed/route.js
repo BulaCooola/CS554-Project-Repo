@@ -2,31 +2,36 @@ import { userData, teamData, bracketData } from "@/data/index.js";
 import { NextResponse } from "next/server";
 import { dbConnection, closeConnection } from "@/config/mongoConnection.js";
 import { revalidatePath } from "next/cache";
+import bcrypt from "bcrypt";
 
 export async function GET(req) {
   const db = await dbConnection();
   await db.dropDatabase();
 
+  // PASSWORD - Password!1
+  const hashedPassword = await bcrypt.hash("Password!1", 10);
   const paddy = await userData.addUser(
+    "pphelps",
     "Paddy",
     "Phelps",
     "pphelps@stevens.edu",
     "2401231234",
-    "Password!1"
+    hashedPassword
   );
 
   const user2 = await userData.addUser(
+    "splayer",
     "Second",
     "Player",
     "player2@stevens.edu",
     "2401231234",
-    "Password!1"
+    hashedPassword
   );
 
   const ducks = await teamData.createTeam(
     "Ducks",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -34,7 +39,7 @@ export async function GET(req) {
   const cadets = await teamData.createTeam(
     "Cadets",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -42,7 +47,7 @@ export async function GET(req) {
   const team3 = await teamData.createTeam(
     "Team3",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -50,7 +55,7 @@ export async function GET(req) {
   const team4 = await teamData.createTeam(
     "Team4",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );

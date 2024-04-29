@@ -1,19 +1,14 @@
 "use client";
 import Link from "next/link";
-import { useState, useEffect } from "react";
 import Logout from "./logout";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 function Navigation(props) {
-  // const [loggedIn, setLoggedIn] = useState(false);
-  let loggedIn = false;
+  let loggedIn = true;
   const { data: session } = useSession();
-  // Check if there's a user session and update loggedIn state accordingly
-  if (session.data?.user && !loggedIn) {
-    // setLoggedIn(true);
-    loggedIn = true;
+  if (!session) {
+    loggedIn = false;
   }
-
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
@@ -38,7 +33,7 @@ function Navigation(props) {
               Players
             </Link>
           </li>
-          {loggedIn === false ? (
+          {!loggedIn ? (
             <>
               <li>
                 <Link href="/login" className="btn btn-ghost">
@@ -69,9 +64,7 @@ function Navigation(props) {
                   <Link href="/profile">Profile</Link>
                 </li>
                 <li>
-                  <Link href="/logout">
-                    <Logout />
-                  </Link>
+                  <button onClick={() => signOut()}>Logout</button>
                 </li>
               </ul>
             </div>

@@ -1,7 +1,8 @@
 'use client'
 import {useFormState as useFormState} from 'react-dom';
 import {useState, useEffect} from 'react';
-import {editTeam} from '@/app/actions';
+import { editTeam } from '@/app/actions';
+import Select from 'react-select'
 const initialState = {
   message: null
 };
@@ -10,21 +11,45 @@ function editTeamPage({ params }) {
   const editTeamById = editTeam.bind(null,params.id)
   const [state, formAction] = useFormState(editTeamById, initialState);
   const [prevData, setPrevData] = useState(undefined)
+  const [roster, setRoster] = useState(undefined)
   const [sports, setSports] = useState(undefined);
   const [countries, setCountries] = useState(undefined)
+  const [users, setUsers] = useState(undefined);
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/teams/${params.id}`)
       const team = await response1.json()
-      setPrevData(team)
+      setPrevData(team) 
       const response2 = await fetch('/api/sports')
       const sports = await response2.json();
       setSports(sports.sports)
       const response3 = await fetch('/api/countries')
       const countries = await response3.json();
       setCountries(countries.countryListAlpha3)
+      const response4 = await fetch(`/api/teams/${params.id}/players`)
+      const players = await response4.json()
+      const rosterOptions = []
+      for (let player of players) {
+        rosterOptions.push({
+          value: player._id,
+          label: `${player.firstName} ${player.lastName}`
+        })
+      }
+      setRoster(rosterOptions)
+      const response5 = await fetch('/api/users');
+      const users = await response5.json();
+      let { userList } = users;
+      const userOptions = []
+      for (let user of userList) {
+        console.log(user)
+        userOptions.push({
+          value: user._id,
+          label: `${user.firstName} ${user.lastName}`
+        })
+      }
+      setUsers(userOptions);
       setLoading(false)
     }
     fetchData()
@@ -78,6 +103,14 @@ function editTeamPage({ params }) {
                 );
               })}
             </select>
+          </div>}
+          {roster && <div className="flex max-w-xs mx-auto my-2">
+            <Select 
+              placeholder="Select players for your new team..."
+              isMulti
+              options={users}
+              defaultValue={roster}
+              name='playerIds'  id='playerIds' />
           </div>}
           <div className='form-group'>
             <button className="btn btn-active btn-neutral flex mx-auto" type='submit'>

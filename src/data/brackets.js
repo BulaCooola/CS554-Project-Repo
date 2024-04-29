@@ -184,6 +184,20 @@ const exportedMethods = {
     if (updatedBracket.sport) {
       updatedBracketData.sport = validation.checkSport(updatedBracket.sport);
     }
+    if (updatedBracket.teams && updatedBracket.bracketSize) {
+      updatedBracket.teams = await teamData.checkIdArray(
+        updatedBracket.teams,
+        updatedBracket.bracketSize
+      );
+      updatedBracketData.teams = updatedBracket.teams;
+      updatedBracketData.bracketSize = updatedBracket.bracketSize;
+      updatedBracketData.matches = await createMatches(
+        updatedBracketData.bracketSize,
+        updatedBracketData.teams
+      );
+      updatedBracketData.status = "scheduled";
+      updatedBracketData.winner = "TBD";
+    }
 
     let newBracket = await bracketCollection.findOneAndUpdate(
       { _id: new ObjectId(bracketId) },
@@ -241,6 +255,7 @@ const exportedMethods = {
           bracket.matches[index].participants[i].resultText = loserResult;
         }
       }
+      bracket.matches[index].state = "complete";
       const participant = {
         id: winner._id.toString(),
         name: winner.name,
@@ -272,6 +287,8 @@ const exportedMethods = {
           bracket.matches[index].participants[i].resultText = loserResult;
         }
       }
+      bracket.matches[index].state = "complete";
+      console.log(bracket.matches[index]);
       let newBracket1 = await bracketCollection.findOneAndUpdate(
         { _id: new ObjectId(bracketId) },
         { $set: bracket },
@@ -309,6 +326,17 @@ const exportedMethods = {
 
     if (!newBracket) throw `Could not update the bracket with id ${bracket}`;
     return newBracket;
+  },
+
+  async getTournamentTeams(bracketId) {
+    const bracket = await this.getBracketById(bracketId);
+    if (!bracket) throw "Error: Could not get tournament.";
+    const teams = await teamData.getListofTeams(
+      bracket.teams,
+      bracket.bracketSize
+    );
+    if (!teams) throw "Error: Could not get tournament teams.";
+    return teams;
   },
 };
 

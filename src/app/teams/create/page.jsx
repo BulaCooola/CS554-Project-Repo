@@ -1,7 +1,8 @@
 'use client'
 import {useFormState as useFormState} from 'react-dom';
 import {useState, useEffect} from 'react';
-import {addTeam} from '@/app/actions';
+import { addTeam } from '@/app/actions';
+import Select from 'react-select'
 const initialState = {
   message: null
 };
@@ -17,7 +18,14 @@ function createTeam(props) {
       const response1 = await fetch('/api/users');
       const users = await response1.json();
       let { userList } = users;
-      setUsers(userList);
+      const userOptions = []
+      for (let user of userList) {
+        userOptions.push({
+          value: user._id,
+          label: `${user.firstName} ${user.lastName}`
+        })
+      }
+      setUsers(userOptions);
 
       const response2 = await fetch('/api/sports')
       const sports = await response2.json();
@@ -59,7 +67,7 @@ function createTeam(props) {
 
           <div>
           <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='sport' id='sport' required>
-            <option defaultValue value="">Select a sport....</option>
+            <option defaultValue value="">Select a sport...</option>
             {sports &&
               sports.map((sport) => {
                 return (
@@ -73,7 +81,7 @@ function createTeam(props) {
             </div>
       
           <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='location' id='location' required>
-            <option defaultValue value="">Select a location....</option>
+            <option defaultValue value="">Select a location...</option>
             {countries &&
             Object.keys(countries).map((country) => {
                 return (
@@ -84,18 +92,14 @@ function createTeam(props) {
                 );
               })}
           </select>
-
-          <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='playerIds'  id='playerIds'  multiple required>
-            {users &&
-              users.map((user) => {
-                return (
-                  <option
-                    key={user._id.toString()}
-                    value={user._id.toString()}
-                  >{`${user.firstName} ${user.lastName}`}</option>
-                );
-              })}
-      </select>
+          <div className="flex max-w-xs mx-auto my-2">
+          {users &&
+            <Select 
+            placeholder="Select players for your new team..."
+            isMulti
+            options={users}
+            name='playerIds'  id='playerIds'
+            ></Select>}</div>
       
       
       

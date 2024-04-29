@@ -26,7 +26,7 @@ export async function GET(req) {
   const ducks = await teamData.createTeam(
     "Ducks",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -34,7 +34,7 @@ export async function GET(req) {
   const cadets = await teamData.createTeam(
     "Cadets",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -42,7 +42,7 @@ export async function GET(req) {
   const team3 = await teamData.createTeam(
     "Team3",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -50,7 +50,7 @@ export async function GET(req) {
   const team4 = await teamData.createTeam(
     "Team4",
     "Lacrosse",
-    "United States of America (the)",
+    "United States of America",
     paddy._id.toString(),
     [paddy._id.toString()]
   );
@@ -90,18 +90,16 @@ export async function GET(req) {
     "17"
   );
 
-  const winner3 = await bracketData.setMatchWinner(
-    bracket._id.toString(),
-    3,
-    ducks._id.toString(),
-    team3._id.toString(),
-    "60",
-    "14"
-  );
-  console.dir(winner3.matches, { depth: null });
+  // const winner3 = await bracketData.setMatchWinner(
+  //   bracket._id.toString(),
+  //   3,
+  //   ducks._id.toString(),
+  //   team3._id.toString(),
+  //   "60",
+  //   "14"
+  // );
+  // console.dir(winner3.matches, { depth: null });
 
-  const abab = await teamData.getTeamsByPlayer(paddy._id.toString());
-  console.log(abab);
   await closeConnection();
   console.log("Done seeding database");
   return NextResponse.json({ done: true }, { status: 200 });

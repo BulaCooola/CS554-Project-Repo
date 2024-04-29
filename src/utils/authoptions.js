@@ -48,35 +48,29 @@ export const authOptions = {
   callbacks: {
     async jwt({ token, user, session, trigger }) {
       // console.log("jwt callback", { token, user, session });
-
       //   update session
       if (trigger === "update" && session?.name) {
         token.name = session.name;
       }
-
       // pass in _id and role
       if (user) {
-        //console.log("User 1")
-        //console.log(user)
-        token.name = user.name;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
         token._id = user._id;
         token.email = user.email;
-        token.profilePicture = user.profilePicture
+        token.profilePicture = user.profilePicture;
+        token.phone = user.phone;
       }
-      return token;
+      return { ...token, ...user };
     },
-    async session({ session, token, user}) {
-      //console.log("session callback", { token, user, session });
-      //console.log("Token")
-      //console.log(token)
-      //console.log("User 2")
-        //console.log(user)
-      session.user.profilePicture = token.profilePicture
-      session.user.id = token._id
-      //console.log("Session________________")
-      //console.log(session)
-      //console.log("________________________")
-      return session
+    async session({ session, token, user }) {
+      // console.log("session callback", { token, user, session });
+      session.user.id = token._id;
+      session.user.profilePicture = token.profilePicture;
+      session.user.firstName = token.firstName;
+      session.user.lastName = token.lastName;
+      session.user.phone = token.phone;
+      return session;
     },
   },
 };

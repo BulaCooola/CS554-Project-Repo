@@ -4,7 +4,6 @@ import "./globals.css";
 import { getServerSession } from "next-auth";
 import Provider from "@/context/Provider";
 import Link from "next/link";
-import Logout from "./logout";
 import Navigation from "@/app/components/Navigation"
 import Footer from "@/app/components/Footer"
 const inter = Inter({ subsets: ["latin"] });

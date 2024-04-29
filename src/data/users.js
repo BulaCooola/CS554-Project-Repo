@@ -119,7 +119,7 @@ const exportedMethods = {
         email: duplicateCheck.email,
         name: duplicateCheck.firstName,
         password: duplicateCheck.password,
-        role: "user",
+        profilePicture: duplicateCheck.profilePicture,
       };
     } catch (e) {
       return { error: e };

@@ -1,5 +1,6 @@
+"use client";
 import Link from 'next/link';
-
+import { signOut } from 'next-auth/react';
 function Navigation(props) {
   const loggedIn = true
   return (
@@ -23,7 +24,7 @@ function Navigation(props) {
             </div>
             <ul tabIndex={0} className="menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
             <li><Link href="/profile">Profile</Link></li>
-            <li><Link href="/logout">Logout</Link></li>
+            <li><button onClick={() => signOut()}>Logout</button></li>
             </ul>
             </div>}
         </ul>

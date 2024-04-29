@@ -5,11 +5,13 @@ import Logout from "./logout";
 import { useSession } from "next-auth/react";
 
 function Navigation(props) {
-  const [loggedIn, setLoggedIn] = useState(false);
-  const session = useSession();
+  // const [loggedIn, setLoggedIn] = useState(false);
+  let loggedIn = false;
+  const { data: session } = useSession();
   // Check if there's a user session and update loggedIn state accordingly
   if (session.data?.user && !loggedIn) {
-    setLoggedIn(true);
+    // setLoggedIn(true);
+    loggedIn = true;
   }
 
   return (

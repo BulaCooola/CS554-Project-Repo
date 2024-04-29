@@ -201,7 +201,7 @@ export async function addTournament(prevState, formData) {
   }
   try {
     //OrganizerId
-    await userData.getUserById("66294cb0e6e1e265512381dc");
+    await userData.getUserById("662ec5b08636d7598e9a8d7f");
   } catch (error) {
     errors.push(error);
   }
@@ -230,7 +230,7 @@ export async function addTournament(prevState, formData) {
         description,
         startDate,
         endDate,
-        "66294cb0e6e1e265512381dc", //OrganizerId
+        "662ec5b08636d7598e9a8d7f", //OrganizerId
         sport,
         bracketSize,
         teams
@@ -242,7 +242,7 @@ export async function addTournament(prevState, formData) {
       return { message: errors };
     } finally {
       if (success) {
-        revalidatePath("/tournaments");
+        revalidatePath(`/tournaments/${id}`);
         redirect(`/tournaments/${id}`);
       }
     }

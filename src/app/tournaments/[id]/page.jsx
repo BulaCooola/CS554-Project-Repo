@@ -23,11 +23,13 @@ function singleTournament({ params }) {
       const response2 = await fetch(`/api/tournaments/${params.id}/teams`)
       const teamsList = await response2.json()
       setTeams(teamsList)
+      const pending = []
       for (let match of tournament.matches) {
         if (match.state !== "complete" && match.participants.length === 2) {
-          setPendingMatches([...pendingMatches, match])
+          pending.push(match)
         }
       }
+      setPendingMatches(pending)
       setLoading(false)
     }
     fetchData()
@@ -63,7 +65,7 @@ function singleTournament({ params }) {
             <label htmlFor="my-drawer-4" aria-label="close sidebar" className="drawer-overlay"></label>
             <div className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
               {pendingMatches && pendingMatches.map((match) => {
-                console.log(match)
+                console.log(pendingMatches)
                 return (
                     <details className="dropdown">
                       <summary className="m-1 btn">{match.name}</summary>

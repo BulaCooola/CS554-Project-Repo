@@ -187,9 +187,11 @@ const exportedMethods = {
       return {
         _id: duplicateCheck._id,
         email: duplicateCheck.email,
-        name: duplicateCheck.firstName,
+        firstName: duplicateCheck.firstName,
+        lastName: duplicateCheck.lastName,
         password: duplicateCheck.password,
-        role: "user",
+        phone: duplicateCheck.phoneNumber,
+        profilePicture: duplicateCheck.profilePicture,
       };
     } catch (e) {
       return { error: e };

@@ -53,17 +53,22 @@ export const authOptions = {
       }
       // pass in _id and role
       if (user) {
-        token.name = user.name;
+        token.firstName = user.firstName;
+        token.lastName = user.lastName;
         token._id = user._id;
         token.email = user.email;
-        token.role = user.role;
+        token.profilePicture = user.profilePicture;
+        token.phone = user.phone;
       }
       return { ...token, ...user };
     },
     async session({ session, token, user }) {
       // console.log("session callback", { token, user, session });
       session.user.id = token._id;
-      session.user.role = token.role;
+      session.user.profilePicture = token.profilePicture;
+      session.user.firstName = token.firstName;
+      session.user.lastName = token.lastName;
+      session.user.phone = token.phone;
       return session;
     },
   },

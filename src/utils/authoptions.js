@@ -51,7 +51,8 @@ export const authOptions = {
       if (trigger === "update" && session?.name) {
         token.name = session.name;
       }
-      // pass in _id and role
+
+      console.log(token);
       if (user) {
         token.firstName = user.firstName;
         token.lastName = user.lastName;

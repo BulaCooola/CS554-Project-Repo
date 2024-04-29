@@ -1,8 +1,14 @@
+"use client";
 import Link from "next/link";
 import Logout from "./logout";
+import { useSession } from "next-auth/react";
 
 function Navigation(props) {
-  const loggedIn = true;
+  let loggedIn = true;
+  const session = useSession();
+  if (!session.user) {
+    loggedIn = false;
+  }
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">

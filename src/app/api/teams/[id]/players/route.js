@@ -10,8 +10,8 @@ export async function GET(req, { params }) {
   }
 
   try {
-    const team = await teamData.getTeamById(params.id);
-    return NextResponse.json(team);
+    const players = await teamData.getTeamsPlayers(params.id);
+    return NextResponse.json(players);
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 404 });
   }

@@ -2,6 +2,7 @@
 import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { addTournament } from "@/app/actions";
+import Select from "react-select";
 const initialState = {
   message: null,
 };
@@ -14,11 +15,16 @@ function CreateTournament(props) {
   useEffect(() => {
     async function fetchData() {
       const response = await fetch("/api/teams");
-      const teams = await response.json();
-      console.log(teams);
-      let { allTeams } = teams;
-      setTeams(allTeams);
-
+      const teamsData = await response.json();
+      let { allTeams } = teamsData;
+      const teamOptions = [];
+      for (let team of allTeams) {
+        teamOptions.push({
+          value: team._id,
+          label: team.name,
+        });
+      }
+      setTeams(teamOptions);
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
       setSports(sports.sports);
@@ -118,22 +124,17 @@ function CreateTournament(props) {
               </option>
             </select>
           </div>
-          <select
-            className="select select-bordered flex w-full max-w-xs mx-auto my-2"
-            name="teams"
-            id="teams"
-            multiple
-            required
-          >
-            {teams &&
-              teams.map((team) => {
-                return (
-                  <option key={team._id.toString()} value={team._id.toString()}>
-                    {team.name}
-                  </option>
-                );
-              })}
-          </select>
+          <div className="flex max-w-xs mx-auto my-2">
+            {teams && (
+              <Select
+                placeholder="Select teams for your new tournament..."
+                isMulti
+                options={teams}
+                name="teams"
+                id="teams"
+              />
+            )}
+          </div>
           <div className="form-group">
             <button className="btn btn-active btn-neutral flex mx-auto" type="submit">
               Create Tournament

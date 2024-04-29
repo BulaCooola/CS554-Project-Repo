@@ -95,18 +95,16 @@ export async function GET(req) {
     "17"
   );
 
-  const winner3 = await bracketData.setMatchWinner(
-    bracket._id.toString(),
-    3,
-    ducks._id.toString(),
-    team3._id.toString(),
-    "60",
-    "14"
-  );
-  console.dir(winner3.matches, { depth: null });
+  // const winner3 = await bracketData.setMatchWinner(
+  //   bracket._id.toString(),
+  //   3,
+  //   ducks._id.toString(),
+  //   team3._id.toString(),
+  //   "60",
+  //   "14"
+  // );
+  // console.dir(winner3.matches, { depth: null });
 
-  const abab = await teamData.getTeamsByPlayer(paddy._id.toString());
-  console.log(abab);
   await closeConnection();
   console.log("Done seeding database");
   return NextResponse.json({ done: true }, { status: 200 });

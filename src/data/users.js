@@ -207,11 +207,20 @@ const exportedMethods = {
       try {
         await this.getUserById(arr[i].toString());
       } catch (error) {
-        throw `Error: ${e}`;
+        throw `Error: ${error}`;
       }
     }
 
     return arr;
+  },
+  async getListOfPlayers(arr) {
+    arr = await this.checkIdArray(arr);
+    for (let i in arr) {
+      arr[i] = new ObjectId(arr[i]);
+    }
+    const userCollection = await users();
+    const userList = await userCollection.find({ _id: { $in: arr } }).toArray();
+    return userList;
   },
 };
 

@@ -2,6 +2,7 @@
 import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { addTeam } from "@/app/actions";
+import Select from "react-select";
 const initialState = {
   message: null,
 };
@@ -17,7 +18,14 @@ function CreateTeam(props) {
       const response1 = await fetch("/api/users");
       const users = await response1.json();
       let { userList } = users;
-      setUsers(userList);
+      const userOptions = [];
+      for (let user of userList) {
+        userOptions.push({
+          value: user._id,
+          label: `${user.firstName} ${user.lastName}`,
+        });
+      }
+      setUsers(userOptions);
 
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
@@ -83,8 +91,8 @@ function CreateTeam(props) {
                 id="sport"
                 required
               >
-                <option disabled selected>
-                  Select a sport....
+                <option defaultValue value="">
+                  Select a sport...
                 </option>
                 {sports &&
                   sports.map((sport) => {
@@ -103,37 +111,30 @@ function CreateTeam(props) {
               id="location"
               required
             >
-              <option disabled selected>
-                Select a location....
+              <option defaultValue value="">
+                Select a location...
               </option>
               {countries &&
                 Object.keys(countries).map((country) => {
-                  console.log(country);
                   return (
-                    <option key={countries[country]} value={countries[country]}>
+                    <option key={countries[country] + country} value={countries[country]}>
                       {countries[country]}
                     </option>
                   );
                 })}
             </select>
+            <div className="flex max-w-xs mx-auto my-2">
+              {users && (
+                <Select
+                  placeholder="Select players for your new team..."
+                  isMulti
+                  options={users}
+                  name="playerIds"
+                  id="playerIds"
+                ></Select>
+              )}
+            </div>
 
-            <select
-              className="select select-bordered flex w-full max-w-xs mx-auto my-2"
-              name="playerIds"
-              id="playerIds"
-              multiple
-              required
-            >
-              {users &&
-                users.map((user) => {
-                  return (
-                    <option
-                      key={user._id.toString()}
-                      value={user._id.toString()}
-                    >{`${user.firstName} ${user.lastName}`}</option>
-                  );
-                })}
-            </select>
             <div className="form-group">
               <button className="btn btn-active btn-neutral flex mx-auto" type="submit">
                 Create Team

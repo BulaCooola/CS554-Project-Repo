@@ -1,7 +1,15 @@
+<<<<<<< HEAD
 "use client";
 import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { editTeam } from "@/app/actions";
+=======
+'use client'
+import {useFormState as useFormState} from 'react-dom';
+import {useState, useEffect} from 'react';
+import { editTeam } from '@/app/actions';
+import Select from 'react-select'
+>>>>>>> routing
 const initialState = {
   message: null,
 };
@@ -9,6 +17,7 @@ const initialState = {
 function EditTeamPage({ params }) {
   const editTeamById = editTeam.bind(null, params.id);
   const [state, formAction] = useFormState(editTeamById, initialState);
+<<<<<<< HEAD
   const [prevData, setPrevData] = useState(undefined);
   const [sports, setSports] = useState(undefined);
   const [countries, setCountries] = useState(undefined);
@@ -20,12 +29,54 @@ function EditTeamPage({ params }) {
       const team = await response1.json();
       setPrevData(team);
       const response2 = await fetch("/api/sports");
+=======
+  const [prevData, setPrevData] = useState(undefined)
+  const [roster, setRoster] = useState(undefined)
+  const [sports, setSports] = useState(undefined);
+  const [countries, setCountries] = useState(undefined)
+  const [users, setUsers] = useState(undefined);
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchData() {
+      const response1 = await fetch(`/api/teams/${params.id}`)
+      const team = await response1.json()
+      setPrevData(team) 
+      const response2 = await fetch('/api/sports')
+>>>>>>> routing
       const sports = await response2.json();
       setSports(sports.sports);
       const response3 = await fetch("/api/countries");
       const countries = await response3.json();
+<<<<<<< HEAD
       setCountries(countries.countryListAlpha3);
       setLoading(false);
+=======
+      setCountries(countries.countryListAlpha3)
+      const response4 = await fetch(`/api/teams/${params.id}/players`)
+      const players = await response4.json()
+      const rosterOptions = []
+      for (let player of players) {
+        rosterOptions.push({
+          value: player._id,
+          label: `${player.firstName} ${player.lastName}`
+        })
+      }
+      setRoster(rosterOptions)
+      const response5 = await fetch('/api/users');
+      const users = await response5.json();
+      let { userList } = users;
+      const userOptions = []
+      for (let user of userList) {
+        console.log(user)
+        userOptions.push({
+          value: user._id,
+          label: `${user.firstName} ${user.lastName}`
+        })
+      }
+      setUsers(userOptions);
+      setLoading(false)
+>>>>>>> routing
     }
     fetchData();
   }, []);
@@ -49,6 +100,7 @@ function EditTeamPage({ params }) {
               </ul>
             </div>
           )}
+<<<<<<< HEAD
           {prevData && (
             <div>
               <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto my-2">
@@ -110,6 +162,48 @@ function EditTeamPage({ params }) {
           )}
           <div className="form-group">
             <button className="btn btn-active btn-neutral flex mx-auto" type="submit">
+=======
+          {prevData && <div>
+            <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto my-2">
+              Name:
+              <input name='name' id='name' type='text' placeholder="Team Name" defaultValue={prevData.name} required/>
+            </label>
+          </div>}
+          {prevData && <div>
+            <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='sport' id='sport' required>
+              <option key="current" value={prevData.sport} defaultValue>{prevData.sport}</option>
+              {sports && sports.map((sport) => {
+                return (
+                  <option key={sport} value={sport}>{sport}</option>
+                )
+              })}
+            </select>
+          </div>}
+          {prevData && <div>
+            <select className="select select-bordered flex w-full max-w-xs mx-auto my-2" name='location' id='location' required>
+              <option key="current" value={prevData.location} defaultValue>{prevData.location}</option>
+              {countries &&
+                Object.keys(countries).map((country) => {
+                return (
+                  <option
+                    key={countries[country]+country}
+                    value={countries[country]}
+                  >{countries[country]}</option>
+                );
+              })}
+            </select>
+          </div>}
+          {roster && <div className="flex max-w-xs mx-auto my-2">
+            <Select 
+              placeholder="Select players for your new team..."
+              isMulti
+              options={users}
+              defaultValue={roster}
+              name='playerIds'  id='playerIds' />
+          </div>}
+          <div className='form-group'>
+            <button className="btn btn-active btn-neutral flex mx-auto" type='submit'>
+>>>>>>> routing
               Edit Team
             </button>
           </div>

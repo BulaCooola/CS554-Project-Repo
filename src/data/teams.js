@@ -105,6 +105,8 @@ const exportedMethods = {
     return { ...deletionInfo, deleted: true };
   },
   async checkIdArray(arr, bracketSize) {
+    console.log(arr);
+    console.log(bracketSize);
     if (arr.length !== bracketSize)
       throw "Error: Number of teams provided does not match bracket size";
 
@@ -113,7 +115,7 @@ const exportedMethods = {
       try {
         await this.getTeamById(arr[i].toString());
       } catch (error) {
-        throw `Error: ${e}`;
+        throw `Error: ${error}`;
       }
     }
 
@@ -169,6 +171,22 @@ const exportedMethods = {
     );
     if (!newTeam) throw `Could not update the team with id ${id}`;
     return newTeam;
+  },
+  async getTeamsPlayers(teamId) {
+    const team = await this.getTeamById(teamId);
+    if (!team) throw "Error: Could not get team.";
+    const players = await userData.getListOfPlayers(team.playerIds);
+    if (!players) throw `Error: Could not get team players.`;
+    return players;
+  },
+  async getListofTeams(arr, size) {
+    arr = await this.checkIdArray(arr, size);
+    for (let i in arr) {
+      arr[i] = new ObjectId(arr[i]);
+    }
+    const teamCollection = await teams();
+    const teamList = await teamCollection.find({ _id: { $in: arr } }).toArray();
+    return teamList;
   },
 };
 

@@ -44,11 +44,14 @@ function Teams(props) {
   }
   return (
     <div className="flex flex-col justify-center items-center">
-      <h1>List of teams</h1>
+      <h1 className="text-2xl font-bold m-4">List of teams</h1>
       {teams &&
         teams.map((team) => (
           <div key={team._id} className="m-4 ">
-            <Link href={`/teams/${team._id}`}>{team.name}</Link>
+            <Link href={`/teams/${team._id}`} className="text-lg font-bold">
+              {team.name}
+            </Link>
+            <p className="text-sm">{team.sport}</p>
             <p className="text-sm">{team.location}</p>
           </div>
         ))}

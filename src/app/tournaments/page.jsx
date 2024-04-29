@@ -43,6 +43,11 @@ function AllTournaments(props) {
   }
   return (
     <div className="flex flex-col justify-center items-center">
+      {session && (
+        <button>
+          <Link href={`/tournaments/create`}>Create Bracket</Link>
+        </button>
+      )}
       <h1>List of tournaments</h1>
       {tournaments &&
         tournaments.map((tournament) => (

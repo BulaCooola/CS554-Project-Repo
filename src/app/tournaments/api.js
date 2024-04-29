@@ -5,7 +5,6 @@ export async function fetchTournaments() {
     });
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
       return data.allTournaments;
     } else {
       console.error("Failed to fetch tournaments:", response.status);

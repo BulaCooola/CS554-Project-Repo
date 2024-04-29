@@ -5,7 +5,6 @@ export async function fetchUsers() {
     });
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
       return data.userList;
     } else {
       console.error("Failed to fetch users:", response.status);

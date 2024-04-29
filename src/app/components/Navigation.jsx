@@ -1,14 +1,17 @@
 "use client";
 import Link from "next/link";
+import { useState, useEffect } from "react";
 import Logout from "./logout";
 import { useSession } from "next-auth/react";
 
 function Navigation(props) {
-  let loggedIn = true;
+  const [loggedIn, setLoggedIn] = useState(false);
   const session = useSession();
-  if (!session.user) {
-    loggedIn = false;
+  // Check if there's a user session and update loggedIn state accordingly
+  if (session.data?.user && !loggedIn) {
+    setLoggedIn(true);
   }
+
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
@@ -33,7 +36,7 @@ function Navigation(props) {
               Players
             </Link>
           </li>
-          {!loggedIn ? (
+          {loggedIn === false ? (
             <>
               <li>
                 <Link href="/login" className="btn btn-ghost">

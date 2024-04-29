@@ -1,12 +1,12 @@
 "use client";
 import Link from "next/link";
 import Logout from "./logout";
-import { useSession } from "next-auth/react";
+import { useSession, signOut } from "next-auth/react";
 
 function Navigation(props) {
   let loggedIn = true;
-  const session = useSession();
-  if (!session.user) {
+  const {data: session} = useSession();
+  if (!session) {
     loggedIn = false;
   }
   return (
@@ -64,9 +64,7 @@ function Navigation(props) {
                   <Link href="/profile">Profile</Link>
                 </li>
                 <li>
-                  <Link href="/logout">
-                    <Logout />
-                  </Link>
+                  <button onClick={() => signOut()}>Logout</button>
                 </li>
               </ul>
             </div>

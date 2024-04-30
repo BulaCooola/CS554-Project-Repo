@@ -10,6 +10,7 @@
     "create-env": "bash ./create-env.sh"
   },
   "dependencies": {
+    "@elastic/elasticsearch": "^8.13.1",
     "@g-loot/react-tournament-brackets": "^1.0.31-rc",
     "bcrypt": "^5.1.1",
     "jsonwebtoken": "^9.0.2",

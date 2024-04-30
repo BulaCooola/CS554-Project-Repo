@@ -3,7 +3,7 @@ import validation from "@/data/validation";
 import { redirect } from "next/navigation";
 import { userData, teamData, bracketData } from "@/data/index.js";
 import { revalidatePath } from "next/cache";
-
+import { Client } from "@elastic/elasticsearch";
 // CALLED BY CLIENT SIDE FORMS TO HANDLE SUBMISSION
 
 export async function editUser() {}
@@ -201,7 +201,7 @@ export async function addTournament(prevState, formData) {
   }
   try {
     //OrganizerId
-    await userData.getUserById("662ec5b08636d7598e9a8d7f");
+    await userData.getUserById("662ff9cf9327d8e3828eeaba");
   } catch (error) {
     errors.push(error);
   }
@@ -230,7 +230,7 @@ export async function addTournament(prevState, formData) {
         description,
         startDate,
         endDate,
-        "662ec5b08636d7598e9a8d7f", //OrganizerId
+        "662ff9cf9327d8e3828eeaba", //OrganizerId
         sport,
         bracketSize,
         teams
@@ -390,4 +390,47 @@ export async function inputMatch(tournamentId, prevState, formData) {
       }
     }
   }
+}
+
+export async function search(prevState, formData) {
+  let text = formData.get("search");
+  console.log(text);
+  const client = new Client({
+    cloud: {
+      id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",
+    },
+    auth: {
+      username: "elastic",
+      password: "aEwEWwaMzZeluHagQY9Gqo6R",
+    },
+  });
+  let data = await client.search({
+    query: {
+      query_string: {
+        default_field: "name",
+        query: `*${text}*`,
+      },
+    },
+  });
+  let results = data.hits.hits.map((result) => {
+    if (result._index !== ".elastic-connectors-v1") {
+      if (result._index === "tourneypro") {
+        return {
+          type: "team",
+          data: result._source,
+        };
+      } else {
+        return {
+          type: "tournament",
+          data: result._source,
+        };
+      }
+    } else {
+      return {
+        type: null,
+      };
+    }
+  });
+  console.log(results);
+  return { message: results };
 }

@@ -5,13 +5,14 @@ import { userData, teamData, bracketData } from "@/data/index.js";
 import { revalidatePath } from "next/cache";
 import { Client } from "@elastic/elasticsearch";
 import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authoptions";
 
 // CALLED BY CLIENT SIDE FORMS TO HANDLE SUBMISSION
 
 export async function editUser() {}
 
 export async function addTeam(prevState, formData) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   let name,
     sport,
     location,

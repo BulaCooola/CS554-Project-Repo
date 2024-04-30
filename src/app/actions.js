@@ -13,6 +13,7 @@ export async function editUser() {}
 
 export async function addTeam(prevState, formData) {
   const session = await getServerSession(authOptions);
+
   let name,
     sport,
     location,
@@ -25,6 +26,12 @@ export async function addTeam(prevState, formData) {
   sport = formData.get("sport");
   location = formData.get("location");
   playerIds = formData.getAll("playerIds");
+
+  try {
+    session.user._id = validation.checkId(session.user._id, "Id");
+  } catch (e) {
+    errors.push(e);
+  }
 
   try {
     name = validation.checkString(name, "Team name");
@@ -45,7 +52,7 @@ export async function addTeam(prevState, formData) {
   }
 
   try {
-    await userData.getUserById("66294cb0e6e1e265512381dc");
+    await userData.getUserById(session.user._id);
   } catch (error) {
     errors.push(error);
   }
@@ -64,7 +71,7 @@ export async function addTeam(prevState, formData) {
         name,
         sport,
         location,
-        "66294cb0e6e1e265512381dc", //will need to get from session later
+        session.user._id, //will need to get from session later
         playerIds
       );
       id = newTeam._id.toString();
@@ -155,6 +162,7 @@ export async function editTeam(teamId, prevState, formData) {
 }
 
 export async function addTournament(prevState, formData) {
+  const session = await getServerSession(authOptions);
   let name,
     description,
     startDate,
@@ -176,6 +184,11 @@ export async function addTournament(prevState, formData) {
   bracketSize = parseInt(formData.get("bracketSize"));
   teams = formData.getAll("teams");
 
+  try {
+    session.user._id = validation.checkId(session.user._id, "Id");
+  } catch (e) {
+    errors.push(e);
+  }
   try {
     name = validation.checkString(name, "Tournament name");
   } catch (error) {
@@ -202,7 +215,7 @@ export async function addTournament(prevState, formData) {
   }
   try {
     //OrganizerId
-    await userData.getUserById("662ff9cf9327d8e3828eeaba");
+    await userData.getUserById(session.user._id);
   } catch (error) {
     errors.push(error);
   }
@@ -231,7 +244,7 @@ export async function addTournament(prevState, formData) {
         description,
         startDate,
         endDate,
-        "662ff9cf9327d8e3828eeaba", //OrganizerId
+        session.user._id, //OrganizerId
         sport,
         bracketSize,
         teams

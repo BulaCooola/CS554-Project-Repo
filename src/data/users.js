@@ -61,7 +61,7 @@ const exportedMethods = {
       if (profilePicture) {
         // profilePicture = validation.validImgurLink(profilePicture, "Profile Picture");
       }
-      if (userName) {
+      if (username) {
         username = validation.checkString(username, "Username");
       }
       if (firstName) {
@@ -77,7 +77,7 @@ const exportedMethods = {
         phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
       }
       if (hometown) {
-        hometown = validation.checkLocaation(hometown);
+        hometown = validation.checkLocation(hometown);
       }
     } catch (e) {
       throw `Error: ${e}`;
@@ -113,6 +113,29 @@ const exportedMethods = {
       updateFields.hometown = hometown;
     }
 
+    if (existingUser) {
+      const updateUser = await userCollection.findOneAndUpdate(
+        { _id: new ObjectId(id) },
+        { $set: updateFields },
+        { returnDocument: "after" }
+      );
+      if (existingUser === updateUser) {
+        throw `Document did not update`;
+      }
+    }
+    return await this.getUserById(id);
+  },
+  async editUserPfp(id,profilePicture) {
+    id = validation.checkId(id);
+    const userCollection = await users();
+    const existingUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    if (!existingUser) {
+      throw `Error: User does not exist. Cannot edit.`;
+    }
+    let updateFields = {};
+    if (profilePicture) {
+      updateFields.profilePicture = profilePicture;
+    }
     if (existingUser) {
       const updateUser = await userCollection.findOneAndUpdate(
         { _id: new ObjectId(id) },

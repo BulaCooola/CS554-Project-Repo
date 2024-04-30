@@ -2,9 +2,43 @@
 
 ## Getting Started
 This web application uses the following independent technologies which require installation.
-- imagemagick
-- Elasticsearch
+- **imagemagick**
+- **Elasticsearch**
 
-To run the client, go into the directory by doing `cd front`. Install the dependencies by doing `npm i`. Before you start the project, the client requires a unique key for each user. To generate them, simply run `sh create-env.sh` or `./create-env.sh` into a bash terminal. Next, to build the app, do `npm run build` and once that is done, do `npm run start`.
+<hr></hr>
+Open a **bash** terminal and install the dependencies.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+```
+npm i
+``` 
+
+Before you build and start the project, the authentification requires a secret key. To generate, simply run any of these commands into a bash terminal. 
+* Option 1
+    ```
+    npm run create-env
+    ```  
+* Option 2
+    ```
+    sh create-env.sh
+    ```
+* Option 3 
+    ```
+    ./create-env.sh
+    ```
+
+If you do not have a bash terminal and have a powershell terminal, paste this into your terminal. 
+```
+npx auth secret
+``` 
+Make sure that you add the new secret to your `.env` file.
+```
+AUTH_SECRET="your auto generated secret"
+```
+
+Once you created your secret, you can now build the project
+```
+npm run build
+npm run start
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser to initiate the application.

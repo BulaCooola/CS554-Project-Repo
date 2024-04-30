@@ -39,31 +39,12 @@ function CreateTeam(props) {
     fetchData();
   }, []);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const name = event.target.name.value;
-    const sport = event.target.sport.value;
-    const location = event.target.location.value;
-    const playerIds = event.target.playerIds.value;
-
-    try {
-      // Call your createTeam function here with form data
-      const newTeam = await addTeam(name, sport, location, managerId, playerIds);
-      // If successful, reset form state and show success message
-      formAction(newTeam, { message: ["Team created successfully!"] });
-    } catch (error) {
-      // If an error occurs, set error message
-      formAction(null, { message: [error.message] });
-    }
-  };
-
   if (loading) {
     return <div>Loading</div>;
   } else {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">
-        <form action={formAction} onSubmit={handleSubmit} className="w-1/2 mx-auto my-20">
+        <form action={formAction} className="w-1/2 mx-auto my-20">
           {state && state.message && (
             <div className="alert alert-error w-1/2 mx-auto">
               <ul>

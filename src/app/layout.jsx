@@ -6,6 +6,7 @@ import Provider from "@/context/Provider";
 import Link from "next/link";
 import Navigation from "@/app/components/Navigation";
 import Footer from "@/app/components/Footer";
+import { authOptions } from "@/utils/authoptions";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
@@ -14,7 +15,7 @@ export const metadata = {
 };
 
 export default async function RootLayout({ children }) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
   console.log("server session", session);
   return (
     <html lang="en">

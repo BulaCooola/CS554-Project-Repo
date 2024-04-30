@@ -31,14 +31,14 @@ export default function PlayerProfile(props) {
       <h1>
         {session.user.firstName} {session.user.lastName}
       </h1>
-      {session.user.profilePicture && (
+      {session.user.profilePicture && (<>
         <Image src={session.user.profilePicture} priority height="150" width="150" alt="userPfp" />
-      )}
-      <form action={formAction}>
+        <form action={formAction}>
             <input className="border border-black" type="file" name="file"/>
             <input hidden name="userId" readOnly value={session.user.id}/>
             <button>Submit</button>
-      </form>
+        </form>
+      </>)}
       {state && state.message && (
         <ul>
           {state.message.map((msg, index) => {

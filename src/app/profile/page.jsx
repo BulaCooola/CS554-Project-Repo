@@ -50,6 +50,9 @@ export default function PlayerProfile(props) {
           })}
         </ul>
       )}
+      {state && state.newImg && (
+        <Image src={state.newImg} priority height="150" width="150" alt="newUserPfp" />
+      )}
       <p>Email: {session.user.email}</p>
       <p>Phone: {session.user.phone}</p>
     </div>

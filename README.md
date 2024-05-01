@@ -30,10 +30,10 @@ Before you build and start the project, the authentification requires a secret k
     ```
     npx auth secret
     ``` 
-Make sure that you add the new secret to your `.env` file.
-```
-AUTH_SECRET="your auto generated secret"
-```
+    Make sure that you add the new secret to your `.env` file.
+    ```
+    NEXTAUTH_SECRET="your auto generated secret"
+    ```
 
 Once you created your secret, you can now build the project
 ```

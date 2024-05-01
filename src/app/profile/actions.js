@@ -5,9 +5,9 @@ import { userData } from '@/data';
 
 const accepted = ['image/jpg','image/jpeg','image/png','image/webp']
 
-const cropImage = (image) => {
+const cropImage = (file) => {
     return new Promise((resolve, reject) => {
-        im.crop({srcData: image, width: 256, height:256, quality: 0.75},
+        im.crop({srcData: file, width: 256, height:256},
             (err, stdout) => {
                 if (err) reject(err)
                 resolve(stdout)
@@ -18,8 +18,8 @@ export async function imageToPfp (prevState,formData)
 {
     let id = formData.get('userId')
     let file = formData.get(('file'))
-    console.log(file)
-    console.log(`File type: ${file.type}`)
+    //console.log(file)
+    //console.log(`File type: ${file.type}`)
     if (accepted.includes(file.type)) {
         let fileArrBuffer = await file.arrayBuffer()
         let fileBuffer = Buffer.from(fileArrBuffer)
@@ -37,9 +37,9 @@ export async function imageToPfp (prevState,formData)
         })
         const data = await response.json()
         let newPfpUrl = data.data.link
-        console.log(newPfpUrl)
+        //console.log(newPfpUrl)
         let result = await userData.editUserPfp(id,newPfpUrl)
-        return {message: null, newImg: newPfpUrl}
+        return {message: ["Your profile picture has been updated!"], newImg: newPfpUrl}
         //let succeeded = false
         /*let thing = await im.crop({srcData: fileBuffer, width: 256, height:256, quality: 0.75},
             async (err, stdout) => {

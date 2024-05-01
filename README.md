@@ -26,10 +26,10 @@ Before you build and start the project, the authentification requires a secret k
     ./create-env.sh
     ```
 
-If you do not have a bash terminal and have a powershell terminal, paste this into your terminal. 
-```
-npx auth secret
-``` 
+* If you do not have a bash terminal and have a powershell terminal, paste this into your terminal. 
+    ```
+    npx auth secret
+    ``` 
 Make sure that you add the new secret to your `.env` file.
 ```
 AUTH_SECRET="your auto generated secret"

@@ -88,11 +88,11 @@ export async function updateProfile (prevState, formData) {
     else {
         try {
             let result = await userData.editUser(id,"","",firstName,lastName,email,phone,"")
-            return {message: ["Profile information successfully updated!"]}
+            return {message: ["Profile information successfully updated!"], updatedData: {firstName: firstName, lastName: lastName, phone: phone, email: email}}
         }
         catch (e)
         {
-            return {message: [e]}
+            return {message: [e], updatedData: null}
         }
     }
 

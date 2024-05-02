@@ -5,7 +5,7 @@ import {useFormState as useFormState} from 'react-dom'
 import Image from "next/image";
 import {imageToPfp, updateProfile} from './actions.js'
 const initialState = {message: "", newImg: null}
-const initialStateTwo = {message: ""}
+const initialStateTwo = {message: "", updatedData: null}
 
 export default function PlayerProfile(props) {
   const [isLoading, setIsLoading] = useState(true);
@@ -45,6 +45,28 @@ export default function PlayerProfile(props) {
       updateProfilePicture()
     }
   }, [state]);
+
+  useEffect(() => {
+    if (session && session.user && stateTwo && stateTwo.updatedData) {
+      const updateUserData = async () => {
+        const newSession = {
+          ...session,
+          user: {
+            ...session?.user,
+            firstName: stateTwo.updatedData.firstName,
+            lastName: stateTwo.updatedData.lastName,
+            phone: stateTwo.updatedData.phone,
+            email: stateTwo.updatedData.email
+          },
+        };
+        console.log("Session to update")
+        console.log(newSession)
+        console.log("Updated session")
+        console.log(await update(newSession));
+      };
+      updateUserData()
+    }
+  }, [stateTwo]);
 
   if (isLoading) {
     return <div>Loading...</div>;

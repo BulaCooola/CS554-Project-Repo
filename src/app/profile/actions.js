@@ -2,6 +2,7 @@
 const im = require('imagemagick')
 const fs = require('fs')
 import { userData } from '@/data';
+import validation from '@/data/validation'
 
 const accepted = ['image/jpg','image/jpeg','image/png','image/webp']
 
@@ -47,4 +48,52 @@ export async function imageToPfp (prevState,formData)
     else {
         return {message: ["You must provide an image file!"], newImg: null}
     }
+}
+
+export async function updateProfile (prevState, formData) {
+    let firstName = formData.get('firstName')
+    let lastName = formData.get('lastName')
+    let email = formData.get('email')
+    let phone = formData.get('phone')
+    let id = formData.get('userId')
+    let errors = []
+    try {
+        firstName = validation.checkString(firstName, "First name");
+    }
+    catch (e) {
+        errors.push(e)
+    }
+    try {
+        lastName = validation.checkString(lastName, "Last name");
+    }
+    catch (e) {
+        errors.push(e)
+    }
+    try {
+        email = validation.checkString(email, "Email");
+    }
+    catch (e) {
+        errors.push(e)
+    }
+    try {
+        phone = validation.checkPhoneNumber(phone, "Phone Number");
+    }
+    catch (e) {
+        errors.push(e)
+    }
+    console.log(errors)
+    if (errors.length > 0) {
+        return {message: errors}
+    }
+    else {
+        try {
+            let result = await userData.editUser(id,"","",firstName,lastName,email,phone,"")
+            return {message: ["Profile information successfully updated!"]}
+        }
+        catch (e)
+        {
+            return {message: [e]}
+        }
+    }
+
 }

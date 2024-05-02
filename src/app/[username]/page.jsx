@@ -3,7 +3,7 @@ import { useSession } from "next-auth/react";
 
 function PlayerProfile(props) {
   const session = useSession();
-  console.log(session.data.user);
+  console.log(session.data?.user);
   return (
     <div>
       Personal Profile Page

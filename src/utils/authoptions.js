@@ -52,12 +52,12 @@ export const authOptions = {
         token.name = session.name;
       }
 
-      console.log(token);
       if (user) {
         token.firstName = user.firstName;
         token.lastName = user.lastName;
         token._id = user._id;
         token.email = user.email;
+        token.username = user.username;
         token.profilePicture = user.profilePicture;
         token.phone = user.phone;
       }
@@ -67,6 +67,7 @@ export const authOptions = {
       // console.log("session callback", { token, user, session });
       session.user.id = token._id;
       session.user.profilePicture = token.profilePicture;
+      session.user.username = token.username;
       session.user.firstName = token.firstName;
       session.user.lastName = token.lastName;
       session.user.phone = token.phone;

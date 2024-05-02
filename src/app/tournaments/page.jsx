@@ -52,7 +52,7 @@ function AllTournaments(props) {
       {tournaments &&
         tournaments.map((tournament) => (
           <div key={tournament._id} className="m-4 ">
-            <Link href={`/users/${tournament._id}`}>{tournament.name}</Link>
+            <Link href={`/tournaments/${tournament._id}`}>{tournament.name}</Link>
             <p className="text-sm">Start Date: {tournament.startDate}</p>
             <p className="text-sm">End Date: {tournament.endDate} </p>
           </div>

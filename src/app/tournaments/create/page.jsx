@@ -3,11 +3,15 @@ import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { addTournament } from "@/app/actions";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
+import { redirect } from "next/navigation";
 const initialState = {
   message: null,
 };
 
 function CreateTournament(props) {
+  const { data: session, status, update } = useSession();
+
   const [state, formAction] = useFormState(addTournament, initialState);
   const [teams, setTeams] = useState(undefined);
   const [sports, setSports] = useState(undefined);
@@ -32,6 +36,9 @@ function CreateTournament(props) {
     }
     fetchData();
   }, []);
+  if (status === "unauthenticated") {
+    redirect("/login");
+  }
   if (loading) {
     return <div>Loading</div>;
   } else {

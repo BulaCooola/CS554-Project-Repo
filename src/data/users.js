@@ -187,9 +187,9 @@ const exportedMethods = {
       return {
         _id: duplicateCheck._id,
         email: duplicateCheck.email,
+        username: duplicateCheck.username,
         firstName: duplicateCheck.firstName,
         lastName: duplicateCheck.lastName,
-        password: duplicateCheck.password,
         phone: duplicateCheck.phoneNumber,
         profilePicture: duplicateCheck.profilePicture,
       };

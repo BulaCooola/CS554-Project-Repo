@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import {useFormState as useFormState} from 'react-dom'
 import Image from "next/image";
 import {imageToPfp, updateProfile} from './actions.js'
-const initialState = {message: "", newImg: ""}
+const initialState = {message: "", newImg: null}
 const initialStateTwo = {message: ""}
 
 export default function PlayerProfile(props) {
@@ -21,9 +21,30 @@ export default function PlayerProfile(props) {
     // Check if all necessary data is available
     if (session && session.user && session.user.email) {
       // All necessary data is available, set isLoading to false
+      console.log("Session")
+      console.log(session)
       setIsLoading(false);
     }
   }, [session]);
+
+  useEffect(() => {
+    if (session && session.user && state && state.newImg) {
+      const updateProfilePicture = async () => {
+        const newSession = {
+          ...session,
+          user: {
+            ...session?.user,
+            profilePicture: state.newImg
+          },
+        };
+        console.log("Session to update")
+        console.log(newSession)
+        console.log("Updated session")
+        console.log(await update(newSession));
+      };
+      updateProfilePicture()
+    }
+  }, [state]);
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -106,9 +127,6 @@ export default function PlayerProfile(props) {
         </ul>
         )}
       </>)}
-      {state && state.newImg && (
-        <Image src={state.newImg} priority height="150" width="150" alt="newUserPfp" />
-      )}
       <p>Email: {session.user.email}</p>
       <p>Phone: {session.user.phone}</p>
     </div>

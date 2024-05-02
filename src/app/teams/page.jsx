@@ -43,8 +43,14 @@ function Teams(props) {
     );
   }
   return (
+    <main className="min-h-screen justify-between p-24 bg-base">
     <div className="flex flex-col justify-center items-center">
       <h1 className="text-2xl font-bold m-4">List of teams</h1>
+      {session && (
+        <button>
+          <Link href={`/teams/create`}>Create Team</Link>
+        </button>
+      )}
       {teams &&
         teams.map((team) => (
           <div key={team._id} className="m-4 ">
@@ -55,7 +61,8 @@ function Teams(props) {
             <p className="text-sm">{team.location}</p>
           </div>
         ))}
-    </div>
+      </div>
+      </main>
   );
 }
 

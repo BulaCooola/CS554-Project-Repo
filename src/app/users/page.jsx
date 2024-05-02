@@ -36,8 +36,8 @@ function AllUsers(props) {
   if (usersLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <h1>List of teams</h1>
-        <p>Loading teams...</p>
+        <h1>List of Users</h1>
+        <p>Loading users...</p>
       </div>
     );
   }

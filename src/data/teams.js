@@ -51,7 +51,9 @@ const exportedMethods = {
     const teamCollection = await teams();
     const newInsertInformation = await teamCollection.insertOne(newTeam);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
-    const team = await this.getTeamById(newInsertInformation.insertedId.toString());
+    const team = await this.getTeamById(
+      newInsertInformation.insertedId.toString()
+    );
     return team;
   },
   async editTeam(teamId, updatedTeam) {
@@ -66,7 +68,10 @@ const exportedMethods = {
     // Validate provided fields
     const updatedTeamData = {};
     if (updatedTeam.name) {
-      updatedTeamData.name = validation.checkString(updatedTeam.name, "Team name");
+      updatedTeamData.name = validation.checkString(
+        updatedTeam.name,
+        "Team name"
+      );
     }
     if (updatedTeam.sport) {
       updatedTeamData.sport = validation.checkSport(updatedTeam.sport);
@@ -81,7 +86,9 @@ const exportedMethods = {
       updatedTeamData.managerId = newManager._id.toString();
     }
     if (updatedTeam.playerIds) {
-      updatedTeamData.playerIds = await userData.checkIdArray(updatedTeam.playerIds);
+      updatedTeamData.playerIds = await userData.checkIdArray(
+        updatedTeam.playerIds
+      );
       updatedTeamData.numPlayers = updatedTeam.playerIds.length;
     }
 
@@ -187,6 +194,23 @@ const exportedMethods = {
     const teamCollection = await teams();
     const teamList = await teamCollection.find({ _id: { $in: arr } }).toArray();
     return teamList;
+  },
+  async getTeamsBySport(sport) {
+    sport = validation.checkSport(sport);
+    const teamCollection = await teams();
+    const teamList = await teamCollection.find({ sport: sport }).toArray();
+    return teamList;
+  },
+  async teamsMatchSport(idArr, sport) {
+    sport = validation.checkSport(sport);
+    for (let teamId of idArr) {
+      let team = await this.getTeamById(teamId);
+      if (!team) throw "Error: Could not find team.";
+      if (team.sport !== sport) {
+        throw `Error: ${team.name} is a ${team.sport} team and cannot be added to a ${sport} tournament.`;
+      }
+    }
+    return idArr;
   },
 };
 

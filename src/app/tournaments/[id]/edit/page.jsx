@@ -11,6 +11,7 @@ function EditTournamentPage({ params }) {
   const [state, formAction] = useFormState(editTournamentById, initialState);
   const [prevData, setPrevData] = useState(undefined);
   const [sports, setSports] = useState(undefined);
+  const [selectedSport, setSelected] = useState()
   const [teams, setTeams] = useState(undefined);
   const [prevTeams, setPrevTeams] = useState(undefined);
   const [loading, setLoading] = useState(true);
@@ -23,17 +24,17 @@ function EditTournamentPage({ params }) {
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
       setSports(sports.sports);
-      const response3 = await fetch("/api/teams");
-      const teamsData = await response3.json();
-      let { allTeams } = teamsData;
-      const teamOptions = [];
-      for (let team of allTeams) {
-        teamOptions.push({
-          value: team._id,
-          label: team.name,
-        });
-      }
-      setTeams(teamOptions);
+      // const response3 = await fetch("/api/teams");
+      // const teamsData = await response3.json();
+      // let { allTeams } = teamsData;
+      // const teamOptions = [];
+      // for (let team of allTeams) {
+      //   teamOptions.push({
+      //     value: team._id,
+      //     label: team.name,
+      //   });
+      // }
+      // setTeams(teamOptions);
       const response4 = await fetch(`/api/tournaments/${params.id}/teams`);
       const teamsList = await response4.json();
       const prevTeamList = [];
@@ -47,9 +48,34 @@ function EditTournamentPage({ params }) {
       setLoading(false);
     }
     fetchData();
-    console.log(teams);
-    console.log();
   }, []);
+
+  async function handleOnChange(e) {
+    setSelected(e.target.value);
+  }
+  
+  useEffect(() => {
+    async function fetchData() {
+      if (!selectedSport) {
+        setTeams([])
+      } else {
+        console.log("State", selectedSport)
+        const response = await fetch(`/api/teams/sport/${selectedSport}`)
+        const teamsData = await response.json();
+        console.log(teamsData)
+        const teamOptions = [];
+        for (let team of teamsData) {
+          teamOptions.push({
+          value: team._id,
+          label: team.name,
+          });
+        }
+        setTeams(teamOptions);
+      }
+    }
+    fetchData()
+  }, [selectedSport])
+  
   if (loading) {
     return <div>Loading</div>;
   } else {
@@ -149,6 +175,7 @@ function EditTournamentPage({ params }) {
                 className="select select-bordered flex w-full max-w-xs mx-auto my-2"
                 name="sport"
                 id="sport"
+                onChange={handleOnChange}
                 required
               >
                 <option key="current" value={prevData.sport} defaultValue>

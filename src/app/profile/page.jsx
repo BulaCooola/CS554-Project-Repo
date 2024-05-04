@@ -74,7 +74,7 @@ export default function PlayerProfile(props) {
   return (
     <div>
       <h1>
-        {session.user.firstName} {session.user.lastName}
+        My Profile
       </h1>
       {session.user.profilePicture && (<>
         <Image src={session.user.profilePicture} priority height="150" width="150" alt="userPfp" />

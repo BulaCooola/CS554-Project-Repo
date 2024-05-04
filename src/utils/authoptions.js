@@ -52,10 +52,6 @@ export const authOptions = {
         console.log("session updating trigger")
         return {...token,...session?.user}
       }
-      console.log("past update conditional trigger")
-      console.log(trigger)
-      console.log(trigger === "update")
-      console.log(session)
       //console.log(token);
       if (user) {
         token.firstName = user.firstName;

@@ -18,11 +18,11 @@ function singleTeam(props) {
           console.error("Invalid teams data:", teamsData);
           setTeamLoading(false);
         }
-        const response2 = await fetch(`/api/teams/${params.id}/players`);
-        const playersList = await response2.json();
-        setPlayers(playersList);
-        console.log(playersList);
-        setTeamLoading(false);
+        // const response2 = await fetch(`/api/teams/${props.params.id}/players`);
+        // const playersList = await response2.json();
+        // setPlayers(playersList);
+        // console.log(playersList);
+        // setTeamLoading(false);
       } catch (e) {
         console.error("Error fetching teams:", e);
         setTeamLoading(false);

@@ -4,13 +4,13 @@ import validation from "@/data/validation";
 
 export async function GET(req, { params }) {
   try {
-    params.id = validation.checkId(params.id);
+    params.sport = validation.checkSport(params.sport);
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 400 });
   }
   try {
-    const team = await teamData.getTeamById(params.id);
-    return NextResponse.json({ team }, { status: 200 });
+    const teams = await teamData.getTeamsBySport(params.sport);
+    return NextResponse.json(teams);
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 404 });
   }

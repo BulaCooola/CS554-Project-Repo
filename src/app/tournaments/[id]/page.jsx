@@ -40,6 +40,13 @@ function SingleTournament({ params }) {
     setSelectedSection(section);
   };
 
+  useEffect(() => {
+    if (state.success === "success") {
+      state.message = null;
+      window.location.reload();
+    }
+  }, [state.message]);
+
   if (loading) {
     return (
       <div className="flex flex-col justify-center items-center">
@@ -106,6 +113,19 @@ function SingleTournament({ params }) {
                               action={formAction}
                               className="p-2 shadow menu dropdown-content z-[1] bg-base-100 rounded-box w-52"
                             >
+                              {state && state.message && (
+                                <div className="alert alert-error w-1/2 mx-auto">
+                                  <ul>
+                                    {state.message.map((msg, index) => {
+                                      return (
+                                        <li className="error" key={index}>
+                                          {msg}
+                                        </li>
+                                      );
+                                    })}
+                                  </ul>
+                                </div>
+                              )}
                               <label>
                                 {match.participants[0].name}
                                 <input

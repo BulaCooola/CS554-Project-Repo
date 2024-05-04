@@ -28,7 +28,9 @@ export async function addTeam(prevState, formData) {
   playerIds = formData.getAll("playerIds");
 
   try {
-    session.user._id = validation.checkId(session.user._id, "Id");
+    console.log(session.user.id);
+    session.user.id = validation.checkId(session.user.id);
+    console.log("HEREb");
   } catch (e) {
     errors.push(e);
   }
@@ -52,7 +54,8 @@ export async function addTeam(prevState, formData) {
   }
 
   try {
-    await userData.getUserById(session.user._id);
+    await userData.getUserById(session.user.id);
+    console.log("HEREa");
   } catch (error) {
     errors.push(error);
   }
@@ -71,7 +74,7 @@ export async function addTeam(prevState, formData) {
         name,
         sport,
         location,
-        session.user._id, //will need to get from session later
+        session.user.id,
         playerIds
       );
       id = newTeam._id.toString();
@@ -185,7 +188,8 @@ export async function addTournament(prevState, formData) {
   teams = formData.getAll("teams");
 
   try {
-    session.user._id = validation.checkId(session.user._id, "Id");
+    console.log(session.user.id);
+    session.user.id = validation.checkId(session.user.id);
   } catch (e) {
     errors.push(e);
   }
@@ -195,7 +199,10 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -215,7 +222,7 @@ export async function addTournament(prevState, formData) {
   }
   try {
     //OrganizerId
-    await userData.getUserById(session.user._id);
+    await userData.getUserById(session.user.id);
   } catch (error) {
     errors.push(error);
   }
@@ -234,6 +241,11 @@ export async function addTournament(prevState, formData) {
   } catch (error) {
     errors.push(error);
   }
+  try {
+    teams = await teamData.teamsMatchSport(teams, sport);
+  } catch (error) {
+    errors.push(error);
+  }
 
   if (errors.length > 0) {
     return { message: errors };
@@ -244,7 +256,7 @@ export async function addTournament(prevState, formData) {
         description,
         startDate,
         endDate,
-        session.user._id, //OrganizerId
+        session.user.id, //OrganizerId
         sport,
         bracketSize,
         teams
@@ -288,7 +300,10 @@ export async function editTournament(tournamentId, prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -321,6 +336,11 @@ export async function editTournament(tournamentId, prevState, formData) {
   } catch (error) {
     errors.push(error);
   }
+  try {
+    teams = await teamData.teamsMatchSport(teams, sport);
+  } catch (error) {
+    errors.push(error);
+  }
 
   if (errors.length > 0) {
     return { message: errors };
@@ -335,7 +355,10 @@ export async function editTournament(tournamentId, prevState, formData) {
       teams: teams,
     };
     try {
-      let updatedBracket = await bracketData.editBracket(tournamentId, updateData);
+      let updatedBracket = await bracketData.editBracket(
+        tournamentId,
+        updateData
+      );
       id = updatedBracket._id.toString();
       success = true;
     } catch (error) {
@@ -371,6 +394,9 @@ export async function inputMatch(tournamentId, prevState, formData) {
   if (isNaN(winnerResult) || isNaN(loserResult)) {
     errors.push("Error: Result must be an integer");
   }
+  if (winnerResult <= loserResult) {
+    errors.push("Error: Winner result must be greater than loser result");
+  }
   try {
     await bracketData.getBracketById(tournamentId);
   } catch (error) {
@@ -389,12 +415,12 @@ export async function inputMatch(tournamentId, prevState, formData) {
         loserResult
       );
       id = newBracket._id.toString();
+      success = true;
     } catch (error) {
       return { message: errors };
     } finally {
       if (success) {
-        revalidatePath(`/tournaments/${id}`);
-        redirect(`/tournaments/${id}`);
+        return { success: "success" };
       }
     }
   }
@@ -439,6 +465,5 @@ export async function search(prevState, formData) {
       };
     }
   });
-  console.log(results);
   return { message: results };
 }

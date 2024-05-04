@@ -42,6 +42,7 @@ function AllTournaments(props) {
     );
   }
   return (
+    <main className="min-h-screen justify-between p-24 bg-base">
     <div className="flex flex-col justify-center items-center">
       {session && (
         <button>
@@ -57,7 +58,8 @@ function AllTournaments(props) {
             <p className="text-sm">End Date: {tournament.endDate} </p>
           </div>
         ))}
-    </div>
+      </div>
+      </main>
   );
 }
 

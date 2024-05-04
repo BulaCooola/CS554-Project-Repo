@@ -15,22 +15,12 @@ function CreateTournament(props) {
   const [state, formAction] = useFormState(addTournament, initialState);
   const [teams, setTeams] = useState(undefined);
   const [sports, setSports] = useState(undefined);
+  const [selectedSport, setSelected] = useState();
   const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function fetchData() {
-      const response = await fetch("/api/teams");
-      const teamsData = await response.json();
-      let { allTeams } = teamsData;
-      const teamOptions = [];
-      for (let team of allTeams) {
-        teamOptions.push({
-          value: team._id,
-          label: team.name,
-        });
-      }
-      setTeams(teamOptions);
-      const response2 = await fetch("/api/sports");
-      const sports = await response2.json();
+      const response = await fetch("/api/sports");
+      const sports = await response.json();
       setSports(sports.sports);
       setLoading(false);
     }
@@ -39,8 +29,43 @@ function CreateTournament(props) {
   if (status === "unauthenticated") {
     redirect("/login");
   }
+
+  async function handleOnChange(e) {
+    setSelected(e.target.value);
+  }
+
+  useEffect(() => {
+    async function fetchData() {
+      if (!selectedSport) {
+        setTeams([]);
+        setLoading(false);
+      } else {
+        console.log("State", selectedSport);
+        const response = await fetch(`/api/teams/sport/${selectedSport}`);
+        console.log(response);
+        const teamsData = await response.json();
+        console.log(teamsData);
+        const teamOptions = [];
+        for (let team of teamsData) {
+          teamOptions.push({
+            value: team._id,
+            label: team.name,
+          });
+        }
+        setTeams(teamOptions);
+        setLoading(false);
+      }
+    }
+    fetchData();
+  }, [selectedSport]);
+
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <div>
+        Loading
+        <p className="loading loading-dots loading-lg">Loading...</p>
+      </div>
+    );
   } else {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">
@@ -93,6 +118,7 @@ function CreateTournament(props) {
               name="sport"
               id="sport"
               required
+              onChange={handleOnChange}
             >
               <option defaultValue value="">
                 Select a sport....
@@ -139,6 +165,7 @@ function CreateTournament(props) {
                 options={teams}
                 name="teams"
                 id="teams"
+                className="text-black"
               />
             )}
           </div>

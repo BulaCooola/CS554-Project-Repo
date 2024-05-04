@@ -11,8 +11,8 @@ export const config = {
   matcher: [
     "/((?!api|_next/static|_next/image|favicon.ico).*), /profile",
     "/profile/edit",
-    "/tournaments/create",
-    "/tournaments/edit",
+    // "/tournaments/create",
+    // "/tournaments/edit",
     "/teams/create",
     "/teams/edit",
   ],

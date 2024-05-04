@@ -13,7 +13,7 @@ function EditTournamentPage({ params }) {
   const [state, formAction] = useFormState(editTournamentById, initialState);
   const [prevData, setPrevData] = useState(undefined);
   const [sports, setSports] = useState(undefined);
-  const [selectedSport, setSelected] = useState()
+  const [selectedSport, setSelected] = useState();
   const [teams, setTeams] = useState(undefined);
   const [prevTeams, setPrevTeams] = useState(undefined);
   const [loading, setLoading] = useState(true);
@@ -55,31 +55,36 @@ function EditTournamentPage({ params }) {
   async function handleOnChange(e) {
     setSelected(e.target.value);
   }
-  
+
   useEffect(() => {
     async function fetchData() {
       if (!selectedSport) {
-        setTeams([])
+        setTeams([]);
       } else {
-        console.log("State", selectedSport)
-        const response = await fetch(`/api/teams/sport/${selectedSport}`)
+        console.log("State", selectedSport);
+        const response = await fetch(`/api/teams/sport/${selectedSport}`);
         const teamsData = await response.json();
-        console.log(teamsData)
+        console.log(teamsData);
         const teamOptions = [];
         for (let team of teamsData) {
           teamOptions.push({
-          value: team._id,
-          label: team.name,
+            value: team._id,
+            label: team.name,
           });
         }
         setTeams(teamOptions);
       }
     }
-    fetchData()
-  }, [selectedSport])
-  
+    fetchData();
+  }, [selectedSport]);
+
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <div>
+        Loading
+        <p className="loading loading-dots loading-lg">Loading...</p>
+      </div>
+    );
   } else {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">

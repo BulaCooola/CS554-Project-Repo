@@ -30,7 +30,12 @@ function AllTournaments(props) {
 
   // Render loading state if teams is still undefined
   if (tournaments === undefined) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        Loading...
+        <p className="loading loading-dots loading-lg">Loading...</p>
+      </div>
+    );
   }
 
   if (tournamentsLoading) {
@@ -43,23 +48,23 @@ function AllTournaments(props) {
   }
   return (
     <main className="min-h-screen justify-between p-24 bg-base">
-    <div className="flex flex-col justify-center items-center">
-      {session && (
-        <button>
-          <Link href={`/tournaments/create`}>Create Bracket</Link>
-        </button>
-      )}
-      <h1>List of tournaments</h1>
-      {tournaments &&
-        tournaments.map((tournament) => (
-          <div key={tournament._id} className="m-4 ">
-            <Link href={`/tournaments/${tournament._id}`}>{tournament.name}</Link>
-            <p className="text-sm">Start Date: {tournament.startDate}</p>
-            <p className="text-sm">End Date: {tournament.endDate} </p>
-          </div>
-        ))}
+      <div className="flex flex-col justify-center items-center">
+        {session && (
+          <button>
+            <Link href={`/tournaments/create`}>Create Bracket</Link>
+          </button>
+        )}
+        <h1>List of tournaments</h1>
+        {tournaments &&
+          tournaments.map((tournament) => (
+            <div key={tournament._id} className="m-4 ">
+              <Link href={`/tournaments/${tournament._id}`}>{tournament.name}</Link>
+              <p className="text-sm">Start Date: {tournament.startDate}</p>
+              <p className="text-sm">End Date: {tournament.endDate} </p>
+            </div>
+          ))}
       </div>
-      </main>
+    </main>
   );
 }
 

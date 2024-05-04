@@ -24,6 +24,14 @@ const exportedMethods = {
       .toArray();
     return teamList;
   },
+  async getTeamsByManager(managerId) {
+    managerId = validation.checkId(managerId);
+    const teamCollection = await teams();
+    const teamList = await teamCollection // Find all teams that have playerId in their list of players
+      .find({ managerId: managerId })
+      .toArray();
+    return teamList;
+  },
   async createTeam(name, sport, location, managerId, playerIds) {
     try {
       name = validation.checkString(name, "Team name");
@@ -187,6 +195,23 @@ const exportedMethods = {
     const teamCollection = await teams();
     const teamList = await teamCollection.find({ _id: { $in: arr } }).toArray();
     return teamList;
+  },
+  async getTeamsBySport(sport) {
+    sport = validation.checkSport(sport);
+    const teamCollection = await teams();
+    const teamList = await teamCollection.find({ sport: sport }).toArray();
+    return teamList;
+  },
+  async teamsMatchSport(idArr, sport) {
+    sport = validation.checkSport(sport);
+    for (let teamId of idArr) {
+      let team = await this.getTeamById(teamId);
+      if (!team) throw "Error: Could not find team.";
+      if (team.sport !== sport) {
+        throw `Error: ${team.name} is a ${team.sport} team and cannot be added to a ${sport} tournament.`;
+      }
+    }
+    return idArr;
   },
 };
 

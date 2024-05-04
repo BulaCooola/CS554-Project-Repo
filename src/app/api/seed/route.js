@@ -28,6 +28,121 @@ export async function GET(req) {
     hashedPassword
   );
 
+  const playersData = [
+    {
+      username: "player3",
+      firstName: "Player",
+      lastName: "Three",
+      email: "player3@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player4",
+      firstName: "Player",
+      lastName: "Four",
+      email: "player4@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player5",
+      firstName: "Player",
+      lastName: "Five",
+      email: "player5@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player6",
+      firstName: "Player",
+      lastName: "Six",
+      email: "player6@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player7",
+      firstName: "Player",
+      lastName: "Seven",
+      email: "player7@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player8",
+      firstName: "Player",
+      lastName: "Eight",
+      email: "player8@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player9",
+      firstName: "Player",
+      lastName: "Nine",
+      email: "player9@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player10",
+      firstName: "Player",
+      lastName: "Ten",
+      email: "player10@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player11",
+      firstName: "Player",
+      lastName: "Eleven",
+      email: "player11@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player12",
+      firstName: "Player",
+      lastName: "Twelve",
+      email: "player12@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player13",
+      firstName: "Player",
+      lastName: "Thirteen",
+      email: "player13@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player14",
+      firstName: "Player",
+      lastName: "Fourteen",
+      email: "player14@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player15",
+      firstName: "Player",
+      lastName: "Fifteen",
+      email: "player15@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+    {
+      username: "player16",
+      firstName: "Player",
+      lastName: "Sixteen",
+      email: "player16@stevens.edu",
+      phoneNumber: "2401231234",
+    },
+  ];
+
+  // Add 14 generic players
+  for (let i = 0; i < playersData.length; i++) {
+    const player = playersData[i];
+    const playerObject = await userData.addUser(
+      player.username,
+      player.firstName,
+      player.lastName,
+      player.email,
+      player.phoneNumber,
+      hashedPassword
+    );
+    console.log("Added player:", playerObject);
+  }
+
   const ducks = await teamData.createTeam(
     "Ducks",
     "Lacrosse",
@@ -59,6 +174,49 @@ export async function GET(req) {
     paddy._id.toString(),
     [paddy._id.toString()]
   );
+
+  const newTeams = [
+    {
+      name: "Team5",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team6",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team7",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team8",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+  ];
+
+  for (let i = 0; i < newTeams.length; i++) {
+    const team = newTeams[i];
+    const teamObject = await teamData.createTeam(
+      team.name,
+      team.sport,
+      team.country,
+      team.coachId,
+      team.memberIds
+    );
+    console.log("Added team:", teamObject);
+  }
 
   let teams = [
     ducks._id.toString(),

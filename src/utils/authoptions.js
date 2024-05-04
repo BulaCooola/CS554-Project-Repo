@@ -65,7 +65,7 @@ export const authOptions = {
     },
     async session({ session, token, user }) {
       // console.log("session callback", { token, user, session });
-      session.user.id = token._id;
+      session.user._id = token._id;
       session.user.profilePicture = token.profilePicture;
       session.user.username = token.username;
       session.user.firstName = token.firstName;

@@ -8,10 +8,9 @@ export async function GET(req, { params }) {
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 400 });
   }
-
   try {
     const team = await teamData.getTeamById(params.id);
-    return NextResponse.json(team);
+    return NextResponse.json({ team }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 404 });
   }

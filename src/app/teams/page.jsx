@@ -37,32 +37,33 @@ function Teams(props) {
   if (teamsLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
-        <h1>List of teams</h1>
+        <h1 className="text-2xl font-bold m-4">List of teams</h1>
         <p>Loading teams...</p>
+        <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
     );
   }
   return (
     <main className="min-h-screen justify-between p-24 bg-base">
-    <div className="flex flex-col justify-center items-center">
-      <h1 className="text-2xl font-bold m-4">List of teams</h1>
-      {session && (
-        <button>
-          <Link href={`/teams/create`}>Create Team</Link>
-        </button>
-      )}
-      {teams &&
-        teams.map((team) => (
-          <div key={team._id} className="m-4 ">
-            <Link href={`/teams/${team._id}`} className="text-lg font-bold">
-              {team.name}
-            </Link>
-            <p className="text-sm">{team.sport}</p>
-            <p className="text-sm">{team.location}</p>
-          </div>
-        ))}
+      <div className="flex flex-col justify-center items-center">
+        <h1 className="text-2xl font-bold m-4">List of teams</h1>
+        {session && (
+          <button>
+            <Link href={`/teams/create`}>Create Team</Link>
+          </button>
+        )}
+        {teams &&
+          teams.map((team) => (
+            <div key={team._id} className="m-4 ">
+              <Link href={`/teams/${team._id}`} className="text-lg font-bold">
+                {team.name}
+              </Link>
+              <p className="text-sm">{team.sport}</p>
+              <p className="text-sm">{team.location}</p>
+            </div>
+          ))}
       </div>
-      </main>
+    </main>
   );
 }
 

@@ -3,10 +3,12 @@ import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
 import { editTournament } from "@/app/actions";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
 const initialState = {
   message: null,
 };
 function EditTournamentPage({ params }) {
+  const { data: session, status, update } = useSession();
   const editTournamentById = editTournament.bind(null, params.id);
   const [state, formAction] = useFormState(editTournamentById, initialState);
   const [prevData, setPrevData] = useState(undefined);
@@ -200,6 +202,7 @@ function EditTournamentPage({ params }) {
                 defaultValue={prevTeams}
                 name="teams"
                 id="teams"
+                className="text-black"
               />
             )}
           </div>

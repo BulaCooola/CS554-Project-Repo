@@ -1,14 +1,14 @@
 "use client";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
-import {useFormState as useFormState} from 'react-dom'
+import { useFormState as useFormState } from "react-dom";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { fetchBrackets, fetchCompetitions, fetchLedTeams, fetchAffiliatedTeams } from "./api";
 import Link from "next/link";
-import {imageToPfp, updateProfile} from './actions.js'
-const initialState = {message: "", newImg: null}
-const initialStateTwo = {message: "", updatedData: null}
+import { imageToPfp, updateProfile } from "./actions.js";
+const initialState = { message: "", newImg: null };
+const initialStateTwo = { message: "", updatedData: null };
 
 function PlayerProfile(props) {
   console.log(props);
@@ -17,9 +17,9 @@ function PlayerProfile(props) {
   const [attendedBrackets, setAttendedBrackets] = useState([]);
   const [ledTeams, setLedTeams] = useState([]);
   const [affiliatedTeams, setAffiliatedTeams] = useState([]);
-  
-  const [state, formAction] = useFormState(imageToPfp,initialState)
-  const [stateTwo, formActionTwo] = useFormState(updateProfile, initialStateTwo)
+
+  const [state, formAction] = useFormState(imageToPfp, initialState);
+  const [stateTwo, formActionTwo] = useFormState(updateProfile, initialStateTwo);
 
   const { data: session, status, update } = useSession();
   //console.log("session on page");
@@ -64,15 +64,15 @@ function PlayerProfile(props) {
           ...session,
           user: {
             ...session?.user,
-            profilePicture: state.newImg
+            profilePicture: state.newImg,
           },
         };
-        console.log("Session to update")
-        console.log(newSession)
-        console.log("Updated session")
+        console.log("Session to update");
+        console.log(newSession);
+        console.log("Updated session");
         console.log(await update(newSession));
       };
-      updateProfilePicture()
+      updateProfilePicture();
     }
   }, [state]);
 
@@ -86,23 +86,26 @@ function PlayerProfile(props) {
             firstName: stateTwo.updatedData.firstName,
             lastName: stateTwo.updatedData.lastName,
             phone: stateTwo.updatedData.phone,
-            email: stateTwo.updatedData.email
+            email: stateTwo.updatedData.email,
           },
         };
-        console.log("Session to update")
-        console.log(newSession)
-        console.log("Updated session")
+        console.log("Session to update");
+        console.log(newSession);
+        console.log("Updated session");
         console.log(await update(newSession));
       };
-      updateUserData()
+      updateUserData();
     }
   }, [stateTwo]);
 
+  if (!session) {
+    redirect("/login");
+  }
   if (isLoading) {
     return (
       <div className="flex flex-col justify-center items-center">
         <h1 className="text-4xl m-4">
-          Hi {session.user?.firstName} {session.user?.lastName}
+          Hi {session?.user?.firstName} {session?.user?.lastName}
         </h1>
         <div className="flex flex-col justify-center items-center">
           <h2 className="flex flex-col justify-center items-center text-xl">
@@ -132,82 +135,67 @@ function PlayerProfile(props) {
       <h1 className="text-4xl m-4">
         Hi {session.user.firstName} {session.user.lastName}
       </h1>
-      <h1>
-        My Profile
-      </h1>
-      {session.user.profilePicture && (<>
-        <Image src={session.user.profilePicture} priority height="150" width="150" alt="userPfp" />
-        <form action={formAction}>
-          <label>
-            Upload New Profile Picture:
-            <input className="border border-black" type="file" name="file"/>
-          </label>
-            <input hidden name="userId" readOnly value={session.user.id}/>
+      {session.user.profilePicture && (
+        <>
+          <Image
+            src={session.user.profilePicture}
+            priority
+            height="150"
+            width="150"
+            alt="userPfp"
+          />
+          <form action={formAction}>
+            <label>
+              Upload New Profile Picture:
+              <input className="border border-black" type="file" name="file" />
+            </label>
+            <input hidden name="userId" readOnly value={session.user.id} />
             <button>Submit</button>
-        </form>
-        {state && state.message && (
-        <ul>
-          {state.message.map((msg, index) => {
-            return (
-              <li key={index}>
-                {msg}
-              </li>
-            )
-          })}
-        </ul>
-        )}
-        <form action={formActionTwo}>
-          <label>
-            First Name:
-            <br/>
-            <input
-              defaultValue={session.user.firstName}
-              name='firstName'
-            />
-          </label>
-          <br />
-          <label>
-            Last Name:
-            <br/>
-            <input
-              defaultValue={session.user.lastName}
-              name='lastName'
-            />
-          </label>
-          <br />
-          <label>
-            Email:
-            <br/>
-            <input
-              defaultValue={session.user.email}
-              name='email'
-            />
-          </label>
-          <br />
-          <label>
-            Phone Number:
-            <br/>
-            <input
-              defaultValue={session.user.phone}
-              name='phone'
-            />
-          </label>
-          <br/>
-          <input hidden name="userId" readOnly value={session.user.id}/>
-          <button>Submit</button>
-        </form>
-        {stateTwo && stateTwo.message && (
-        <ul>
-          {stateTwo.message.map((msg, index) => {
-            return (
-              <li key={`two${index}`}>
-                {msg}
-              </li>
-            )
-          })}
-        </ul>
-        )}
-      </>)}
+          </form>
+          {state && state.message && (
+            <ul>
+              {state.message.map((msg, index) => {
+                return <li key={index}>{msg}</li>;
+              })}
+            </ul>
+          )}
+          <form action={formActionTwo}>
+            <label>
+              First Name:
+              <br />
+              <input defaultValue={session.user.firstName} name="firstName" />
+            </label>
+            <br />
+            <label>
+              Last Name:
+              <br />
+              <input defaultValue={session.user.lastName} name="lastName" />
+            </label>
+            <br />
+            <label>
+              Email:
+              <br />
+              <input defaultValue={session.user.email} name="email" />
+            </label>
+            <br />
+            <label>
+              Phone Number:
+              <br />
+              <input defaultValue={session.user.phone} name="phone" />
+            </label>
+            <br />
+            <input hidden name="userId" readOnly value={session.user.id} />
+            <button>Submit</button>
+          </form>
+          {stateTwo && stateTwo.message && (
+            <ul>
+              {stateTwo.message.map((msg, index) => {
+                return <li key={`two${index}`}>{msg}</li>;
+              })}
+            </ul>
+          )}
+        </>
+      )}
       <div className="text-md">
         Contact Information
         <p className="text-sm text-gray-400">{session.user.email}</p>
@@ -268,83 +256,83 @@ function PlayerProfile(props) {
 
 export default PlayerProfile;
 
-  // <div>
-  //     <h1>
-  //       My Profile
-  //     </h1>
-  //     {session.user.profilePicture && (<>
-  //       <Image src={session.user.profilePicture} priority height="150" width="150" alt="userPfp" />
-  //       <form action={formAction}>
-  //         <label>
-  //           Upload New Profile Picture:
-  //           <input className="border border-black" type="file" name="file"/>
-  //         </label>
-  //           <input hidden name="userId" readOnly value={session.user.id}/>
-  //           <button>Submit</button>
-  //       </form>
-  //       {state && state.message && (
-  //       <ul>
-  //         {state.message.map((msg, index) => {
-  //           return (
-  //             <li key={index}>
-  //               {msg}
-  //             </li>
-  //           )
-  //         })}
-  //       </ul>
-  //       )}
-  //       <form action={formActionTwo}>
-  //         <label>
-  //           First Name:
-  //           <br/>
-  //           <input
-  //             defaultValue={session.user.firstName}
-  //             name='firstName'
-  //           />
-  //         </label>
-  //         <br />
-  //         <label>
-  //           Last Name:
-  //           <br/>
-  //           <input
-  //             defaultValue={session.user.lastName}
-  //             name='lastName'
-  //           />
-  //         </label>
-  //         <br />
-  //         <label>
-  //           Email:
-  //           <br/>
-  //           <input
-  //             defaultValue={session.user.email}
-  //             name='email'
-  //           />
-  //         </label>
-  //         <br />
-  //         <label>
-  //           Phone Number:
-  //           <br/>
-  //           <input
-  //             defaultValue={session.user.phone}
-  //             name='phone'
-  //           />
-  //         </label>
-  //         <br/>
-  //         <input hidden name="userId" readOnly value={session.user.id}/>
-  //         <button>Submit</button>
-  //       </form>
-  //       {stateTwo && stateTwo.message && (
-  //       <ul>
-  //         {stateTwo.message.map((msg, index) => {
-  //           return (
-  //             <li key={`two${index}`}>
-  //               {msg}
-  //             </li>
-  //           )
-  //         })}
-  //       </ul>
-  //       )}
-  //     </>)}
-  //     <p>Email: {session.user.email}</p>
-  //     <p>Phone: {session.user.phone}</p>
-  //   </div>
+// <div>
+//     <h1>
+//       My Profile
+//     </h1>
+//     {session.user.profilePicture && (<>
+//       <Image src={session.user.profilePicture} priority height="150" width="150" alt="userPfp" />
+//       <form action={formAction}>
+//         <label>
+//           Upload New Profile Picture:
+//           <input className="border border-black" type="file" name="file"/>
+//         </label>
+//           <input hidden name="userId" readOnly value={session.user.id}/>
+//           <button>Submit</button>
+//       </form>
+//       {state && state.message && (
+//       <ul>
+//         {state.message.map((msg, index) => {
+//           return (
+//             <li key={index}>
+//               {msg}
+//             </li>
+//           )
+//         })}
+//       </ul>
+//       )}
+//       <form action={formActionTwo}>
+//         <label>
+//           First Name:
+//           <br/>
+//           <input
+//             defaultValue={session.user.firstName}
+//             name='firstName'
+//           />
+//         </label>
+//         <br />
+//         <label>
+//           Last Name:
+//           <br/>
+//           <input
+//             defaultValue={session.user.lastName}
+//             name='lastName'
+//           />
+//         </label>
+//         <br />
+//         <label>
+//           Email:
+//           <br/>
+//           <input
+//             defaultValue={session.user.email}
+//             name='email'
+//           />
+//         </label>
+//         <br />
+//         <label>
+//           Phone Number:
+//           <br/>
+//           <input
+//             defaultValue={session.user.phone}
+//             name='phone'
+//           />
+//         </label>
+//         <br/>
+//         <input hidden name="userId" readOnly value={session.user.id}/>
+//         <button>Submit</button>
+//       </form>
+//       {stateTwo && stateTwo.message && (
+//       <ul>
+//         {stateTwo.message.map((msg, index) => {
+//           return (
+//             <li key={`two${index}`}>
+//               {msg}
+//             </li>
+//           )
+//         })}
+//       </ul>
+//       )}
+//     </>)}
+//     <p>Email: {session.user.email}</p>
+//     <p>Phone: {session.user.phone}</p>
+//   </div>

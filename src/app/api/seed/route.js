@@ -204,6 +204,62 @@ export async function GET(req) {
       coachId: paddy._id.toString(),
       memberIds: [paddy._id.toString()],
     },
+    {
+      name: "Team9",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team10",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team11",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team12",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team13",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team14",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team15",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
+    {
+      name: "Team166",
+      sport: "Lacrosse",
+      country: "United States of America",
+      coachId: paddy._id.toString(),
+      memberIds: [paddy._id.toString()],
+    },
   ];
 
   for (let i = 0; i < newTeams.length; i++) {

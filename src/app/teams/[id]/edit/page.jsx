@@ -20,7 +20,7 @@ function EditTeamPage({ params }) {
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/teams/${params.id}`);
-      const team = await response1.json();
+      const {team} = await response1.json();
       setPrevData(team);
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
@@ -43,7 +43,6 @@ function EditTeamPage({ params }) {
       let { userList } = users;
       const userOptions = [];
       for (let user of userList) {
-        console.log(user);
         userOptions.push({
           value: user._id,
           label: `${user.firstName} ${user.lastName}`,
@@ -56,10 +55,15 @@ function EditTeamPage({ params }) {
   }, []);
 
   if (loading) {
-    return <div>Loading</div>;
+    return (
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <p>Loading Team</p>
+        <p className="loading loading-dots loading-lg">Loading...</p>
+      </div>)
   } else {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">
+      <main className="min-h-screen flex-col items-center p-24 bg-base">
+        <h1 className="text-2xl font-semibold">Edit Team</h1>
         <form action={formAction} className="w-1/2 mx-auto my-20">
           {state && state.message && (
             <div className="alert alert-error w-1/2 mx-auto">

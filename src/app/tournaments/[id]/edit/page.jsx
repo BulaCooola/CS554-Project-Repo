@@ -26,17 +26,6 @@ function EditTournamentPage({ params }) {
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
       setSports(sports.sports);
-      // const response3 = await fetch("/api/teams");
-      // const teamsData = await response3.json();
-      // let { allTeams } = teamsData;
-      // const teamOptions = [];
-      // for (let team of allTeams) {
-      //   teamOptions.push({
-      //     value: team._id,
-      //     label: team.name,
-      //   });
-      // }
-      // setTeams(teamOptions);
       const response4 = await fetch(`/api/tournaments/${params.id}/teams`);
       const teamsList = await response4.json();
       const prevTeamList = [];
@@ -61,10 +50,8 @@ function EditTournamentPage({ params }) {
       if (!selectedSport) {
         setTeams([]);
       } else {
-        console.log("State", selectedSport);
         const response = await fetch(`/api/teams/sport/${selectedSport}`);
         const teamsData = await response.json();
-        console.log(teamsData);
         const teamOptions = [];
         for (let team of teamsData) {
           teamOptions.push({
@@ -80,14 +67,15 @@ function EditTournamentPage({ params }) {
 
   if (loading) {
     return (
-      <div>
-        Loading
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <p>Loading Tournament</p>
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
     );
   } else {
     return (
-      <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">
+      <main className="min-h-screen flex-col items-center p-24 bg-base">
+        <h1 className="text-2xl font-semibold">Edit Tournament</h1>
         <form action={formAction} className="w-1/2 mx-auto my-20">
           <div
             role="alert"

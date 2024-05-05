@@ -32,6 +32,11 @@ function Navigation(props) {
               Players
             </Link>
           </li>
+          <li>
+            <Link href="/search" className="btn btn-ghost">
+              Search
+            </Link>
+          </li>
           {!loggedIn ? (
             <>
               <li>

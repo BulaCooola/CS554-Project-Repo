@@ -28,8 +28,7 @@ export async function addTeam(prevState, formData) {
   playerIds = formData.getAll("playerIds");
 
   try {
-    console.log(session.user.id);
-    session.user.id = validation.checkId(session.user.id);
+    session.user._id = validation.checkId(session.user._id);
     console.log("HEREb");
   } catch (e) {
     errors.push(e);
@@ -54,8 +53,7 @@ export async function addTeam(prevState, formData) {
   }
 
   try {
-    await userData.getUserById(session.user.id);
-    console.log("HEREa");
+    await userData.getUserById(session.user._id);
   } catch (error) {
     errors.push(error);
   }
@@ -74,7 +72,7 @@ export async function addTeam(prevState, formData) {
         name,
         sport,
         location,
-        session.user.id,
+        session.user._id,
         playerIds
       );
       id = newTeam._id.toString();
@@ -107,21 +105,18 @@ export async function editTeam(teamId, prevState, formData) {
   try {
     name = validation.checkString(name, "Team name");
   } catch (error) {
-    console.log("NAME:", error);
     errors.push(error);
   }
 
   try {
     sport = validation.checkSport(sport);
   } catch (error) {
-    console.log("SPORT:", error);
     errors.push(error);
   }
 
   try {
     location = validation.checkLocation(location);
   } catch (error) {
-    console.log("LOCATION:", error);
     errors.push(error);
   }
 
@@ -134,7 +129,6 @@ export async function editTeam(teamId, prevState, formData) {
   try {
     await teamData.getTeamById(teamId);
   } catch (error) {
-    console.log("ID:", error);
     errors.push(error);
   }
 
@@ -170,7 +164,6 @@ export async function addTournament(prevState, formData) {
     description,
     startDate,
     endDate,
-    organizerId,
     sport,
     bracketSize,
     teams = null;
@@ -182,14 +175,12 @@ export async function addTournament(prevState, formData) {
   description = formData.get("description");
   startDate = formData.get("startDate");
   endDate = formData.get("endDate");
-  //organizerId = ID FROM SESSION
   sport = formData.get("sport");
   bracketSize = parseInt(formData.get("bracketSize"));
   teams = formData.getAll("teams");
 
   try {
-    console.log(session.user.id);
-    session.user.id = validation.checkId(session.user.id);
+    session.user._id = validation.checkId(session.user._id);
   } catch (e) {
     errors.push(e);
   }
@@ -221,8 +212,18 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    //OrganizerId
-    await userData.getUserById(session.user.id);
+    let compareStart = new Date(startDate);
+    let compareEnd = new Date(endDate);
+    console.log("START:", compareStart);
+    console.log("END:", compareEnd);
+    if (compareEnd < compareStart) {
+      throw "Error: End date cannot be before start date";
+    }
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    await userData.getUserById(session.user._id);
   } catch (error) {
     errors.push(error);
   }
@@ -256,7 +257,7 @@ export async function addTournament(prevState, formData) {
         description,
         startDate,
         endDate,
-        session.user.id, //OrganizerId
+        session.user._id, //OrganizerId
         sport,
         bracketSize,
         teams
@@ -318,6 +319,15 @@ export async function editTournament(tournamentId, prevState, formData) {
     endDate = endDate.replaceAll("-", "/").split("/");
     endDate = `${endDate[1]}/${endDate[2]}/${endDate[0]}`;
     endDate = validation.checkDateString(endDate);
+  } catch (error) {
+    errors.push(error);
+  }
+  try {
+    let compareStart = new Date(startDate);
+    let compareEnd = new Date(endDate);
+    if (compareEnd < compareStart) {
+      throw "Error: End date cannot be before start date";
+    }
   } catch (error) {
     errors.push(error);
   }
@@ -428,7 +438,7 @@ export async function inputMatch(tournamentId, prevState, formData) {
 
 export async function search(prevState, formData) {
   let text = formData.get("search");
-  console.log(text);
+  text = text.trim();
   const client = new Client({
     cloud: {
       id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",

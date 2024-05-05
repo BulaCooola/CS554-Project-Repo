@@ -28,33 +28,32 @@ function AllUsers(props) {
     fetchData();
   }, []);
 
-  // Render loading state if teams is still undefined
-  if (users === undefined) {
-    return <div>Loading...</div>;
-  }
-
   if (usersLoading) {
     return (
-      <div className="flex flex-col justify-center items-center">
-        <h1>List of Users</h1>
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <h1 className="text-2xl font-semibold">List of Users</h1>
         <p>Loading users...</p>
+        <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
     );
-  }
+  } else {
+    console.log(users)
   return (
-    <div className="flex flex-col justify-center items-center">
-      <h1>List of users</h1>
-      {users &&
-        users.map((user) => (
-          <div key={user._id} className="m-4 ">
-            <Link href={`/users/${user._id}`}>
-              {user.firstName} {user.lastName}
-            </Link>
-            <p>{user.hometown ? user.hometown : ""}</p>
-          </div>
-        ))}
-    </div>
-  );
+    <main className="min-h-screen justify-between p-24 bg-base">
+      <div>
+        <h1 className="text-2xl font-semibold">List of Users</h1>
+        {users &&
+          users.map((user) => (
+            <div key={user._id} className="card bg-base-100 shadow-lg m-4 p-4 max-w-96 mx-auto">
+              <Link className="text-lg font-semibold link link-primary" href={`/users/${user._id}`}>
+                {user.firstName} {user.lastName}
+              </Link>
+              <p>{user.hometown ? user.hometown : ""}</p>
+            </div>
+          ))}
+      </div>
+    </main>
+  );}
 }
 
 export default AllUsers;

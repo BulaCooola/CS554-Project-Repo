@@ -28,44 +28,38 @@ function AllTournaments(props) {
     fetchData();
   }, []);
 
-  // Render loading state if teams is still undefined
-  if (tournaments === undefined) {
+  if (tournamentsLoading) {
     return (
-      <div>
-        Loading...
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <h1 className="text-2xl font-semibold">List of tournaments</h1>
+        <p>Loading tournaments...</p>
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
     );
-  }
-
-  if (tournamentsLoading) {
-    return (
-      <div className="flex flex-col justify-center items-center">
-        <h1>List of tournaments</h1>
-        <p>Loading tournaments...</p>
-      </div>
-    );
-  }
+  } else {
   return (
     <main className="min-h-screen justify-between p-24 bg-base">
-      <div className="flex flex-col justify-center items-center">
+      <div>
+        <h1 className="text-2xl font-semibold">List of tournaments</h1>
         {session && (
-          <button>
-            <Link href={`/tournaments/create`}>Create Bracket</Link>
-          </button>
+          <div className="card-actions justify-end">
+            <button className="btn btn-primary">
+              <Link href={`/tournaments/create`}>Create Bracket</Link>
+            </button>
+          </div>
         )}
-        <h1>List of tournaments</h1>
         {tournaments &&
           tournaments.map((tournament) => (
-            <div key={tournament._id} className="m-4 ">
-              <Link href={`/tournaments/${tournament._id}`}>{tournament.name}</Link>
+            <div key={tournament._id} className="card bg-base-100 shadow-lg m-4 p-4 max-w-96 mx-auto">
+              <Link className="text-lg font-semibold link link-primary" href={`/tournaments/${tournament._id}`}>{tournament.name}</Link>
+              <p className="text-sm">{tournament.description}</p>
               <p className="text-sm">Start Date: {tournament.startDate}</p>
               <p className="text-sm">End Date: {tournament.endDate} </p>
             </div>
           ))}
       </div>
     </main>
-  );
+  );}
 }
 
 export default AllTournaments;

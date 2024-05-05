@@ -13,8 +13,8 @@ export const config = {
     "/profile/edit",
     // "/tournaments/create",
     // "/tournaments/edit",
-    "/teams/create",
-    "/teams/edit",
+    //"/teams/create",
+    //"/teams/edit",
   ],
 };
 

@@ -29,15 +29,10 @@ function Teams(props) {
     fetchData();
   }, []);
 
-  // Render loading state if teams is still undefined
-  if (teams === undefined) {
-    return <div>Loading...</div>;
-  }
-
   if (teamsLoading) {
     return (
-      <div className="flex flex-col justify-center items-center">
-        <h1 className="text-2xl font-bold m-4">List of teams</h1>
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <h1 className="text-2xl font-semibold">List of teams</h1>
         <p>Loading teams...</p>
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
@@ -45,17 +40,19 @@ function Teams(props) {
   }
   return (
     <main className="min-h-screen justify-between p-24 bg-base">
-      <div className="flex flex-col justify-center items-center">
-        <h1 className="text-2xl font-bold m-4">List of teams</h1>
+      <div>
+        <h1 className="text-2xl font-semibold">List of teams</h1>
         {session && (
-          <button>
-            <Link href={`/teams/create`}>Create Team</Link>
-          </button>
+          <div className="card-actions justify-end">
+            <button className="btn btn-primary">
+              <Link href={`/teams/create`}>Create Team</Link>
+            </button>
+          </div>
         )}
         {teams &&
           teams.map((team) => (
-            <div key={team._id} className="m-4 ">
-              <Link href={`/teams/${team._id}`} className="text-lg font-bold">
+            <div key={team._id} className="card bg-base-100 shadow-lg m-4 p-4 max-w-96 mx-auto">
+              <Link href={`/teams/${team._id}`} className="text-lg font-semibold link link-primary">
                 {team.name}
               </Link>
               <p className="text-sm">{team.sport}</p>

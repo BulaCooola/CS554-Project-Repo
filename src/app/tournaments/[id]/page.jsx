@@ -49,7 +49,7 @@ function SingleTournament({ params }) {
 
   if (loading) {
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="min-h-screen justify-between p-24 bg-base">
         <p>Loading Tournament</p>
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
@@ -104,7 +104,6 @@ function SingleTournament({ params }) {
                 <div className="menu p-4 w-80 min-h-full bg-base-200 text-base-content">
                   {pendingMatches &&
                     pendingMatches.map((match, index) => {
-                      console.log(pendingMatches);
                       return (
                         <div key={index + 1}>
                           <details className="dropdown">
@@ -193,6 +192,9 @@ function SingleTournament({ params }) {
                         </div>
                       );
                     })}
+                  {pendingMatches.length == 0 && (
+                    <div>No matches to complete currently.</div>
+                  )}
                 </div>
               </div>
             </div>
@@ -205,9 +207,13 @@ function SingleTournament({ params }) {
               {teams &&
                 teams.map((team) => {
                   return (
-                    <li key={team._id}>
-                      <Link href={`/teams/${team._id}`}>{team.name}</Link>
-                    </li>
+                    <div key={team._id} className="card bg-base-100 shadow-lg m-4 p-4 min-w-80 max-w-96 mx-auto">
+              <Link href={`/teams/${team._id}`} className="text-lg font-semibold link link-primary">
+                {team.name}
+              </Link>
+              <p className="text-sm">{team.sport}</p>
+              <p className="text-sm">{team.location}</p>
+            </div>
                   );
                 })}
             </ul>

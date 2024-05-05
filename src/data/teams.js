@@ -54,6 +54,7 @@ const exportedMethods = {
       numGames: 0,
       numWins: 0,
       numLosses: 0,
+      tournamentsWon: 0,
     };
 
     const teamCollection = await teams();

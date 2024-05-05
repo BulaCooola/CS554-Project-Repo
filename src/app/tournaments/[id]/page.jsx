@@ -14,6 +14,7 @@ function SingleTournament({ params }) {
   const [teams, setTeams] = useState(undefined);
   const [pendingMatches, setPendingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [winner, setWinner] = useState("TBD")
   const [selectedSection, setSelectedSection] = useState("info");
 
   useEffect(() => {
@@ -31,6 +32,11 @@ function SingleTournament({ params }) {
         }
       }
       setPendingMatches(pending);
+      if (tournament.winner !== "TBD") {
+        const response3 = await fetch(`/api/teams/${tournament.winner}`)
+        const {team} = await response3.json()
+        setWinner(team)
+      }
       setLoading(false);
     }
     fetchData();
@@ -55,6 +61,7 @@ function SingleTournament({ params }) {
       </div>
     );
   } else {
+    console.log(tournament.matches)
     return (
       <main className="min-h-screen justify-between p-24 bg-base">
         <h1 className="flex flex-col justify-center items-center text-4xl m-4">
@@ -80,6 +87,7 @@ function SingleTournament({ params }) {
             <h3>Start Date: {tournament.startDate}</h3>
             <h3>End Date: {tournament.endDate}</h3>
             <h3>Event: {tournament.sport}</h3>
+            <h3>Winner: {winner === "TBD" ? winner : <Link className="link link-primary" href={`/teams/${winner._id}`}>{winner.name}</Link>}</h3>
           </div>
         )}
         {selectedSection === "bracket" && (

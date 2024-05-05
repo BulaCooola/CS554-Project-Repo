@@ -39,7 +39,7 @@ export default function Form() {
         type="password"
         name="password"
       />
-      <button type="submit">Register</button>
+      <button type="submit">Login</button>
     </form>
   );
 }

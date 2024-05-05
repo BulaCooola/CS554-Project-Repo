@@ -10,7 +10,11 @@ function Teams(props) {
   const [teamsLoading, setTeamsLoading] = useState(true);
   const [sports, setSports] = useState(undefined);
   const [teams, setTeams] = useState([]);
-  const [selectedSport, setSelectedSport] = useState("All"); // Default to show all teams
+  // Filter useStates
+  const [selectedSport, setSelectedSport] = useState("All");
+  // Page useStates
+  const [currentPage, setCurrentPage] = useState(1);
+  const [teamsPerPage, setTeamsPerPage] = useState(9);
 
   useEffect(() => {
     async function fetchData() {
@@ -18,7 +22,7 @@ function Teams(props) {
       const sports = await response.json();
       console.log(sports.sports);
       setSports(sports.sports);
-      setLoading(false);
+      setTeamsLoading(false);
     }
     fetchData();
   }, []);
@@ -45,6 +49,21 @@ function Teams(props) {
   const filteredTeams =
     selectedSport === "All" ? teams : teams.filter((team) => team.sport === selectedSport);
 
+  const indexOfLastTeam = currentPage * teamsPerPage;
+  const indexOfFirstTeam = indexOfLastTeam - teamsPerPage;
+  const currentTeams = filteredTeams.slice(indexOfFirstTeam, indexOfLastTeam);
+
+  const paginate = (pageNumber) => {
+    setCurrentPage(pageNumber);
+  };
+
+  const handleItemsPerPageChange = (e) => {
+    const newItemsPerPage = parseInt(e.target.value);
+    if (newItemsPerPage >= 6 && newItemsPerPage <= 50) {
+      setTeamsPerPage(newItemsPerPage);
+    }
+  };
+
   if (teamsLoading) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
@@ -57,7 +76,6 @@ function Teams(props) {
   return (
     <main className="min-h-screen justify-between p-12 bg-base">
       <div>
-        <h1 className="text-2xl font-bold m-4">List of teams</h1>
         {session && (
           <div className="card-actions justify-end">
             <button className="btn btn-primary">
@@ -65,26 +83,45 @@ function Teams(props) {
             </button>
           </div>
         )}
-        <div className="glass rounded-lg p-4 m-4">
-          <p>Sort by:</p>
-          <select
-            value={selectedSport}
-            onChange={(e) => setSelectedSport(e.target.value)}
-            className="mt-4 p-2 rounded-md border border-gray-300"
-          >
-            <option key="All" value="All">
-              All
-            </option>
-            {sports.map((category) => (
-              <option key={category} value={category}>
-                {category}
+        <div className="navbar glass rounded-2xl p-4 m-4 flex flex-col md:flex-row md:items-center">
+          <div className="navbar-start">
+            <p className="p-2">Sort by: </p>
+            <select
+              value={selectedSport}
+              onChange={(e) => setSelectedSport(e.target.value)}
+              className="mt-4 p-2 md:mr-4 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 text-sm md:text-base"
+            >
+              <option key="All" value="All">
+                All
               </option>
-            ))}
-          </select>
+              {sports.map((category) => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div className="navbar-center">
+            <h1 className="text-2xl font-bold m-4">List of teams</h1>
+          </div>
+          <div className="navbar-end">
+            <p className="p-2">Items per page:</p>
+            <select
+              value={teamsPerPage}
+              onChange={handleItemsPerPageChange}
+              className="mt-4 p-2 rounded-md border border-gray-300"
+            >
+              {[9, 10, 20, 30].map((value) => (
+                <option key={value} value={value}>
+                  {value}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
           {selectedSport === "All"
-            ? teams.map((team) => (
+            ? currentTeams.map((team) => (
                 <div key={team._id} className="card bg-base-100 shadow-lg p-4">
                   <Link
                     href={`/teams/${team._id}`}
@@ -96,7 +133,7 @@ function Teams(props) {
                   <p className="text-sm">{team.location}</p>
                 </div>
               ))
-            : teams
+            : currentTeams
                 .filter((team) => team.sport === selectedSport)
                 .map((team) => (
                   <div key={team._id} className="card bg-base-100 shadow-lg p-4">
@@ -110,6 +147,17 @@ function Teams(props) {
                     <p className="text-sm">{team.location}</p>
                   </div>
                 ))}
+        </div>
+        <div className="flex flex-col items-center justify-center md:flex-row md:justify-center">
+          <ul className="pagination flex flex-wrap">
+            {Array.from({ length: Math.ceil(filteredTeams.length / teamsPerPage) }, (_, index) => (
+              <li key={index} className="page-item m-2">
+                <a onClick={() => paginate(index + 1)} href="#" className="page-link">
+                  {index + 1}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </main>

@@ -274,6 +274,70 @@ export async function GET(req) {
     console.log("Added team:", teamObject);
   }
 
+  const sportsCategories = [
+    "Baseball",
+    "Basketball",
+    "Cross Country",
+    "Fencing",
+    "Football",
+    "Golf",
+    "Gymnastics",
+    "Ice Hockey",
+    "Lacrosse",
+    "Soccer",
+    "Swimming and Diving",
+    "Tennis",
+    "Track and Field",
+    "Volleyball",
+    "Water Polo",
+    "Wrestling",
+    "Bowling",
+    "Field Hockey",
+    "Softball",
+    "Other",
+  ];
+
+  const generateTeamName = () => {
+    const adjectives = ["Awesome", "Fantastic", "Amazing", "Great", "Super", "Alpha", "Beta"];
+    const nouns = ["Team", "Squad", "Crew", "Club", "Group", "Party", "Gang", "Faction"];
+    const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
+    const noun = nouns[Math.floor(Math.random() * nouns.length)];
+    return `${adjective} ${noun}`;
+  };
+
+  let numberOfTeamsPerSport = 16;
+  const createTeams = async () => {
+    try {
+      for (const sport of sportsCategories) {
+        console.log(sport);
+        for (let i = 0; i < numberOfTeamsPerSport; i++) {
+          const teamName = generateTeamName();
+          const team = {
+            name: teamName,
+            sport: sport,
+            country: "United States of America",
+            coachId: paddy._id.toString(),
+            memberIds: [paddy._id.toString()],
+          };
+          const teamObject = await teamData.createTeam(
+            team.name,
+            team.sport,
+            team.country,
+            team.coachId,
+            team.memberIds
+          );
+          console.log("Added team:", teamObject);
+        }
+      }
+      console.log("Teams created successfully");
+    } catch (error) {
+      console.error("Error creating teams:", error);
+    }
+  };
+
+  // Call createTeams
+  await createTeams();
+
   let teams = [
     ducks._id.toString(),
     cadets._id.toString(),

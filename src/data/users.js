@@ -31,7 +31,7 @@ const exportedMethods = {
 
     // Object with inputs
     let newUser = {
-      profilePicture: undefined,
+      profilePicture: "https://i.imgur.com/WxNkK7J.png", // Image from https://imgur.com/gallery/i9xknax
       username: username,
       firstName: firstName,
       lastName: lastName,
@@ -125,7 +125,7 @@ const exportedMethods = {
     }
     return await this.getUserById(id);
   },
-  async editUserPfp(id,profilePicture) {
+  async editUserPfp(id, profilePicture) {
     id = validation.checkId(id);
     const userCollection = await users();
     const existingUser = await userCollection.findOne({ _id: new ObjectId(id) });

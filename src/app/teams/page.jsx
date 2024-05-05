@@ -8,7 +8,20 @@ import Link from "next/link";
 function Teams(props) {
   const { data: session, status } = useSession();
   const [teamsLoading, setTeamsLoading] = useState(true);
+  const [sports, setSports] = useState(undefined);
   const [teams, setTeams] = useState([]);
+  const [selectedSport, setSelectedSport] = useState("All"); // Default to show all teams
+
+  useEffect(() => {
+    async function fetchData() {
+      const response = await fetch("/api/sports");
+      const sports = await response.json();
+      console.log(sports.sports);
+      setSports(sports.sports);
+      setLoading(false);
+    }
+    fetchData();
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -29,6 +42,9 @@ function Teams(props) {
     fetchData();
   }, []);
 
+  const filteredTeams =
+    selectedSport === "All" ? teams : teams.filter((team) => team.sport === selectedSport);
+
   if (teamsLoading) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
@@ -41,7 +57,7 @@ function Teams(props) {
   return (
     <main className="min-h-screen justify-between p-12 bg-base">
       <div className="flex flex-col justify-center items-center">
-        <h1 className="text-2xl font-bold m-4">List of teams</h1>
+        <h1 className="text-4xl font-bold m-4">List of teams</h1>
         {session && (
           <div className="card-actions justify-end">
             <button className="btn btn-primary">
@@ -49,16 +65,52 @@ function Teams(props) {
             </button>
           </div>
         )}
-        {teams &&
-          teams.map((team) => (
-            <div key={team._id} className="card bg-base-100 shadow-lg m-4 p-4 max-w-96 mx-auto">
-              <Link href={`/teams/${team._id}`} className="text-lg font-semibold link link-primary">
-                {team.name}
-              </Link>
-              <p className="text-sm">{team.sport}</p>
-              <p className="text-sm">{team.location}</p>
-            </div>
-          ))}
+        <div className="glass rounded-lg p-4 m-4">
+          <p>Sort by:</p>
+          <select
+            value={selectedSport}
+            onChange={(e) => setSelectedSport(e.target.value)}
+            className="mt-4 p-2 rounded-md border border-gray-300"
+          >
+            <option key="All" value="All">
+              All
+            </option>
+            {sports.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+          {selectedSport === "All"
+            ? teams.map((team) => (
+                <div key={team._id} className="card bg-base-100 shadow-lg p-4">
+                  <Link
+                    href={`/teams/${team._id}`}
+                    className="text-lg font-semibold link link-primary"
+                  >
+                    {team.name}
+                  </Link>
+                  <p className="text-sm">{team.sport}</p>
+                  <p className="text-sm">{team.location}</p>
+                </div>
+              ))
+            : teams
+                .filter((team) => team.sport === selectedSport)
+                .map((team) => (
+                  <div key={team._id} className="card bg-base-100 shadow-lg p-4">
+                    <Link
+                      href={`/teams/${team._id}`}
+                      className="text-lg font-semibold link link-primary"
+                    >
+                      {team.name}
+                    </Link>
+                    <p className="text-sm">{team.sport}</p>
+                    <p className="text-sm">{team.location}</p>
+                  </div>
+                ))}
+        </div>
       </div>
     </main>
   );

@@ -175,8 +175,9 @@ function Teams(props) {
             </select>
           </div>
           <div className="navbar-end">
-            <p className="p-2">Filters</p>
+            <p className="p-2">Filters: </p>
             <select onChange={(e) => handleSortChange(e.target.value)}>
+              <option value="">Select Option</option>
               <option value="mostGames">Most Games</option>
               <option value="leastGames">Least Games</option>
               <option value="mostWins">Most Wins</option>
@@ -222,7 +223,7 @@ function Teams(props) {
                 <a
                   onClick={() => paginate(index + 1)}
                   href={`#${currentPage}`}
-                  className="page-link"
+                  className={`page-link ${currentPage === index + 1 ? "text-primary" : ""}`}
                 >
                   {index + 1}
                 </a>

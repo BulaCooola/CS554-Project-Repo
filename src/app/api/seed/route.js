@@ -298,14 +298,56 @@ export async function GET(req) {
   ];
 
   const generateTeamName = () => {
-    const adjectives = ["Awesome", "Fantastic", "Amazing", "Great", "Super", "Alpha", "Beta"];
-    const nouns = ["Team", "Squad", "Crew", "Club", "Group", "Party", "Gang", "Faction"];
+    const adjectives = [
+      "Awesome",
+      "Fantastic",
+      "Amazing",
+      "Great",
+      "Super",
+      "Alpha",
+      "Smelly",
+      "Spectacular",
+      "Immaculate",
+      "Punctual",
+      "Smelly",
+      "Hygienic",
+      "Professional",
+      "Stinky",
+      "Pungent",
+      "Putrid",
+      "Noisome",
+      "Musty",
+      "Fusty",
+      "Foul",
+    ];
+    const nouns = [
+      "Bears",
+      "Oilers",
+      "Ducks",
+      "Corgis",
+      "Blobfish",
+      "Sharks",
+      "Monkeys",
+      "Tuna",
+      "Vegetables",
+      "Burgers",
+      "Cookies",
+      "Ice Creamers",
+      "Sticks",
+      "Stones",
+      "Psychologists",
+      "Chickens",
+      "BizTechies",
+      "Chemies",
+      "Mechies",
+      "CS Majors",
+    ];
     const adjective = adjectives[Math.floor(Math.random() * adjectives.length)];
     const noun = nouns[Math.floor(Math.random() * nouns.length)];
     return `${adjective} ${noun}`;
   };
 
-  let numberOfTeamsPerSport = 16;
+  let numberOfTeamsPerSport = 32;
   const createTeams = async () => {
     try {
       for (const sport of sportsCategories) {

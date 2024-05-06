@@ -149,7 +149,7 @@ function PlayerProfile(props) {
               Upload New Profile Picture:
               <input className="border border-black" type="file" name="file" />
             </label>
-            <input hidden name="userId" readOnly value={session.user.id} />
+            <input hidden name="userId" readOnly value={session.user._id} />
             <button>Submit</button>
           </form>
           {state && state.message && (
@@ -184,7 +184,7 @@ function PlayerProfile(props) {
               <input defaultValue={session.user.phone} name="phone" />
             </label>
             <br />
-            <input hidden name="userId" readOnly value={session.user.id} />
+            <input hidden name="userId" readOnly value={session.user._id} />
             <button>Submit</button>
           </form>
           {stateTwo && stateTwo.message && (

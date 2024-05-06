@@ -3,6 +3,7 @@ import { ObjectId } from "mongodb";
 import validation from "@/data/validation.js";
 import userData from "@/data/users";
 import teamData from "@/data/teams";
+import { createClient } from "redis";
 
 async function createMatches(bracketSize, teams) {
   const matches = [];
@@ -62,43 +63,122 @@ async function createMatches(bracketSize, teams) {
   }
   return matches;
 }
-
+async function getRedisClient() {
+  const client = createClient({
+    password: "dabF6WDYby0CsgETBOXKs1tBXvS3ixQR",
+    socket: {
+      host: "redis-15251.c256.us-east-1-2.ec2.redns.redis-cloud.com",
+      port: 15251,
+    },
+  })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+  return client;
+}
 const exportedMethods = {
   async getAllBrackets() {
-    const bracketCollection = await brackets();
-    const bracketList = await bracketCollection.find({}).toArray();
-    return bracketList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS("allBrackets");
+    if (exists) {
+      const bracketsString = await client.GET("allBrackets");
+      const brackets = JSON.parse(bracketsString);
+      await client.disconnect();
+      return brackets;
+    } else {
+      const bracketCollection = await brackets();
+      const bracketList = await bracketCollection.find({}).toArray();
+      await client.SET("allBrackets", JSON.stringify(bracketList));
+      await client.disconnect();
+      return bracketList;
+    }
   },
   async getBracketById(id) {
     id = validation.checkId(id);
-    const bracketCollection = await brackets();
-    const bracket = await bracketCollection.findOne({ _id: new ObjectId(id) });
-    if (!bracket) throw "Error: Bracket not found";
-    return bracket;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`bracket/${id}`);
+    if (exists) {
+      const bracketString = await client.GET(`bracket/${id}`);
+      const bracket = JSON.parse(bracketString);
+      await client.disconnect();
+      return bracket;
+    } else {
+      const bracketCollection = await brackets();
+      const bracket = await bracketCollection.findOne({
+        _id: new ObjectId(id),
+      });
+      if (!bracket) throw "Error: Bracket not found";
+      await client.SET(`bracket/${id}`, JSON.stringify(bracket));
+      await client.disconnect();
+      return bracket;
+    }
   },
   async getBracketsByPlayer(playerId) {
     playerId = validation.checkId(playerId);
-    const bracketCollection = await brackets();
-    const bracketList = await bracketCollection
-      .find({ allPlayers: new ObjectId(playerId) })
-      .toArray();
-    return bracketList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`bracketsByPlayer/${playerId}`);
+    if (exists) {
+      const bracketsString = await client.GET(`bracketsByPlayer/${id}`);
+      const brackets = JSON.parse(bracketsString);
+      await client.disconnect();
+      return brackets;
+    } else {
+      const bracketCollection = await brackets();
+      const bracketList = await bracketCollection
+        .find({ allPlayers: new ObjectId(playerId) })
+        .toArray();
+      await client.SET(
+        `bracketsByPlayer/${playerId}`,
+        JSON.stringify(bracketList)
+      );
+      await client.disconnect();
+      return bracketList;
+    }
   },
   async getBracketsByOrganizer(organizerId) {
     organizerId = validation.checkId(organizerId);
-    const bracketCollection = await brackets();
-    const bracketList = await bracketCollection
-      .find({ organizerId: organizerId })
-      .toArray();
-    return bracketList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`bracketsByOrganizer/${organizerId}`);
+    if (exists) {
+      const bracketsString = await client.GET(
+        `bracketsByOrganizer/${organizerId}`
+      );
+      const brackets = JSON.parse(bracketsString);
+      await client.disconnect();
+      return brackets;
+    } else {
+      const bracketCollection = await brackets();
+      const bracketList = await bracketCollection
+        .find({ organizerId: organizerId })
+        .toArray();
+      await client.SET(
+        `bracketsByOrganizer/${organizerId}`,
+        JSON.stringify(bracketList)
+      );
+      await client.disconnect();
+      return bracketList;
+    }
   },
   async getBracketByTeamId(teamId) {
     teamId = validation.checkId(teamId);
-    const bracketCollection = await brackets();
-    const bracketsWithTeam = await bracketCollection
-      .find({ teams: teamId })
-      .toArray();
-    return bracketsWithTeam;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`bracketsByTeam/${teamId}`);
+    if (exists) {
+      const bracketsString = await client.GET(`bracketsByTeam/${teamId}`);
+      const brackets = JSON.parse(bracketsString);
+      await client.disconnect();
+      return brackets;
+    } else {
+      const bracketCollection = await brackets();
+      const bracketsWithTeam = await bracketCollection
+        .find({ teams: teamId })
+        .toArray();
+      await client.SET(
+        `bracketsByTeam/${teamId}`,
+        JSON.stringify(bracketsWithTeam)
+      );
+      await client.disconnect();
+      return bracketsWithTeam;
+    }
   },
   async createBracket(
     name,
@@ -152,9 +232,17 @@ const exportedMethods = {
     const bracketCollection = await brackets();
     const newInsertInformation = await bracketCollection.insertOne(newBracket);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
-    return await this.getBracketById(
+    const bracket = await this.getBracketById(
       newInsertInformation.insertedId.toString()
     );
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(
+      `bracket/${bracket._id.toString()}`,
+      JSON.stringify(bracket)
+    );
+    await client.disconnect();
+    return bracket;
   },
   async editBracket(bracketId, updatedBracket) {
     bracketId = validation.checkId(bracketId);
@@ -211,7 +299,8 @@ const exportedMethods = {
       try {
         await this.updateRecords(bracket.matches, bracket.teams);
       } catch (error) {
-        return;
+        console.log(error);
+        throw "Error: Could not update records";
       }
 
       updatedBracketData.teams = updatedBracket.teams;
@@ -231,6 +320,14 @@ const exportedMethods = {
     );
 
     if (!newBracket) throw `Could not update the bracket with id ${bracket}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(
+      `bracket/${newBracket._id.toString()}`,
+      JSON.stringify(newBracket)
+    );
+    await client.disconnect();
+
     return newBracket;
   },
   async deleteBracket(id) {
@@ -243,6 +340,9 @@ const exportedMethods = {
       _id: new ObjectId(id),
     });
     if (!deletionInfo) throw `Could not delete bracket with id of ${id}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.disconnect();
     return { ...deletionInfo, deleted: true };
   },
 
@@ -256,20 +356,23 @@ const exportedMethods = {
   ) {
     const bracket = await this.getBracketById(bracketId);
     if (!bracket) throw "Error: Bracket not found";
-
+    delete bracket._id;
+    console.log("A");
     matchId = parseInt(matchId);
     if (isNaN(matchId)) throw "Error: Invalid matchId";
-
+    console.log("B");
     winnerId = validation.checkId(winnerId);
     const winner = await teamData.getTeamById(winnerId);
     if (!winner) throw "Error: Could not find winner";
-
+    console.log("C");
     loserId = validation.checkId(loserId);
     const loser = await teamData.getTeamById(loserId);
     if (!loser) throw "Error: Could not find loser";
-
+    console.log("D");
     await teamData.addWin(winnerId);
+    console.log("E");
     await teamData.addLoss(loserId);
+    console.log("F");
     const bracketCollection = await brackets();
     const index = matchId - 1;
     if (bracket.matches[index].nextMatchId) {
@@ -303,6 +406,9 @@ const exportedMethods = {
 
       if (!newBracket)
         throw `Could not update the bracket with id ${bracketId}`;
+      const client = await getRedisClient();
+      await client.FLUSHALL();
+      await client.disconnect();
       return newBracket;
     } else {
       // championship game
@@ -325,6 +431,9 @@ const exportedMethods = {
         throw `Could not update the bracket with id ${bracketId}`;
 
       let newBracket = await this.setBracketWinner(bracketId, winnerId);
+      const client = await getRedisClient();
+      await client.FLUSHALL();
+      await client.disconnect();
       return newBracket;
     }
   },
@@ -362,6 +471,9 @@ const exportedMethods = {
       { returnDocument: "after" }
     );
     if (!updatedTeam) throw `Could not update the team with id ${winnerId}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.disconnect();
     return newBracket;
   },
 
@@ -406,6 +518,7 @@ const exportedMethods = {
     const teamCollection = await teams();
     for (let teamId of teamsArr) {
       let team = await teamData.getTeamById(teamId);
+      delete team._id;
       team.numGames = team.numGames - log[teamId].played;
       team.numWins = team.numWins - log[teamId].won;
       team.numLosses = team.numLosses - log[teamId].lost;
@@ -417,6 +530,9 @@ const exportedMethods = {
       );
       if (!updatedTeam) throw `Could not update the team with id ${teamId}`;
     }
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.disconnect();
   },
   async getTournamentsByTeam(teamId) {
     teamId = validation.checkId(teamId);

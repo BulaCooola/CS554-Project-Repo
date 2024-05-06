@@ -3,35 +3,92 @@ import { ObjectId } from "mongodb";
 import validation from "@/data/validation.js";
 import userData from "@/data/users";
 import { bracketData } from ".";
+import { createClient } from "redis";
 
+async function getRedisClient() {
+  const client = createClient({
+    password: "dabF6WDYby0CsgETBOXKs1tBXvS3ixQR",
+    socket: {
+      host: "redis-15251.c256.us-east-1-2.ec2.redns.redis-cloud.com",
+      port: 15251,
+    },
+  })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+  return client;
+}
 const exportedMethods = {
   async getAllTeams() {
-    const teamCollection = await teams();
-    const teamList = await teamCollection.find({}).toArray();
-    return teamList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS("allTeams");
+    if (exists) {
+      const teamsString = await client.GET("allTeams");
+      const teams = JSON.parse(teamsString);
+      await client.disconnect();
+      return teams;
+    } else {
+      const teamCollection = await teams();
+      const teamList = await teamCollection.find({}).toArray();
+      await client.SET("allTeams", JSON.stringify(teamList));
+      await client.disconnect();
+      return teamList;
+    }
   },
   async getTeamById(id) {
     id = validation.checkId(id);
-    const teamCollection = await teams();
-    const team = await teamCollection.findOne({ _id: new ObjectId(id) });
-    if (!team) throw "Error: Team not found";
-    return team;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`team/${id}`);
+    if (exists) {
+      const teamString = await client.GET(`team/${id}`);
+      const team = JSON.parse(teamString);
+      await client.disconnect();
+      return team;
+    } else {
+      const teamCollection = await teams();
+      const team = await teamCollection.findOne({ _id: new ObjectId(id) });
+      if (!team) throw "Error: Team not found";
+      await client.SET(`team/${id}`, JSON.stringify(team));
+      await client.disconnect();
+      return team;
+    }
   },
   async getTeamsByPlayer(playerId) {
     playerId = validation.checkId(playerId);
-    const teamCollection = await teams();
-    const teamList = await teamCollection // Find all teams that have playerId in their list of players
-      .find({ playerIds: playerId })
-      .toArray();
-    return teamList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`teamsByPlayer/${playerId}`);
+    if (exists) {
+      const teamsString = await client.GET(`teamsByPlayer/${playerId}`);
+      const teams = JSON.parse(teamsString);
+      await client.disconnect();
+      return teams;
+    } else {
+      const teamCollection = await teams();
+      const teamList = await teamCollection
+        .find({ playerIds: playerId })
+        .toArray();
+      await client.SET(`teamsByPlayer/${playerId}`, JSON.stringify(teamList));
+      await client.disconnect();
+      return teamList;
+    }
   },
   async getTeamsByManager(managerId) {
     managerId = validation.checkId(managerId);
-    const teamCollection = await teams();
-    const teamList = await teamCollection // Find all teams that have playerId in their list of players
-      .find({ managerId: managerId })
-      .toArray();
-    return teamList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`teamsByManager/${managerId}`);
+    if (exists) {
+      const teamsString = await client.GET(`teamsByManager/${managerId}`);
+      const teams = JSON.parse(teamsString);
+      await client.disconnect();
+      return teams;
+    } else {
+      const teamCollection = await teams();
+      const teamList = await teamCollection
+        .find({ managerId: managerId })
+        .toArray();
+      await client.SET(`teamsByManager/${managerId}`, JSON.stringify(teamList));
+      await client.disconnect();
+      return teamList;
+    }
   },
   async createTeam(name, sport, location, managerId, playerIds) {
     try {
@@ -65,6 +122,10 @@ const exportedMethods = {
     const team = await this.getTeamById(
       newInsertInformation.insertedId.toString()
     );
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${team._id.toString()}`, JSON.stringify(team));
+    await client.disconnect();
     return team;
   },
   async editTeam(teamId, updatedTeam) {
@@ -110,6 +171,10 @@ const exportedMethods = {
     );
 
     if (!newTeam) throw `Could not update the team with id ${teamId}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${newTeam._id.toString()}`, JSON.stringify(newTeam));
+    await client.disconnect();
     return newTeam;
   },
   async toggleActive(id) {
@@ -124,7 +189,11 @@ const exportedMethods = {
       { returnDocument: "after" }
     );
 
-    if (!newTeam) throw `Could not update the team with id ${teamId}`;
+    if (!newTeam) throw `Could not update the team with id ${id}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${newTeam._id.toString()}`, JSON.stringify(newTeam));
+    await client.disconnect();
     return newTeam;
   },
   async checkIdArray(arr, bracketSize) {
@@ -161,6 +230,10 @@ const exportedMethods = {
     );
 
     if (!newTeam) throw `Could not update the team with id ${teamId}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${newTeam._id.toString()}`, JSON.stringify(newTeam));
+    await client.disconnect();
     return newTeam;
   },
   async addWin(id) {
@@ -168,14 +241,19 @@ const exportedMethods = {
     const team = await this.getTeamById(id);
     if (!team) throw "Error: Could not find team";
     const teamCollection = await teams();
-    team.numGames = team.numGames + 1;
-    team.numWins = team.numWins + 1;
+    const update = {};
+    update.numGames = team.numGames + 1;
+    update.numWins = team.numWins + 1;
     let newTeam = await teamCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: team },
+      { $set: update },
       { returnDocument: "after" }
     );
     if (!newTeam) throw `Could not update the team with id ${id}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${newTeam._id.toString()}`, JSON.stringify(newTeam));
+    await client.disconnect();
     return newTeam;
   },
   async addLoss(id) {
@@ -183,14 +261,19 @@ const exportedMethods = {
     const team = await this.getTeamById(id);
     if (!team) throw "Error: Could not find team";
     const teamCollection = await teams();
-    team.numGames = team.numGames + 1;
-    team.numLosses = team.numLosses + 1;
+    const update = {};
+    update.numGames = team.numGames + 1;
+    update.numLosses = team.numLosses + 1;
     let newTeam = await teamCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
-      { $set: team },
+      { $set: update },
       { returnDocument: "after" }
     );
     if (!newTeam) throw `Could not update the team with id ${id}`;
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`team/${newTeam._id.toString()}`, JSON.stringify(newTeam));
+    await client.disconnect();
     return newTeam;
   },
   async getTeamsPlayers(teamId) {

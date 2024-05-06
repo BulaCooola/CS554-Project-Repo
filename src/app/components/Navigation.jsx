@@ -61,7 +61,7 @@ function Navigation(props) {
                 <div className="w-9 rounded-full">
                   <img
                     alt="Profile Picture"
-                    src="https://daisyui.com/images/stock/photo-1534528741775-53994a69daeb.jpg"
+                    src={session.user.profilePicture}
                   />
                 </div>
               </div>

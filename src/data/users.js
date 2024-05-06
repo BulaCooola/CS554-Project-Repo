@@ -2,19 +2,54 @@ import validation from "@/data/validation.js";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
+import { createClient } from "redis";
 
+async function getRedisClient() {
+  const client = createClient({
+    password: "dabF6WDYby0CsgETBOXKs1tBXvS3ixQR",
+    socket: {
+      host: "redis-15251.c256.us-east-1-2.ec2.redns.redis-cloud.com",
+      port: 15251,
+    },
+  })
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+  return client;
+}
 const exportedMethods = {
   async getAllUsers() {
-    const userCollection = await users();
-    const userList = await userCollection.find({}).toArray();
-    return userList;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS("allUsers");
+    if (exists) {
+      const usersString = await client.GET("allUsers");
+      const users = JSON.parse(usersString);
+      await client.disconnect();
+      return users;
+    } else {
+      const userCollection = await users();
+      const userList = await userCollection.find({}).toArray();
+      await client.SET("allUsers", JSON.stringify(userList));
+      await client.disconnect();
+      return userList;
+    }
   },
   async getUserById(id) {
     id = validation.checkId(id); // Check id
-    const userCollection = await users(); // get collection2
-    const user = await userCollection.findOne({ _id: new ObjectId(id) }); // find user
-    if (!user) throw "Error: User not found";
-    return user;
+    const client = await getRedisClient();
+    const exists = await client.EXISTS(`user/${id}`);
+    if (exists) {
+      const userString = await client.GET(`user/${id}`);
+      const user = JSON.parse(userString);
+      await client.disconnect();
+      return user;
+    } else {
+      const userCollection = await users(); // get collection2
+      const user = await userCollection.findOne({ _id: new ObjectId(id) }); // find user
+      if (!user) throw "Error: User not found";
+      await client.SET(`user/${id}`, JSON.stringify(user));
+      await client.disconnect();
+      return user;
+    }
   },
   async addUser(username, firstName, lastName, email, phoneNumber, password) {
     // Validate inputs
@@ -52,7 +87,16 @@ const exportedMethods = {
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
-  async editUser(id, profilePicture, username, firstName, lastName, email, phoneNumber, hometown) {
+  async editUser(
+    id,
+    profilePicture,
+    username,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    hometown
+  ) {
     try {
       id = validation.checkId(id);
       if (profilePicture) {
@@ -82,7 +126,9 @@ const exportedMethods = {
 
     // fetch collection and find existing user
     const userCollection = await users();
-    const existingUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    const existingUser = await userCollection.findOne({
+      _id: new ObjectId(id),
+    });
     if (!existingUser) {
       throw `Error: User does not exist. Cannot edit.`;
     }
@@ -120,12 +166,19 @@ const exportedMethods = {
         throw `Document did not update`;
       }
     }
-    return await this.getUserById(id);
+    const user = await this.getUserById(id);
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`user/${user._id.toString()}`, JSON.stringify(user));
+    await client.disconnect();
+    return user;
   },
   async editUserPfp(id, profilePicture) {
     id = validation.checkId(id);
     const userCollection = await users();
-    const existingUser = await userCollection.findOne({ _id: new ObjectId(id) });
+    const existingUser = await userCollection.findOne({
+      _id: new ObjectId(id),
+    });
     if (!existingUser) {
       throw `Error: User does not exist. Cannot edit.`;
     }
@@ -143,9 +196,22 @@ const exportedMethods = {
         throw `Document did not update`;
       }
     }
-    return await this.getUserById(id);
+    const user = await this.getUserById(id);
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.SET(`user/${user._id.toString()}`, JSON.stringify(user));
+    await client.disconnect();
+    return user;
   },
-  async registerUser(username, firstName, lastName, email, phoneNumber, password, confirmPassword) {
+  async registerUser(
+    username,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    confirmPassword
+  ) {
     try {
       username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
@@ -187,6 +253,13 @@ const exportedMethods = {
     if (!registeredUser) {
       throw `Registration Failed!`;
     } else {
+      const client = await getRedisClient();
+      await client.FLUSHALL();
+      await client.SET(
+        `user/${registeredUser._id.toString()}`,
+        JSON.stringify(registeredUser)
+      );
+      await client.disconnect();
       return { insertedUser: true };
     }
   },
@@ -198,11 +271,16 @@ const exportedMethods = {
       const usersCollection = await users();
 
       const duplicateCheck = await usersCollection.findOne({ email });
-      if (!duplicateCheck) throw `Either the email address or password is invalid`;
+      if (!duplicateCheck)
+        throw `Either the email address or password is invalid`;
 
-      const passwordCheck = await bcrypt.compare(password, duplicateCheck.password);
+      const passwordCheck = await bcrypt.compare(
+        password,
+        duplicateCheck.password
+      );
 
-      if (!passwordCheck) throw `Either the email address or password is invalid`;
+      if (!passwordCheck)
+        throw `Either the email address or password is invalid`;
 
       return {
         _id: duplicateCheck._id,

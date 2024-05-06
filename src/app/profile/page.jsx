@@ -98,7 +98,7 @@ function PlayerProfile(props) {
     }
   }, [stateTwo]);
 
-  if (!session) {
+  if (status === "unauthenticated") {
     redirect("/login");
   }
   if (isLoading) {

@@ -18,6 +18,11 @@ function Navigation(props) {
       <div className="flex-none">
         <ul className="menu menu-center menu-horizontal px-1 mx-auto">
           <li>
+            <Link href="/" className="btn btn-ghost">
+              Home
+            </Link>
+          </li>
+          <li>
             <Link href="/tournaments" className="btn btn-ghost">
               Tournaments
             </Link>

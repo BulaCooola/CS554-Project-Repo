@@ -6,14 +6,24 @@ import { userData } from "@/data/index";
 export async function POST(req) {
   try {
     // Get inputs from the request
-    let { email, password, firstName, lastName, username, phoneNumber, confirmPassword } =
-      await req.json();
+    let {
+      email,
+      password,
+      firstName,
+      lastName,
+      username,
+      phoneNumber,
+      confirmPassword,
+    } = await req.json();
 
     // Validating Inputs
     try {
       email = validation.validEmail(email, "Email");
       password = validation.validPassword(password, "Password");
-      confirmPassword = validation.validPassword(confirmPassword, "Confirm Password");
+      confirmPassword = validation.validPassword(
+        confirmPassword,
+        "Confirm Password"
+      );
       username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
       lastName = validation.checkString(lastName, "Last Name");
@@ -42,7 +52,6 @@ export async function POST(req) {
 
     return NextResponse.json({ ok: "User registered successfully" });
   } catch (e) {
-    console.log({ e });
     return NextResponse.error(new Error("Registration failed"), {
       status: 500,
     });

@@ -2,6 +2,7 @@ import { teams } from "@/config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import validation from "@/data/validation.js";
 import userData from "@/data/users";
+import { bracketData } from ".";
 
 const exportedMethods = {
   async getAllTeams() {
@@ -55,6 +56,7 @@ const exportedMethods = {
       numWins: 0,
       numLosses: 0,
       tournamentsWon: 0,
+      active: true,
     };
 
     const teamCollection = await teams();
@@ -110,19 +112,22 @@ const exportedMethods = {
     if (!newTeam) throw `Could not update the team with id ${teamId}`;
     return newTeam;
   },
-  async deleteTeam(id) {
+  async toggleActive(id) {
     id = validation.checkId(id);
     const teamCollection = await teams();
-    const deletionInfo = await teamCollection.findOneAndDelete({
-      _id: new ObjectId(id),
-    });
-    if (!deletionInfo) throw `Could not delete team with id of ${id}`;
-    // Find all users associated with the team and delete the id
-    return { ...deletionInfo, deleted: true };
+    const team = await this.getTeamById(id);
+    if (!team) throw "Error: Could not get team.";
+    team.active = !team.active;
+    let newTeam = await teamCollection.findOneAndUpdate(
+      { _id: new ObjectId(id) },
+      { $set: team },
+      { returnDocument: "after" }
+    );
+
+    if (!newTeam) throw `Could not update the team with id ${teamId}`;
+    return newTeam;
   },
   async checkIdArray(arr, bracketSize) {
-    console.log(arr);
-    console.log(bracketSize);
     if (arr.length !== bracketSize)
       throw "Error: Number of teams provided does not match bracket size";
 

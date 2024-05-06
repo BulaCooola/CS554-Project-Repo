@@ -1,15 +1,19 @@
 "use client";
 import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
-import { editTeam } from "@/app/actions";
+import { editTeam, toggleActive } from "@/app/actions";
 import Select from "react-select";
+import { useSession } from "next-auth/react";
 const initialState = {
   message: null,
 };
 
 function EditTeamPage({ params }) {
+  const { data: session, status, update } = useSession();
   const editTeamById = editTeam.bind(null, params.id);
   const [state, formAction] = useFormState(editTeamById, initialState);
+  const toggleActiveById = toggleActive.bind(null, params.id);
+  const [toggleState, toggleAction] = useFormState(toggleActiveById)
   const [prevData, setPrevData] = useState(undefined);
   const [roster, setRoster] = useState(undefined);
   const [sports, setSports] = useState(undefined);
@@ -64,6 +68,13 @@ function EditTeamPage({ params }) {
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Team</h1>
+        {session && session.user._id === prevData.managerId && (
+          <form action={toggleAction}>
+            <div className="card-actions justify-end">
+              <button className="btn btn-primary" type="submit">{prevData.active ? "Set Inactive": "Set Active"}</button>
+            </div>
+          </form>
+        )}
         <form action={formAction} className="w-1/2 mx-auto my-20">
           {state && state.message && (
             <div className="alert alert-error w-1/2 mx-auto">

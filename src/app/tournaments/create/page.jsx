@@ -40,17 +40,15 @@ function CreateTournament(props) {
         setTeams([]);
         setLoading(false);
       } else {
-        console.log("State", selectedSport);
         const response = await fetch(`/api/teams/sport/${selectedSport}`);
-        console.log(response);
         const teamsData = await response.json();
-        console.log(teamsData);
         const teamOptions = [];
         for (let team of teamsData) {
+          if (team.active){
           teamOptions.push({
             value: team._id,
             label: team.name,
-          });
+          });}
         }
         setTeams(teamOptions);
         setLoading(false);

@@ -1,10 +1,13 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
+import { useState } from "react";
 import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
 
 export default function Form() {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -16,12 +19,11 @@ export default function Form() {
         password: password,
         redirect: false,
     });
+
     if (response.ok) {
       router.replace("/dashboard");
-    }
-    if (!response.error) {
-      router.push("/");
-      router.refresh();
+    } else {
+      setErrorMessage(response.error || "An error occurred. Please try again.");
     }
   };
   return (
@@ -39,7 +41,13 @@ export default function Form() {
         type="password"
         name="password"
       />
-      <button type="submit">Register</button>
+      {errorMessage && (
+        <div role="alert" class="text-red-500">
+          {errorMessage}
+        </div>
+      )}
+      
+      <button type="submit">Login</button>
     </form>
   );
 }

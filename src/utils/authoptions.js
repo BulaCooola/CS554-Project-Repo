@@ -37,8 +37,8 @@ export const authOptions = {
             return null;
           }
         } catch (error) {
-          console.error("Authentication error:", error);
-          throw `Failed to authenicate user`;
+          console.log(`Authentication error: ${error.message ?? error}`);
+          throw new Error(error.message ?? error);
         }
       },
     }),

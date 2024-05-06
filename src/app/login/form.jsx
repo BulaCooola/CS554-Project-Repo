@@ -42,7 +42,7 @@ export default function Form() {
         name="password"
       />
       {errorMessage && (
-        <div role="alert" class="text-red-500">
+        <div role="alert" className="text-red-500">
           {errorMessage}
         </div>
       )}

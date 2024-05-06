@@ -21,6 +21,7 @@ export default function Form() {
     });
 
     if (response.ok) {
+      setErrorMessage("");
       router.replace("/dashboard");
     } else {
       setErrorMessage(response.error || "An error occurred. Please try again.");

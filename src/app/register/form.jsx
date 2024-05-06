@@ -1,9 +1,11 @@
 "use client";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Form() {
   const router = useRouter();
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -27,9 +29,14 @@ export default function Form() {
       }),
     });
     if (response.ok) {
+      setErrorMessage("");
       router.replace("/login");
+    } else {
+      const message = (await response.json()).error;
+      setErrorMessage(message ?? "An error occurred. Please try again.");
     }
   };
+
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-md mt-10">
       <input
@@ -74,6 +81,11 @@ export default function Form() {
         name="confirmPassword"
         placeholder="Confirm Password"
       />
+      {errorMessage && (
+        <div role="alert" className="text-red-500">
+          {errorMessage}
+        </div>
+      )}
       <button type="submit">Register</button>
     </form>
   );

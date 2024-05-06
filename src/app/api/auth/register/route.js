@@ -19,14 +19,18 @@ export async function POST(req) {
       lastName = validation.checkString(lastName, "Last Name");
       phoneNumber = validation.checkPhoneNumber(phoneNumber, "Phone Number");
     } catch (e) {
-      return NextResponse.json({ error: e }, { status: 400 });
+      return NextResponse.json(
+        {error: e.message ?? e},
+        { status: 400 }
+      );
     }
 
     // Check passwords if they are the same
     if (password !== confirmPassword) {
-      return NextResponse.error(new Error("Passwords do not match"), {
-        status: 400,
-      });
+      return NextResponse.json(
+        {error: "Error: Passwords do not match"},
+        {status: 400}
+      );
     }
 
     // Register new user to database
@@ -43,8 +47,9 @@ export async function POST(req) {
     return NextResponse.json({ ok: "User registered successfully" });
   } catch (e) {
     console.log({ e });
-    return NextResponse.error(new Error("Registration failed"), {
-      status: 500,
-    });
+    return NextResponse.json(
+      {error: "Error: Registration failed"},
+      {status: 500},
+    );
   }
 }

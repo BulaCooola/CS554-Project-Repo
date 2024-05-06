@@ -7,17 +7,19 @@ export const config = {
     signIn: "/login",
     error: "/error",
   },
-  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*), /profile",
-  "/profile",
-  "/tournaments/create",
-  "/tournaments/edit",
-  "/teams/create",
-  "/teams/edit",
+  matcher: [
+    "/((?!api|_next/static|_next/image|favicon.ico).*), /profile",
+    "/profile",
+    "/tournaments/create",
+    "/tournaments/edit",
+    "/teams/create",
+    "/teams/edit",
   ],
 };
 
 export async function middleware(request) {
-  const token = await getToken({req: request})
+  const token = await getToken({ req: request });
+
   // If the user is authenticated, continue as normal
   if (token) {
     return NextResponse.next();

@@ -92,6 +92,14 @@ const exportedMethods = {
       .toArray();
     return bracketList;
   },
+  async getBracketByTeamId(teamId) {
+    teamId = validation.checkId(teamId);
+    const bracketCollection = await brackets();
+    const bracketsWithTeam = await bracketCollection
+      .find({ teams: teamId })
+      .toArray();
+    return bracketsWithTeam;
+  },
   async createBracket(
     name,
     description,

@@ -33,43 +33,43 @@ export default function Form() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-md mt-10">
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="email"
         name="email"
         placeholder="Email"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="text"
         name="firstName"
         placeholder="First Name"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="text"
         name="lastName"
         placeholder="Last Name"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="text"
         name="username"
         placeholder="Username"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="text"
         name="phoneNumber"
         placeholder="Phone Number"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="password"
         name="password"
         placeholder="Password"
       />
       <input
-        className="border border-black text-black"
+        className="border border-black text-white"
         type="password"
         name="confirmPassword"
         placeholder="Confirm Password"

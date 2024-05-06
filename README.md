@@ -12,7 +12,8 @@ Open a **bash** terminal and install the dependencies.
 npm i
 ``` 
 
-Before you build and start the project, the authentification requires a secret key. To generate, simply run any of these commands into a bash terminal. 
+The secret key has already been provided in the code. But, if you want to create your own secret key follow these instructions! 
+To generate, simply run any of these commands into a bash terminal. 
 * Option 1
     ```
     npm run create-env
@@ -26,7 +27,12 @@ Before you build and start the project, the authentification requires a secret k
     ./create-env.sh
     ```
 
-* If you do not have a bash terminal and have a powershell terminal, paste this into your terminal. 
+* If you do not have a bash terminal and have a powershell terminal, follow one of the following options:
+* Option 1: Run create-env.py python script
+   ```
+    py -'version number' create-env.py
+   ```  
+* Option 2: Paste this into your terminal. 
     ```
     npx auth secret
     ``` 

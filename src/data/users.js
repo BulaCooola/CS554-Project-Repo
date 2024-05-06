@@ -44,9 +44,6 @@ const exportedMethods = {
         wins: 0,
         losses: 0,
       },
-      ledTeams: [],
-      associatedTeams: [],
-      attendedTourneys: [],
     };
 
     // Get collection and insert new user

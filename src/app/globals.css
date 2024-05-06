@@ -31,3 +31,19 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  form {
+    @apply
+      flex justify-center
+      m-4
+  }
+  form > button {
+    @apply
+      bg-yellow-500 hover:bg-yellow-600
+      text-white font-bold
+      py-2 px-4 rounded-full
+      w-fit
+      mx-auto
+  }  
+}

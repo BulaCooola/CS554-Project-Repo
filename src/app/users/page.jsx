@@ -37,7 +37,6 @@ function AllUsers(props) {
       </div>
     );
   } else {
-    console.log(users)
   return (
     <main className="min-h-screen justify-between p-24 bg-base">
       <div>

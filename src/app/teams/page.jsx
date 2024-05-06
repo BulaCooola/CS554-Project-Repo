@@ -39,9 +39,9 @@ function Teams(props) {
     );
   }
   return (
-    <main className="min-h-screen justify-between p-12 bg-base">
+    <main className="min-h-screen justify-between  p-24 bg-base">
       <div>
-        <h1 className="text-2xl font-bold m-4">List of teams</h1>
+        <h1 className="text-2xl font-semibold">List of teams</h1>
         {session && (
           <div className="card-actions justify-end">
             <button className="btn btn-primary">

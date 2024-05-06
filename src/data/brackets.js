@@ -120,7 +120,6 @@ const exportedMethods = {
     }
     const allPlayers = [];
     for (let i in teams) {
-      console.log(teams[i]);
       let team = await teamData.getTeamById(teams[i]);
       for (let j in team.playerIds) {
         allPlayers.push(team.playerIds[j]);
@@ -156,7 +155,9 @@ const exportedMethods = {
       _id: new ObjectId(bracketId),
     });
     if (!bracket) throw "Error: Bracket not found";
-
+    if (bracket.archive) {
+      throw "This bracket is archived and cannot be edited.";
+    }
     const updatedBracketData = {};
 
     if (updatedBracket.name) {
@@ -202,7 +203,6 @@ const exportedMethods = {
       try {
         await this.updateRecords(bracket.matches, bracket.teams);
       } catch (error) {
-        console.log(error);
         return;
       }
 
@@ -228,6 +228,9 @@ const exportedMethods = {
   async deleteBracket(id) {
     id = validation.checkId(id);
     const bracketCollection = await brackets();
+    const bracket = await this.getBracketById(id);
+    if (!bracket) throw "Error: Could not get bracket.";
+    await this.updateRecords(bracket.matches, bracket.teams);
     const deletionInfo = await bracketCollection.findOneAndDelete({
       _id: new ObjectId(id),
     });
@@ -376,8 +379,8 @@ const exportedMethods = {
     }
     for (let match of matches) {
       if (
-        (match.participants.length === 2) &
-        (match.participants[0].isWinner !== null)
+        match.participants.length === 2 &&
+        match.participants[0].isWinner !== null
       ) {
         for (let participant of match.participants) {
           log[participant.id].played += 1;

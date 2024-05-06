@@ -29,7 +29,6 @@ export async function addTeam(prevState, formData) {
 
   try {
     session.user._id = validation.checkId(session.user._id);
-    console.log("HEREb");
   } catch (e) {
     errors.push(e);
   }
@@ -68,7 +67,13 @@ export async function addTeam(prevState, formData) {
     return { message: errors };
   } else {
     try {
-      let newTeam = await teamData.createTeam(name, sport, location, session.user._id, playerIds);
+      let newTeam = await teamData.createTeam(
+        name,
+        sport,
+        location,
+        session.user._id,
+        playerIds
+      );
       id = newTeam._id.toString();
       success = true;
     } catch (error) {
@@ -91,7 +96,6 @@ export async function editTeam(teamId, prevState, formData) {
   let success = false;
   let errors = [];
   let id = null;
-  console.log(formData);
   name = formData.get("name");
   sport = formData.get("sport");
   location = formData.get("location");
@@ -140,7 +144,6 @@ export async function editTeam(teamId, prevState, formData) {
       id = updatedTeam._id.toString();
       success = true;
     } catch (error) {
-      console.log("EDIT:", error);
       errors.push(error);
       return { message: errors };
     } finally {
@@ -184,7 +187,10 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -205,8 +211,6 @@ export async function addTournament(prevState, formData) {
   try {
     let compareStart = new Date(startDate);
     let compareEnd = new Date(endDate);
-    console.log("START:", compareStart);
-    console.log("END:", compareEnd);
     if (compareEnd < compareStart) {
       throw "Error: End date cannot be before start date";
     }
@@ -292,7 +296,10 @@ export async function editTournament(tournamentId, prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -353,7 +360,10 @@ export async function editTournament(tournamentId, prevState, formData) {
       teams: teams,
     };
     try {
-      let updatedBracket = await bracketData.editBracket(tournamentId, updateData);
+      let updatedBracket = await bracketData.editBracket(
+        tournamentId,
+        updateData
+      );
       id = updatedBracket._id.toString();
       success = true;
     } catch (error) {
@@ -461,4 +471,56 @@ export async function search(prevState, formData) {
     }
   });
   return { message: results };
+}
+
+export async function deleteTournament(tournamentId, prevState, formData) {
+  let success = false;
+  let errors = [];
+
+  try {
+    await bracketData.getBracketById(tournamentId);
+  } catch (error) {
+    errors.push(error);
+  }
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    try {
+      let deletedTournament = await bracketData.deleteBracket(tournamentId);
+      success = true;
+    } catch (error) {
+      return { message: errors };
+    } finally {
+      if (success) {
+        revalidatePath("/tournaments");
+        redirect(`/tournaments`);
+      }
+    }
+  }
+}
+
+export async function toggleActive(teamId, prevState, formData) {
+  let success = false;
+  let errors = [];
+  try {
+    await teamData.getTeamById(teamId);
+  } catch (error) {
+    errors.push(error);
+  }
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    try {
+      let deletedTeam = await teamData.toggleActive(teamId);
+      success = true;
+    } catch (error) {
+      errors.push(error);
+      return { message: errors };
+    } finally {
+      if (success) {
+        revalidatePath(`/teams/${teamId}`);
+        redirect(`/teams/${teamId}`);
+      }
+    }
+  }
 }

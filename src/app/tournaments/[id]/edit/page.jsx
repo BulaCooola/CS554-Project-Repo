@@ -1,7 +1,7 @@
 "use client";
 import { useFormState as useFormState } from "react-dom";
 import { useState, useEffect } from "react";
-import { editTournament } from "@/app/actions";
+import { editTournament, deleteTournament } from "@/app/actions";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
 const initialState = {
@@ -11,6 +11,8 @@ function EditTournamentPage({ params }) {
   const { data: session, status, update } = useSession();
   const editTournamentById = editTournament.bind(null, params.id);
   const [state, formAction] = useFormState(editTournamentById, initialState);
+  const deleteTournamentById = deleteTournament.bind(null, params.id);
+  const [deleteState, deleteAction] = useFormState(deleteTournamentById)
   const [prevData, setPrevData] = useState(undefined);
   const [sports, setSports] = useState(undefined);
   const [selectedSport, setSelected] = useState();
@@ -23,6 +25,7 @@ function EditTournamentPage({ params }) {
       const response1 = await fetch(`/api/tournaments/${params.id}`);
       const tournament = await response1.json();
       setPrevData(tournament);
+      setSelected(tournament.sport)
       const response2 = await fetch("/api/sports");
       const sports = await response2.json();
       setSports(sports.sports);
@@ -54,10 +57,11 @@ function EditTournamentPage({ params }) {
         const teamsData = await response.json();
         const teamOptions = [];
         for (let team of teamsData) {
+          if (team.active){
           teamOptions.push({
             value: team._id,
             label: team.name,
-          });
+          });}
         }
         setTeams(teamOptions);
       }
@@ -76,6 +80,13 @@ function EditTournamentPage({ params }) {
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Tournament</h1>
+        {session && session.user._id === prevData.organizerId && (
+          <form action={deleteAction}>
+            <div className="card-actions justify-end">
+              <button className="btn btn-primary" type="submit"> Delete Tournament</button>
+            </div>
+          </form>
+        )}
         <form action={formAction} className="w-1/2 mx-auto my-20">
           <div
             role="alert"

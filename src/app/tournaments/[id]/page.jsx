@@ -61,7 +61,6 @@ function SingleTournament({ params }) {
       </div>
     );
   } else {
-    console.log(tournament.matches)
     return (
       <main className="min-h-screen justify-between p-24 bg-base">
         <h1 className="flex flex-col justify-center items-center text-4xl m-4">

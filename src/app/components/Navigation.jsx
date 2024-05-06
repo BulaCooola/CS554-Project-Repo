@@ -63,7 +63,7 @@ function Navigation(props) {
                   <Link href="/profile">Profile</Link>
                 </li>
                 <li>
-                  <button onClick={() => signOut()}>Logout</button>
+                  <button onClick={() => signOut({redirect: false})}>Logout</button>
                 </li>
               </ul>
             </div>

@@ -412,6 +412,7 @@ const exportedMethods = {
       return newBracket;
     } else {
       // championship game
+      console.log("champ");
       for (let i in bracket.matches[index].participants) {
         if (bracket.matches[index].participants[i].id === winnerId) {
           bracket.matches[index].participants[i].isWinner = true;
@@ -444,6 +445,7 @@ const exportedMethods = {
 
     const bracket = await this.getBracketById(bracketId);
     if (!bracket) throw "Error: Could not find bracket";
+    delete bracket._id;
 
     const winner = await teamData.getTeamById(winnerId);
     if (!winner) throw "Error: Could not find winning team";
@@ -464,6 +466,7 @@ const exportedMethods = {
 
     const teamCollection = await teams();
     const team = await teamData.getTeamById(winnerId);
+    delete team._id;
     team.tournamentsWon = team.tournamentsWon + 1;
     let updatedTeam = await teamCollection.findOneAndUpdate(
       { _id: new ObjectId(winnerId) },

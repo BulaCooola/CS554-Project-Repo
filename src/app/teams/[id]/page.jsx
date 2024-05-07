@@ -105,6 +105,10 @@ function singleTeam({ params }) {
                           </td>
                         </tr>
                         <tr>
+                          <td>Tournaments Won:</td>
+                          <td>{team.tournamentsWon}</td>
+                        </tr>
+                        <tr>
                           <td>Total Games:</td>
                           <td>{team.numGames}</td>
                         </tr>

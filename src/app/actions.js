@@ -402,6 +402,9 @@ export async function inputMatch(tournamentId, prevState, formData) {
   if (winnerResult <= loserResult) {
     errors.push("Error: Winner result must be greater than loser result");
   }
+  if (winnerResult < 0 || loserResult < 0) {
+    errors.push("Error: Results cannot be negative");
+  }
   try {
     await bracketData.getBracketById(tournamentId);
   } catch (error) {

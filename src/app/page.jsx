@@ -5,7 +5,7 @@ export default function Home() {
       <div className="hero-content text-center text-neutral-content">
         <div className="max-w-md">
           <h1 className="mb-5 text-5xl font-bold">TourneyPro</h1>
-          <p className="mb-5">Description Here</p>
+          <p className="mb-5">Profesional Tournament Management App</p>
         </div>
       </div>
     </div>

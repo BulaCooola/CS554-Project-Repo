@@ -242,7 +242,7 @@ const exportedMethods = {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     // call addUser
-    const registeredUser = this.addUser(
+    const registeredUser = await this.addUser(
       username,
       firstName,
       lastName,

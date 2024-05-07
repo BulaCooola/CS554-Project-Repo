@@ -34,9 +34,12 @@ export async function POST(req) {
 
     // Check passwords if they are the same
     if (password !== confirmPassword) {
-      return NextResponse.error(new Error("Passwords do not match"), {
-        status: 400,
-      });
+      return NextResponse.json(
+        { error: "Passwords do not match" },
+        {
+          status: 400,
+        }
+      );
     }
 
     // Register new user to database
@@ -52,8 +55,11 @@ export async function POST(req) {
 
     return NextResponse.json({ ok: "User registered successfully" });
   } catch (e) {
-    return NextResponse.error(new Error("Registration failed"), {
-      status: 500,
-    });
+    return NextResponse.json(
+      { error: "Registration failed" },
+      {
+        status: 500,
+      }
+    );
   }
 }

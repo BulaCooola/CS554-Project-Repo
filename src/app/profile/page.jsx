@@ -103,7 +103,7 @@ function PlayerProfile(props) {
   }
   if (isLoading) {
     return (
-      <div className="flex flex-col justify-center items-center">
+      <div className="min-h-screen flex flex-col justify-center items-center">
         <h1 className="text-4xl m-4">
           Hi {session?.user?.firstName} {session?.user?.lastName}
         </h1>
@@ -144,53 +144,46 @@ function PlayerProfile(props) {
             width="150"
             alt="userPfp"
           />
-          <form action={formAction}>
-            <label>
-              Upload New Profile Picture:
-              <input className="border border-black" type="file" name="file" />
-            </label>
+          <form action={formAction} className="my-4">
+            <h3 className="text-sm font-semibold">Update Profile Picture</h3>
+            <input type="file" name="file" className="file-input file-input-bordered w-full max-w-xs" />
             <input hidden name="userId" readOnly value={session.user._id} />
-            <button>Submit</button>
+            <button className="btn btn-active btn-neutral">Submit</button>
           </form>
           {state && state.message && (
             <ul>
               {state.message.map((msg, index) => {
-                return <li key={index}>{msg}</li>;
+                return <li key={index} className="text-sm font-semibold">{msg}</li>;
               })}
             </ul>
           )}
-          <form action={formActionTwo}>
-            <label>
-              First Name:
-              <br />
+          <form action={formActionTwo} className="my-4">
+            <h3 className="text-sm font-semibold">Update Profile Info</h3>
+            <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto">
+              First Name
               <input defaultValue={session.user.firstName} name="firstName" />
             </label>
-            <br />
-            <label>
-              Last Name:
-              <br />
+            <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto">
+              Last Name
               <input defaultValue={session.user.lastName} name="lastName" />
             </label>
-            <br />
-            <label>
-              Email:
-              <br />
+            <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto">
+              Email
               <input defaultValue={session.user.email} name="email" />
             </label>
-            <br />
-            <label>
-              Phone Number:
-              <br />
+            <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto">
+              Phone Number
               <input defaultValue={session.user.phone} name="phone" />
             </label>
-            <br />
             <input hidden name="userId" readOnly value={session.user._id} />
-            <button>Submit</button>
+            <div className="flex justify-end">
+              <button className="btn btn-active btn-neutral flex mx-auto">Submit</button>
+            </div>
           </form>
           {stateTwo && stateTwo.message && (
             <ul>
               {stateTwo.message.map((msg, index) => {
-                return <li key={`two${index}`}>{msg}</li>;
+                return <li key={`two${index}`} className="text-sm font-semibold">{msg}</li>;
               })}
             </ul>
           )}

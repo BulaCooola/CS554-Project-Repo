@@ -98,7 +98,7 @@ function PlayerProfile(props) {
     }
   }, [stateTwo]);
 
-  if (status === "unauthenticated") {
+  if (!session) {
     redirect("/login");
   }
   if (isLoading) {
@@ -149,7 +149,7 @@ function PlayerProfile(props) {
               Upload New Profile Picture:
               <input className="border border-black" type="file" name="file" />
             </label>
-            <input hidden name="userId" readOnly value={session.user.id} />
+            <input hidden name="userId" readOnly value={session.user._id} />
             <button>Submit</button>
           </form>
           {state && state.message && (

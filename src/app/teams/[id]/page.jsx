@@ -72,7 +72,7 @@ function singleTeam({ params }) {
               >
                 Previous Competitions
               </button>
-              {session.user._id && (
+              {session?.user._id === team.managerId && (
                 <Link href={`/teams/${params.id}/edit`} className="btn btn-primary m-2">
                   Edit Team
                 </Link>
@@ -114,9 +114,9 @@ function singleTeam({ params }) {
           )}
         </div>
         {selectedSection === "roster" && players && players.length > 0 && (
-          <div>
+          <div className="overflow-x-auto">
             <h3>Players:</h3>
-            <table className="table table-lg">
+            <table className="table table-lg min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
                   <th>Profile Picture</th>
@@ -194,7 +194,10 @@ function singleTeam({ params }) {
             {competitions.map((competition) => {
               return (
                 <li key={competition._id}>
-                  <Link className="link link-primary" href={`/tournaments/${competition._id}`}>
+                  <Link
+                    className="link link-primary p-4 text-lg"
+                    href={`/tournaments/${competition._id}`}
+                  >
                     {competition.name}
                   </Link>
                 </li>

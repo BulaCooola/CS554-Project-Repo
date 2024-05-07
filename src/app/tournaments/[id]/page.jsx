@@ -2,9 +2,10 @@
 import { useState, useEffect } from "react";
 import { SingleEliminationBracket, Match } from "@g-loot/react-tournament-brackets";
 import Link from "next/link";
-import { inputMatch } from "@/app/actions";
+import { inputMatch, addMessage } from "@/app/actions";
 import { useFormState as useFormState } from "react-dom";
 import { useSession } from "next-auth/react";
+
 const initialState = {
   message: null,
 };
@@ -12,13 +13,27 @@ function SingleTournament({ params }) {
   const { data: session, status, update } = useSession();
 
   const inputMatchbyId = inputMatch.bind(null, params.id);
+  const inputMessage = addMessage.bind(null, params.id, session.user._id);
   const [state, formAction] = useFormState(inputMatchbyId, initialState);
+  const [messageState, messageAction] = useFormState(inputMessage, initialState);
   const [tournament, setTournament] = useState(undefined);
   const [teams, setTeams] = useState(undefined);
   const [pendingMatches, setPendingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [winner, setWinner] = useState("TBD");
   const [selectedSection, setSelectedSection] = useState("info");
+
+  useEffect(() => {
+    async function fetchBroadcast() {
+      const res = await fetch(`/api/tournaments/${params.id}/broadcast`, {
+        method: "GET",
+      });
+      const chat = await res.json();
+      console.log(chat);
+    }
+
+    fetchBroadcast();
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -56,6 +71,13 @@ function SingleTournament({ params }) {
     }
   }, [state.message]);
 
+  // useEffect(() => {
+  //   if (messageState.success === "success") {
+  //     messageState.message = null;
+  //     window.location.reload();
+  //   }
+  // }, [messageState.message]);
+
   if (loading) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
@@ -79,6 +101,9 @@ function SingleTournament({ params }) {
           </button>
           <button className="btn btn-primary" onClick={() => handleSectionChange("teams")}>
             Teams
+          </button>
+          <button className="btn btn-primary" onClick={() => handleSectionChange("broadcast")}>
+            Broadcast
           </button>
         </div>
 
@@ -106,9 +131,7 @@ function SingleTournament({ params }) {
             <div className="glass rounded-lg overflow-x-auto">
               <SingleEliminationBracket matches={tournament.matches} matchComponent={Match} />
             </div>
-            {console.log(tournament.organizerId)}
-            {console.log(session.user._id)}
-            {session.user._id === tournament.organizerId ? (
+            {session?.user._id === tournament.organizerId ? (
               <div className="drawer drawer-end">
                 <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content">
@@ -245,6 +268,41 @@ function SingleTournament({ params }) {
                   );
                 })}
             </ul>
+          </div>
+        )}
+        {selectedSection === "broadcast" && (
+          <div>
+            <form action={messageAction}>
+              {state && state.message && (
+                <div className="alert alert-error w-1/2 mx-auto">
+                  <ul>
+                    {state.message.map((msg, index) => {
+                      return (
+                        <li className="error" key={index}>
+                          {msg}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+              <label>
+                <input
+                  type="hidden"
+                  id="username"
+                  name="username"
+                  value={session?.user?.username}
+                />
+              </label>
+              <label>
+                <input name="message" id="message" type="text" placeholder="message" required />
+              </label>
+              <div className="form-group">
+                <button className="btn btn-active btn-neutral flex mx-auto" type="submit">
+                  Send Broadcast
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </main>

@@ -5,6 +5,8 @@ import Link from "next/link";
 import { inputMatch } from "@/app/actions";
 import { useFormState as useFormState } from "react-dom";
 import { useSession } from "next-auth/react";
+import Error from '@/app/components/ErrorMessage'
+
 const initialState = {
   message: null,
 };
@@ -17,12 +19,18 @@ function SingleTournament({ params }) {
   const [teams, setTeams] = useState(undefined);
   const [pendingMatches, setPendingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(undefined)
   const [winner, setWinner] = useState("TBD");
   const [selectedSection, setSelectedSection] = useState("info");
 
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/tournaments/${params.id}`);
+      if (!response1.ok) {
+        setError(response1)
+        setLoading(false)
+      }
+      else {
       const tournament = await response1.json();
       setTournament(tournament);
       const response2 = await fetch(`/api/tournaments/${params.id}/teams`);
@@ -40,7 +48,7 @@ function SingleTournament({ params }) {
         const { team } = await response3.json();
         setWinner(team);
       }
-      setLoading(false);
+      setLoading(false);}
     }
     fetchData();
   }, []);
@@ -64,6 +72,9 @@ function SingleTournament({ params }) {
       </div>
     );
   } else {
+    if (error) {
+      return <Error error={error} />
+    }
     return (
       <main className="min-h-screen justify-between p-24 bg-base">
         <h1 className="flex flex-col justify-center items-center text-4xl m-4">

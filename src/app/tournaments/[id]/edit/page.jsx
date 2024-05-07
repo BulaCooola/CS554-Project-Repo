@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { editTournament, deleteTournament } from "@/app/actions";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
+import Error from '@/app/components/ErrorMessage'
 const initialState = {
   message: null,
 };
@@ -19,10 +20,15 @@ function EditTournamentPage({ params }) {
   const [teams, setTeams] = useState(undefined);
   const [prevTeams, setPrevTeams] = useState(undefined);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(undefined)
 
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/tournaments/${params.id}`);
+      if (!response1.ok) {
+        setError(response1)
+        setLoading(false)
+      } else {
       const tournament = await response1.json();
       setPrevData(tournament);
       setSelected(tournament.sport)
@@ -39,7 +45,7 @@ function EditTournamentPage({ params }) {
         });
       }
       setPrevTeams(prevTeamList);
-      setLoading(false);
+      setLoading(false);}
     }
     fetchData();
   }, []);
@@ -77,6 +83,9 @@ function EditTournamentPage({ params }) {
       </div>
     );
   } else {
+    if (error) {
+      return <Error error={error} />
+    }
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Tournament</h1>

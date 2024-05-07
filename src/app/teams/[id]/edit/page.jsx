@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { editTeam, toggleActive } from "@/app/actions";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
+import Error from '@/app/components/ErrorMessage'
 const initialState = {
   message: null,
 };
@@ -20,10 +21,15 @@ function EditTeamPage({ params }) {
   const [countries, setCountries] = useState(undefined);
   const [users, setUsers] = useState(undefined);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(undefined)
 
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/teams/${params.id}`);
+      if (!response1.ok) {
+        setError(response1)
+        setLoading(false)
+      } else {
       const {team} = await response1.json();
       setPrevData(team);
       const response2 = await fetch("/api/sports");
@@ -53,7 +59,7 @@ function EditTeamPage({ params }) {
         });
       }
       setUsers(userOptions);
-      setLoading(false);
+      setLoading(false);}
     }
     fetchData();
   }, []);
@@ -65,6 +71,9 @@ function EditTeamPage({ params }) {
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>)
   } else {
+    if (error) {
+      return <Error error={error} />
+    }
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Team</h1>

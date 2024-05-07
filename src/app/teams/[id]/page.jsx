@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-
+import Error from '@/app/components/ErrorMessage'
 function singleTeam({ params }) {
   const { data: session, status, update } = useSession();
 
@@ -12,27 +12,31 @@ function singleTeam({ params }) {
   const [teamLoading, setTeamLoading] = useState(true);
   const [players, setPlayers] = useState(undefined);
   const [competitions, setCompetitions] = useState(undefined);
+  const [error, setError] = useState(undefined)
   const [selectedSection, setSelectedSection] = useState("home");
 
   useEffect(() => {
     async function fetchData() {
-      try {
         const response1 = await fetch(`/api/teams/${params.id}`);
-        const teamData = await response1.json();
-        setTeam(teamData.team);
+        if (!response1.ok) {
+          setError(response1)
+          setTeamLoading(false)
+        }
+        else {
+          const teamData = await response1.json();
+          setTeam(teamData.team);
 
-        const response2 = await fetch(`/api/teams/${params.id}/players`);
-        const playersList = await response2.json();
-        setPlayers(playersList);
+          const response2 = await fetch(`/api/teams/${params.id}/players`);
+          const playersList = await response2.json();
+          setPlayers(playersList);
 
-        const response3 = await fetch(`/api/teams/${params.id}/competitions`, {
-          method: "GET",
-        });
-        const competitionList = await response3.json();
-        setCompetitions(competitionList);
-
-        setTeamLoading(false);
-      } catch (e) {}
+          const response3 = await fetch(`/api/teams/${params.id}/competitions`, {
+            method: "GET",
+          });
+          const competitionList = await response3.json();
+          setCompetitions(competitionList);
+          setTeamLoading(false);
+        }
     }
 
     fetchData();
@@ -50,6 +54,9 @@ function singleTeam({ params }) {
       </div>
     );
   } else {
+    if (error) {
+      return <Error error={error} />
+    }
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
         {team && (

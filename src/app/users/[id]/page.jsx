@@ -3,12 +3,13 @@ import React, { useState , useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Image from 'next/image';
 import {getUserIdAction} from "./actions"
-
+import Error from '@/app/components/ErrorMessage'
 function publicUser(props) {
   const [ loading, setLoading ] = useState(true);
   const [ user, setUser ] = useState(undefined);
   const [ error, setError ] = useState(false)
   const [ errorMess, setErrorMess] = useState("")
+  
   let params = useParams();
   let userId = params.id;
   useEffect(() => {
@@ -16,13 +17,13 @@ function publicUser(props) {
       let result = await getUserIdAction(userId)
       setUser(result.user)
       setError(result.error)
-      setErrorMess(result.errorMess)
+      setErrorMess(result.package)
       setLoading(false)
     }
     getById()
   }, [userId]);
   if (loading) return <div>Loading...</div>
-  else if (error) return <div>{errorMess}</div>
+  else if (error) return <Error error={errorMess} />
   else {
     return (
       <div>

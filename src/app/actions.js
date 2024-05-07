@@ -67,13 +67,7 @@ export async function addTeam(prevState, formData) {
     return { message: errors };
   } else {
     try {
-      let newTeam = await teamData.createTeam(
-        name,
-        sport,
-        location,
-        session.user._id,
-        playerIds
-      );
+      let newTeam = await teamData.createTeam(name, sport, location, session.user._id, playerIds);
       id = newTeam._id.toString();
       success = true;
     } catch (error) {
@@ -187,10 +181,7 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(
-      description,
-      "Tournament description"
-    );
+    description = validation.checkLongText(description, "Tournament description");
   } catch (error) {
     errors.push(error);
   }
@@ -296,10 +287,7 @@ export async function editTournament(tournamentId, prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(
-      description,
-      "Tournament description"
-    );
+    description = validation.checkLongText(description, "Tournament description");
   } catch (error) {
     errors.push(error);
   }
@@ -360,10 +348,7 @@ export async function editTournament(tournamentId, prevState, formData) {
       teams: teams,
     };
     try {
-      let updatedBracket = await bracketData.editBracket(
-        tournamentId,
-        updateData
-      );
+      let updatedBracket = await bracketData.editBracket(tournamentId, updateData);
       id = updatedBracket._id.toString();
       success = true;
     } catch (error) {
@@ -523,6 +508,69 @@ export async function toggleActive(teamId, prevState, formData) {
       if (success) {
         revalidatePath(`/teams/${teamId}`);
         redirect(`/teams/${teamId}`);
+      }
+    }
+  }
+}
+
+export async function addMessage(tournamentId, organizerId, prevState, formData) {
+  let success = false;
+  let errors = [];
+  let message;
+  let username;
+
+  if (!formData) {
+    console.log("hello");
+  }
+  console.log(formData);
+  if (formData) {
+    message = formData.get("message");
+    username = formData.get("username");
+  }
+
+  // Validate the types for each input
+  try {
+    tournamentId = validation.checkId(tournamentId, "Tournament ID");
+  } catch (e) {
+    errors.push(e);
+  }
+  try {
+    organizerId = validation.checkId(organizerId, "Organizer ID");
+  } catch (e) {
+    errors.push(e);
+  }
+  try {
+    message = validation.checkString(message, "Message");
+  } catch (e) {
+    errors.push(e);
+  }
+
+  // Validate if the organizerId matches the tournamentId
+  try {
+    const tournament = await bracketData.getBracketById(tournamentId);
+    if (tournament.organizerId !== organizerId) {
+      throw `Error: You are not the organizer. Forbidden`;
+    }
+  } catch (e) {
+    errors.push(e);
+  }
+
+  if (errors.length > 0) {
+    return { message: errors };
+  } else {
+    try {
+      let newMessage = await bracketData.createMessage(
+        organizerId,
+        tournamentId,
+        username,
+        message
+      );
+      success = true;
+    } catch (e) {
+      return { message: e };
+    } finally {
+      if (success) {
+        return { success: "success" };
       }
     }
   }

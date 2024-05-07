@@ -4,7 +4,6 @@ import React from "react";
 import { useEffect, useState } from "react";
 import { fetchTeams } from "./api";
 import Link from "next/link";
-import { useRouter } from "next/router";
 
 function Teams(props) {
   const { data: session, status } = useSession();

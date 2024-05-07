@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import Error from '@/app/components/ErrorMessage'
+import Error from "@/app/components/ErrorMessage";
 function singleTeam({ params }) {
   const { data: session, status, update } = useSession();
 
@@ -12,31 +12,30 @@ function singleTeam({ params }) {
   const [teamLoading, setTeamLoading] = useState(true);
   const [players, setPlayers] = useState(undefined);
   const [competitions, setCompetitions] = useState(undefined);
-  const [error, setError] = useState(undefined)
+  const [error, setError] = useState(undefined);
   const [selectedSection, setSelectedSection] = useState("home");
 
   useEffect(() => {
     async function fetchData() {
-        const response1 = await fetch(`/api/teams/${params.id}`);
-        if (!response1.ok) {
-          setError(response1)
-          setTeamLoading(false)
-        }
-        else {
-          const teamData = await response1.json();
-          setTeam(teamData.team);
+      const response1 = await fetch(`/api/teams/${params.id}`);
+      if (!response1.ok) {
+        setError(response1);
+        setTeamLoading(false);
+      } else {
+        const teamData = await response1.json();
+        setTeam(teamData.team);
 
-          const response2 = await fetch(`/api/teams/${params.id}/players`);
-          const playersList = await response2.json();
-          setPlayers(playersList);
+        const response2 = await fetch(`/api/teams/${params.id}/players`);
+        const playersList = await response2.json();
+        setPlayers(playersList);
 
-          const response3 = await fetch(`/api/teams/${params.id}/competitions`, {
-            method: "GET",
-          });
-          const competitionList = await response3.json();
-          setCompetitions(competitionList);
-          setTeamLoading(false);
-        }
+        const response3 = await fetch(`/api/teams/${params.id}/competitions`, {
+          method: "GET",
+        });
+        const competitionList = await response3.json();
+        setCompetitions(competitionList);
+        setTeamLoading(false);
+      }
     }
 
     fetchData();
@@ -55,7 +54,7 @@ function singleTeam({ params }) {
     );
   } else {
     if (error) {
-      return <Error error={error} />
+      return <Error error={error} />;
     }
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
@@ -79,7 +78,7 @@ function singleTeam({ params }) {
               >
                 Previous Competitions
               </button>
-              {session?.user._id && session?.user._id === team.managerId  && (
+              {session?.user._id === team.managerId && (
                 <Link href={`/teams/${params.id}/edit`} className="btn btn-primary m-2">
                   Edit Team
                 </Link>
@@ -125,9 +124,9 @@ function singleTeam({ params }) {
           )}
         </div>
         {selectedSection === "roster" && players && players.length > 0 && (
-          <div>
+          <div className="overflow-x-auto">
             <h3>Players:</h3>
-            <table className="table table-lg">
+            <table className="table table-lg min-w-full divide-y divide-gray-200">
               <thead>
                 <tr>
                   <th>Profile Picture</th>
@@ -205,7 +204,10 @@ function singleTeam({ params }) {
             {competitions.map((competition) => {
               return (
                 <li key={competition._id}>
-                  <Link className="link link-primary" href={`/tournaments/${competition._id}`}>
+                  <Link
+                    className="link link-primary p-4 text-lg"
+                    href={`/tournaments/${competition._id}`}
+                  >
                     {competition.name}
                   </Link>
                 </li>

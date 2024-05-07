@@ -16,12 +16,14 @@ function SingleTournament({ params }) {
   const inputMessage = addMessage.bind(null, params.id, session.user._id);
   const [state, formAction] = useFormState(inputMatchbyId, initialState);
   const [messageState, messageAction] = useFormState(inputMessage, initialState);
+  const [messages, setMessages] = useState([]);
   const [tournament, setTournament] = useState(undefined);
   const [teams, setTeams] = useState(undefined);
   const [pendingMatches, setPendingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [winner, setWinner] = useState("TBD");
   const [selectedSection, setSelectedSection] = useState("info");
+  const [latestMessageId, setLatestMessageId] = useState(null);
 
   useEffect(() => {
     async function fetchBroadcast() {
@@ -29,11 +31,23 @@ function SingleTournament({ params }) {
         method: "GET",
       });
       const chat = await res.json();
-      console.log(chat);
+      const newMessages = chat.messages;
+      if (newMessages.length > 0) {
+        const latestId = newMessages[newMessages.length - 1]._id;
+        console.log(latestId);
+        console.log(latestMessageId);
+        if (latestId !== latestMessageId) {
+          setLatestMessageId(latestId);
+          setMessages(newMessages);
+        }
+        // if (latestId == latestMessageId) {
+        //   setLatestMessageId(null);
+        // }
+      }
     }
 
     fetchBroadcast();
-  }, []);
+  }, [params.id, latestMessageId]);
 
   useEffect(() => {
     async function fetchData() {
@@ -71,12 +85,13 @@ function SingleTournament({ params }) {
     }
   }, [state.message]);
 
-  // useEffect(() => {
-  //   if (messageState.success === "success") {
-  //     messageState.message = null;
-  //     window.location.reload();
-  //   }
-  // }, [messageState.message]);
+  useEffect(() => {
+    if (messageState.success === "success") {
+      state.message = null;
+      window.location.reload();
+      setSelectedSection("broadcast");
+    }
+  }, [messageState.success]);
 
   if (loading) {
     return (
@@ -102,9 +117,11 @@ function SingleTournament({ params }) {
           <button className="btn btn-primary" onClick={() => handleSectionChange("teams")}>
             Teams
           </button>
-          <button className="btn btn-primary" onClick={() => handleSectionChange("broadcast")}>
-            Broadcast
-          </button>
+          {session?.user?._id === tournament.organizerId && (
+            <button className="btn btn-primary" onClick={() => handleSectionChange("broadcast")}>
+              Broadcast
+            </button>
+          )}
         </div>
 
         {selectedSection === "info" && (
@@ -124,6 +141,25 @@ function SingleTournament({ params }) {
                 </Link>
               )}
             </h3>
+
+            {messages.length > 0 && <h1 className="text-2xl">Broadcast Messages</h1>}
+            <div className="card overflow-auto max-h-[400px]">
+              <div className="chat chat-start">
+                <ul>
+                  {messages &&
+                    messages
+                      .slice()
+                      .reverse()
+                      .map((message, index) => (
+                        <li key={index}>
+                          <p className="chat-header">{message.userName}</p>
+                          <div className="chat-bubble text-white">{message.text}</div>
+                          <div class="chat-footer opacity-50">Delivered at {message.timestamp}</div>
+                        </li>
+                      ))}
+                </ul>
+              </div>
+            </div>
           </div>
         )}
         {selectedSection === "bracket" && (

@@ -513,8 +513,17 @@ export async function toggleActive(teamId, prevState, formData) {
 export async function addMessage(tournamentId, organizerId, prevState, formData) {
   let success = false;
   let errors = [];
-  let message = formData.get("message");
-  let username = formData.get("username");
+  let message;
+  let username;
+
+  if (!formData) {
+    console.log("hello");
+  }
+  console.log(formData);
+  if (formData) {
+    message = formData.get("message");
+    username = formData.get("username");
+  }
 
   // Validate the types for each input
   try {

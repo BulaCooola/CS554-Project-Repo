@@ -6,7 +6,7 @@ export async function GET(req, { params }) {
   // Get the messages current messages?
   try {
     const messages = await bracketData.getMessages(params.id);
-    return NextResponse.json(messages);
+    return NextResponse.json({ messages: messages }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ error: error }, { status: 404 });
   }

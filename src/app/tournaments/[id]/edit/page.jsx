@@ -5,6 +5,7 @@ import { editTournament, deleteTournament } from "@/app/actions";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
 import Error from '@/app/components/ErrorMessage'
+import { useRouter } from 'next/navigation'
 const initialState = {
   message: null,
 };
@@ -86,6 +87,10 @@ function EditTournamentPage({ params }) {
     if (error) {
       return <Error error={error} />
     }
+    if (prevData.organizerId && prevData.organizerId !== session.user._id) {
+      const router = useRouter()
+      router.push(`/tournaments/${prevData._id}`)
+    } 
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Tournament</h1>

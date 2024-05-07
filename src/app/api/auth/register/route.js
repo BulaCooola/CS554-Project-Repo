@@ -56,7 +56,7 @@ export async function POST(req) {
     return NextResponse.json({ ok: "User registered successfully" });
   } catch (e) {
     return NextResponse.json(
-      { error: "Registration failed" },
+      { error: e },
       {
         status: 500,
       }

@@ -207,6 +207,7 @@ const exportedMethods = {
       status: "scheduled",
       allPlayers: allPlayers,
       matches: matches,
+      broadcastMessages: [],
     };
 
     const bracketCollection = await brackets();
@@ -492,6 +493,61 @@ const exportedMethods = {
     const bracketCollection = await brackets();
     const bracketList = await bracketCollection.find({ winner: teamId }).toArray();
     return bracketList;
+  },
+  async getMessages(tournamentId) {
+    const tournament = await this.getBracketById(tournamentId);
+    return tournament.broadcastMessages;
+  },
+  async createMessage(organizerId, bracketId, username, msg) {
+    const bracketCollection = await brackets();
+
+    try {
+      organizerId = validation.checkId(organizerId);
+      bracketId = validation.checkId(bracketId);
+      username = validation.checkString(username, "firstName");
+      msg = validation.checkString(msg, "Message");
+      if (msg.length > 1000) {
+        throw `Error: Message limit passed (1000 characters).`;
+      }
+    } catch (e) {
+      throw `${e}`;
+    }
+
+    try {
+      // get the line4
+      const getBracket = await bracketCollection.findOne({ _id: new ObjectId(bracketId) });
+      if (!getBracket) {
+        // 404
+        throw `Error: Bracket not found`;
+      }
+      const isOrganizer = await bracketCollection.findOne({ organizerId: organizerId });
+      if (!isOrganizer) {
+        // 403
+        throw `Error: You are not the organizer`;
+      }
+
+      const newMessage = {
+        _id: getBracket.broadcastMessages.length,
+        timestamp: new Date().toUTCString(),
+        userName: username,
+        text: msg,
+      };
+
+      console.log(newMessage);
+
+      const result = await bracketCollection.updateOne(
+        { _id: new ObjectId(bracketId) },
+        { $push: { broadcastMessages: newMessage } }
+      );
+
+      if (result.matchedCount !== 1) {
+        throw `Error: Unable to add message to database.`;
+      }
+
+      return result;
+    } catch (e) {
+      throw `${e}`;
+    }
   },
 };
 

@@ -2,10 +2,10 @@
 import { useState, useEffect } from "react";
 import { SingleEliminationBracket, Match } from "@g-loot/react-tournament-brackets";
 import Link from "next/link";
-import { inputMatch } from "@/app/actions";
+import { inputMatch, addMessage } from "@/app/actions";
 import { useFormState as useFormState } from "react-dom";
 import { useSession } from "next-auth/react";
-import Error from '@/app/components/ErrorMessage'
+import Error from "@/app/components/ErrorMessage";
 
 const initialState = {
   message: null,
@@ -14,41 +14,69 @@ function SingleTournament({ params }) {
   const { data: session, status, update } = useSession();
 
   const inputMatchbyId = inputMatch.bind(null, params.id);
+  const inputMessage = addMessage.bind(null, params.id, session.user._id);
   const [state, formAction] = useFormState(inputMatchbyId, initialState);
+  const [messageState, messageAction] = useFormState(inputMessage, initialState);
+  const [messages, setMessages] = useState([]);
   const [tournament, setTournament] = useState(undefined);
   const [teams, setTeams] = useState(undefined);
   const [pendingMatches, setPendingMatches] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(undefined)
+  const [error, setError] = useState(undefined);
   const [winner, setWinner] = useState("TBD");
   const [selectedSection, setSelectedSection] = useState("info");
+  const [latestMessageId, setLatestMessageId] = useState(null);
+
+  useEffect(() => {
+    async function fetchBroadcast() {
+      const res = await fetch(`/api/tournaments/${params.id}/broadcast`, {
+        method: "GET",
+      });
+      const chat = await res.json();
+      const newMessages = chat.messages;
+      if (newMessages.length > 0) {
+        const latestId = newMessages[newMessages.length - 1]._id;
+        console.log(latestId);
+        console.log(latestMessageId);
+        if (latestId !== latestMessageId) {
+          setLatestMessageId(latestId);
+          setMessages(newMessages);
+        }
+        // if (latestId == latestMessageId) {
+        //   setLatestMessageId(null);
+        // }
+      }
+    }
+
+    fetchBroadcast();
+  }, [params.id, latestMessageId]);
 
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/tournaments/${params.id}`);
       if (!response1.ok) {
-        setError(response1)
-        setLoading(false)
-      }
-      else {
-      const tournament = await response1.json();
-      setTournament(tournament);
-      const response2 = await fetch(`/api/tournaments/${params.id}/teams`);
-      const teamsList = await response2.json();
-      setTeams(teamsList);
-      const pending = [];
-      for (let match of tournament.matches) {
-        if (match.state !== "complete" && match.participants.length === 2) {
-          pending.push(match);
+        setError(response1);
+        setLoading(false);
+      } else {
+        const tournament = await response1.json();
+        setTournament(tournament);
+        const response2 = await fetch(`/api/tournaments/${params.id}/teams`);
+        const teamsList = await response2.json();
+        setTeams(teamsList);
+        const pending = [];
+        for (let match of tournament.matches) {
+          if (match.state !== "complete" && match.participants.length === 2) {
+            pending.push(match);
+          }
         }
+        setPendingMatches(pending);
+        if (tournament.winner !== "TBD") {
+          const response3 = await fetch(`/api/teams/${tournament.winner}`);
+          const { team } = await response3.json();
+          setWinner(team);
+        }
+        setLoading(false);
       }
-      setPendingMatches(pending);
-      if (tournament.winner !== "TBD") {
-        const response3 = await fetch(`/api/teams/${tournament.winner}`);
-        const { team } = await response3.json();
-        setWinner(team);
-      }
-      setLoading(false);}
     }
     fetchData();
   }, []);
@@ -64,6 +92,14 @@ function SingleTournament({ params }) {
     }
   }, [state.message]);
 
+  useEffect(() => {
+    if (messageState.success === "success") {
+      state.message = null;
+      window.location.reload();
+      setSelectedSection("broadcast");
+    }
+  }, [messageState.success]);
+
   if (loading) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
@@ -73,7 +109,7 @@ function SingleTournament({ params }) {
     );
   } else {
     if (error) {
-      return <Error error={error} />
+      return <Error error={error} />;
     }
     return (
       <main className="min-h-screen justify-between p-24 bg-base">
@@ -91,11 +127,11 @@ function SingleTournament({ params }) {
           <button className="btn btn-primary" onClick={() => handleSectionChange("teams")}>
             Teams
           </button>
-          {session?.user._id && session?.user._id === tournament.organizerId  && (
-                <Link href={`/tournaments/${params.id}/edit`} className="btn btn-primary">
-                  Edit Tournament
-                </Link>
-              )}
+          {session?.user?._id === tournament.organizerId && (
+            <button className="btn btn-primary" onClick={() => handleSectionChange("broadcast")}>
+              Broadcast
+            </button>
+          )}
         </div>
 
         {selectedSection === "info" && (
@@ -115,6 +151,25 @@ function SingleTournament({ params }) {
                 </Link>
               )}
             </h3>
+
+            {messages.length > 0 && <h1 className="text-2xl">Broadcast Messages</h1>}
+            <div className="card overflow-auto max-h-[400px]">
+              <div className="chat chat-start">
+                <ul>
+                  {messages &&
+                    messages
+                      .slice()
+                      .reverse()
+                      .map((message, index) => (
+                        <li key={index}>
+                          <p className="chat-header">{message.userName}</p>
+                          <div className="chat-bubble text-white">{message.text}</div>
+                          <div class="chat-footer opacity-50">Delivered at {message.timestamp}</div>
+                        </li>
+                      ))}
+                </ul>
+              </div>
+            </div>
           </div>
         )}
         {selectedSection === "bracket" && (
@@ -122,9 +177,7 @@ function SingleTournament({ params }) {
             <div className="glass rounded-lg overflow-x-auto">
               <SingleEliminationBracket matches={tournament.matches} matchComponent={Match} />
             </div>
-            {console.log(tournament.organizerId)}
-            {console.log(session.user._id)}
-            {session.user._id === tournament.organizerId ? (
+            {session?.user._id === tournament.organizerId ? (
               <div className="drawer drawer-end">
                 <input id="my-drawer-4" type="checkbox" className="drawer-toggle" />
                 <div className="drawer-content">
@@ -261,6 +314,41 @@ function SingleTournament({ params }) {
                   );
                 })}
             </ul>
+          </div>
+        )}
+        {selectedSection === "broadcast" && (
+          <div>
+            <form action={messageAction}>
+              {state && state.message && (
+                <div className="alert alert-error w-1/2 mx-auto">
+                  <ul>
+                    {state.message.map((msg, index) => {
+                      return (
+                        <li className="error" key={index}>
+                          {msg}
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              )}
+              <label>
+                <input
+                  type="hidden"
+                  id="username"
+                  name="username"
+                  value={session?.user?.username}
+                />
+              </label>
+              <label>
+                <input name="message" id="message" type="text" placeholder="message" required />
+              </label>
+              <div className="form-group">
+                <button className="btn btn-active btn-neutral flex mx-auto" type="submit">
+                  Send Broadcast
+                </button>
+              </div>
+            </form>
           </div>
         )}
       </main>

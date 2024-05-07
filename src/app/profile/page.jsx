@@ -98,7 +98,7 @@ function PlayerProfile(props) {
     }
   }, [stateTwo]);
 
-  if (status === "unauthenticated") {
+  if (!session) {
     redirect("/login");
   }
   if (isLoading) {
@@ -144,16 +144,22 @@ function PlayerProfile(props) {
             width="150"
             alt="userPfp"
           />
-          <form action={formAction} className="my-4">
-            <h3 className="text-sm font-semibold">Update Profile Picture</h3>
-            <input type="file" name="file" className="file-input file-input-bordered w-full max-w-xs" />
+          <form action={formAction}>
+            <label>
+              Upload New Profile Picture:
+              <input className="border border-black" type="file" name="file" />
+            </label>
             <input hidden name="userId" readOnly value={session.user._id} />
-            <button className="btn btn-active btn-neutral">Submit</button>
+            <button>Submit</button>
           </form>
           {state && state.message && (
             <ul>
               {state.message.map((msg, index) => {
-                return <li key={index} className="text-sm font-semibold">{msg}</li>;
+                return (
+                  <li key={index} className="text-sm font-semibold">
+                    {msg}
+                  </li>
+                );
               })}
             </ul>
           )}
@@ -183,7 +189,11 @@ function PlayerProfile(props) {
           {stateTwo && stateTwo.message && (
             <ul>
               {stateTwo.message.map((msg, index) => {
-                return <li key={`two${index}`} className="text-sm font-semibold">{msg}</li>;
+                return (
+                  <li key={`two${index}`} className="text-sm font-semibold">
+                    {msg}
+                  </li>
+                );
               })}
             </ul>
           )}

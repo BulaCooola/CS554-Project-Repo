@@ -471,7 +471,7 @@ export async function GET(req) {
   const createTeams = async () => {
     try {
       for (const sport of sportsCategories) {
-        let numberOfTeamsPerSport = 32;
+        let numberOfTeamsPerSport = 8;
         let teamIdList = [];
         if (
           sport === "Golf" ||
@@ -481,6 +481,17 @@ export async function GET(req) {
           sport === "Tennis"
         ) {
           numberOfTeamsPerSport = 4;
+        }
+        if (sport === "Basketball" || sport === "Soccer" || sport === "Hockey") {
+          numberOfTeamsPerSport = 32;
+        }
+        if (
+          sport === "Baseball" ||
+          sport === "Water Polo" ||
+          sport === "Volleyball" ||
+          sport === "Football"
+        ) {
+          numberOfTeamsPerSport = 16;
         }
         for (let i = 0; i < numberOfTeamsPerSport; i++) {
           const teamName = await generateTeamName();
@@ -495,10 +506,7 @@ export async function GET(req) {
           for (let j = 0; j < 10; j++) {
             const playerFirstName = await generateFirstName();
             const playerLastName = await generateLastName();
-            const playerUsername = await generateUsername(
-              playerFirstName,
-              playerLastName
-            );
+            const playerUsername = await generateUsername(playerFirstName, playerLastName);
             const playerEmail = `${playerUsername}@stevens.edu`;
             const playerPhoneNumber = "1234567890";
 

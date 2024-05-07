@@ -14,6 +14,8 @@ export const config = {
     "/tournaments/edit",
     "/teams/create",
     "/teams/edit",
+    "/teams/:id*/edit",
+    "/tournaments/:id*/edit",
   ],
 };
 

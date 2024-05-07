@@ -91,6 +91,11 @@ function SingleTournament({ params }) {
           <button className="btn btn-primary" onClick={() => handleSectionChange("teams")}>
             Teams
           </button>
+          {session?.user._id && session?.user._id === tournament.organizerId  && (
+                <Link href={`/tournaments/${params.id}/edit`} className="btn btn-primary">
+                  Edit Tournament
+                </Link>
+              )}
         </div>
 
         {selectedSection === "info" && (

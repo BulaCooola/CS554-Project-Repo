@@ -79,7 +79,7 @@ function singleTeam({ params }) {
               >
                 Previous Competitions
               </button>
-              {session?.user._id && (
+              {session?.user._id && session?.user._id === team.managerId  && (
                 <Link href={`/teams/${params.id}/edit`} className="btn btn-primary m-2">
                   Edit Team
                 </Link>

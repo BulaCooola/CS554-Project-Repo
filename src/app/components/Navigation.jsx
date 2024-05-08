@@ -11,46 +11,46 @@ function Navigation(props) {
   return (
     <div className="navbar bg-primary">
       <div className="flex-1">
-        <Link href="/" className="btn btn-ghost text-xl">
+        <Link href="/" className="btn btn-ghost text-xl text-white">
           TourneyPro
         </Link>
       </div>
       <div className="flex-none">
         <ul className="menu menu-center menu-horizontal px-1 mx-auto">
           <li>
-            <Link href="/" className="btn btn-ghost">
+            <Link href="/" className="btn btn-ghost text-white">
               Home
             </Link>
           </li>
           <li>
-            <Link href="/tournaments" className="btn btn-ghost">
+            <Link href="/tournaments" className="btn btn-ghost text-white">
               Tournaments
             </Link>
           </li>
           <li>
-            <Link href="/teams" className="btn btn-ghost">
+            <Link href="/teams" className="btn btn-ghost text-white">
               Teams
             </Link>
           </li>
           <li>
-            <Link href="/users" className="btn btn-ghost">
+            <Link href="/users" className="btn btn-ghost text-white">
               Players
             </Link>
           </li>
           <li>
-            <Link href="/search" className="btn btn-ghost">
+            <Link href="/search" className="btn btn-ghost text-white">
               Search
             </Link>
           </li>
           {!loggedIn ? (
             <>
               <li>
-                <Link href="/login" className="btn btn-ghost">
+                <Link href="/login" className="btn btn-ghost text-white">
                   Login
                 </Link>
               </li>
               <li>
-                <Link href="/register" className="btn btn-ghost">
+                <Link href="/register" className="btn btn-ghost text-white">
                   Register
                 </Link>
               </li>
@@ -58,7 +58,7 @@ function Navigation(props) {
           ) : (
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
-                <div className="w-9 rounded-full">
+                <div className="w-9 rounded-full text-white">
                   <img alt="Profile Picture" src={session.user.profilePicture} />
                 </div>
               </div>

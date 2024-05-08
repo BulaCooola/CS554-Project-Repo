@@ -171,8 +171,7 @@ export async function addTournament(prevState, formData) {
   teams = formData.getAll("teams");
 
   // fix empty teams being [""] instead of []
-  if (teams.length === 1 &&  teams[0] === "")
-    teams = [];
+  if (teams.length === 1 && teams[0] === "") teams = [];
 
   try {
     session.user._id = validation.checkId(session.user._id);
@@ -426,14 +425,17 @@ export async function inputMatch(tournamentId, prevState, formData) {
 export async function search(prevState, formData) {
   let text = formData.get("search");
   text = text.trim();
+  // const client = new Client({
+  //   cloud: {
+  //     id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",
+  //   },
+  //   auth: {
+  //     username: "elastic",
+  //     password: "aEwEWwaMzZeluHagQY9Gqo6R",
+  //   },
+  // });
   const client = new Client({
-    cloud: {
-      id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",
-    },
-    auth: {
-      username: "elastic",
-      password: "aEwEWwaMzZeluHagQY9Gqo6R",
-    },
+    node: "http://127.0.0.1:9200",
   });
   let data = await client.search({
     query: {

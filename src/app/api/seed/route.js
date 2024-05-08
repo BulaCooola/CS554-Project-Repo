@@ -9,7 +9,16 @@ export async function GET(req) {
   await db.dropDatabase();
   // PASSWORD - Password!1
   const hashedPassword = await bcrypt.hash("Password!1", 10);
-  const paddy = await userData.addUser(
+  const phill = await userData.addUser(
+    "phill",
+    "Patrick",
+    "Hill",
+    "phill@stevens.edu",
+    "2401231234",
+    hashedPassword
+  );
+
+  const user2 = await userData.addUser(
     "pphelps",
     "Paddy",
     "Phelps",
@@ -18,36 +27,27 @@ export async function GET(req) {
     hashedPassword
   );
 
-  const user2 = await userData.addUser(
-    "splayer",
-    "Second",
-    "Player",
-    "player2@stevens.edu",
-    "2401231234",
-    hashedPassword
-  );
-
   const playersData = [
     {
-      username: "player3",
-      firstName: "Player",
-      lastName: "Three",
-      email: "player3@stevens.edu",
-      phoneNumber: "2401231234",
+      username: "bbulatao",
+      firstName: "Branden",
+      lastName: "Bulatao",
+      email: "bbulatao@stevens.edu",
+      phoneNumber: "1234567890",
     },
     {
-      username: "player4",
-      firstName: "Player",
-      lastName: "Four",
-      email: "player4@stevens.edu",
-      phoneNumber: "2401231234",
+      username: "lokun",
+      firstName: "Lennon",
+      lastName: "Okun",
+      email: "lokun@stevens.edu",
+      phoneNumber: "1234567890",
     },
     {
-      username: "player5",
-      firstName: "Player",
-      lastName: "Five",
-      email: "player5@stevens.edu",
-      phoneNumber: "2401231234",
+      username: "podre",
+      firstName: "Paul",
+      lastName: "Odre",
+      email: "podre@stevens.edu",
+      phoneNumber: "1234567890",
     },
     {
       username: "player6",
@@ -146,32 +146,32 @@ export async function GET(req) {
     "Ducks",
     "Lacrosse",
     "United States of America",
-    paddy._id.toString(),
-    [paddy._id.toString()]
+    phill._id.toString(),
+    [phill._id.toString()]
   );
 
   const cadets = await teamData.createTeam(
     "Cadets",
     "Lacrosse",
     "United States of America",
-    paddy._id.toString(),
-    [paddy._id.toString()]
+    phill._id.toString(),
+    [phill._id.toString()]
   );
 
   const team3 = await teamData.createTeam(
     "Team3",
     "Lacrosse",
     "United States of America",
-    paddy._id.toString(),
-    [paddy._id.toString()]
+    phill._id.toString(),
+    [phill._id.toString()]
   );
 
   const team4 = await teamData.createTeam(
     "Team4",
     "Lacrosse",
     "United States of America",
-    paddy._id.toString(),
-    [paddy._id.toString()]
+    phill._id.toString(),
+    [phill._id.toString()]
   );
 
   const newTeams = [
@@ -179,85 +179,85 @@ export async function GET(req) {
       name: "Team5",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team6",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team7",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team8",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team9",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team10",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team11",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team12",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team13",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team14",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team15",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
     {
       name: "Team166",
       sport: "Lacrosse",
       country: "United States of America",
-      coachId: paddy._id.toString(),
-      memberIds: [paddy._id.toString()],
+      coachId: phill._id.toString(),
+      memberIds: [phill._id.toString()],
     },
   ];
 
@@ -544,7 +544,7 @@ export async function GET(req) {
             "The quick brown fox jumps over the lazy dog.",
             "5/30/2024",
             "6/03/2024",
-            paddy._id.toString(),
+            phill._id.toString(),
             sport,
             numberOfTeamsPerSport,
             teamIdList

@@ -29,28 +29,26 @@ function SingleTournament({ params }) {
 
   useEffect(() => {
     async function fetchBroadcast() {
+      console.log(params.id);
       const res = await fetch(`/api/tournaments/${params.id}/broadcast`, {
         method: "GET",
       });
-      console.log(res);
       const chat = await res.json();
-      const newMessages = chat.messages;
+      const newMessages = chat.messages || [];
       if (newMessages.length > 0) {
         const latestId = newMessages[newMessages.length - 1]._id;
         console.log(latestId);
         console.log(latestMessageId);
-        if (latestId !== latestMessageId) {
-          setLatestMessageId(latestId);
-          setMessages(newMessages);
-        }
-        // if (latestId == latestMessageId) {
-        //   setLatestMessageId(null);
+        // if (latestId !== latestMessageId) {
+        // setLatestMessageId(latestId);
+        // setMessages(newMessages);
         // }
+        setMessages(newMessages);
       }
     }
 
     fetchBroadcast();
-  }, [params.id, latestMessageId]);
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
@@ -153,12 +151,15 @@ function SingleTournament({ params }) {
               )}
             </h3>
 
-            {messages.length > 0 && <h1 className="text-2xl">Broadcast Messages</h1>}
+            {tournament.broadcastMessages.length > 0 && (
+              <h1 className="text-2xl">Broadcast Messages</h1>
+            )}
             <div className="card overflow-auto max-h-[400px]">
               <div className="chat chat-start">
                 <ul>
-                  {messages &&
-                    messages
+                  {console.log(tournament.broadcastMessages)}
+                  {tournament.broadcastMessages &&
+                    tournament.broadcastMessages
                       .slice()
                       .reverse()
                       .map((message, index) => (

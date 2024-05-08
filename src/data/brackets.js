@@ -544,6 +544,10 @@ const exportedMethods = {
         throw `Error: Unable to add message to database.`;
       }
 
+      const client = await getRedisClient();
+      await client.FLUSHALL();
+      await client.disconnect();
+
       return result;
     } catch (e) {
       throw `${e}`;

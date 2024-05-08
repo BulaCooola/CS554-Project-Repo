@@ -5,6 +5,7 @@ import { editTeam, toggleActive } from "@/app/actions";
 import Select from "react-select";
 import { useSession } from "next-auth/react";
 import Error from '@/app/components/ErrorMessage'
+import { useRouter } from 'next/navigation'
 const initialState = {
   message: null,
 };
@@ -74,6 +75,10 @@ function EditTeamPage({ params }) {
     if (error) {
       return <Error error={error} />
     }
+    if (prevData.managerId && prevData.managerId !== session.user._id) {
+      const router = useRouter()
+      router.push(`/teams/${prevData._id}`)
+    } 
     return (
       <main className="min-h-screen flex-col items-center p-24 bg-base">
         <h1 className="text-2xl font-semibold">Edit Team</h1>

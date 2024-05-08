@@ -59,10 +59,7 @@ function Navigation(props) {
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="w-9 rounded-full">
-                  <img
-                    alt="Profile Picture"
-                    src={session.user.profilePicture}
-                  />
+                  <img alt="Profile Picture" src={session.user.profilePicture} />
                 </div>
               </div>
               <ul

@@ -170,6 +170,10 @@ export async function addTournament(prevState, formData) {
   bracketSize = parseInt(formData.get("bracketSize"));
   teams = formData.getAll("teams");
 
+  // fix empty teams being [""] instead of []
+  if (teams.length === 1 &&  teams[0] === "")
+    teams = [];
+
   try {
     session.user._id = validation.checkId(session.user._id);
   } catch (e) {

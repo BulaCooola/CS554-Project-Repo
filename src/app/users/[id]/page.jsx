@@ -7,7 +7,8 @@ import {getUserIdAction} from "./actions"
 import Error from '@/app/components/ErrorMessage'
 function publicUser(props) {
   const [loading, setLoading] = useState(true);
-  const [ teams, setTeams ] = useState(true);
+  const [loadingTwo, setLoadingTwo] = useState(true);
+  const [ teams, setTeams ] = useState(undefined);
   const [ user, setUser ] = useState(undefined);
   const [ error, setError ] = useState(false)
   const [ errorMess, setErrorMess] = useState("")
@@ -34,10 +35,11 @@ function publicUser(props) {
         const teamsList = await response.json()
         setTeams(teamsList)
       }
+      setLoadingTwo(false)
     }
     fetchData()
   },[])
-  if (loading) {
+  if (loading || loadingTwo) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
         <p>Loading User</p>
@@ -67,6 +69,8 @@ function publicUser(props) {
                   <li key={team._id}><Link className='link link-primary' href={`/teams/${team._id}`}>{team.name}</Link></li>
                 )
               })}
+              {(teams.length==0) &&
+              <li key={"noneMoment"}>None</li>}
             </ul>
           </div>}
     </div>

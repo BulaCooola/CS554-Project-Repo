@@ -14,7 +14,7 @@ function SingleTournament({ params }) {
   const { data: session, status, update } = useSession();
 
   const inputMatchbyId = inputMatch.bind(null, params.id);
-  const inputMessage = addMessage.bind(null, params.id, session.user._id);
+  const inputMessage = addMessage.bind(null, params.id, session?.user._id);
   const [state, formAction] = useFormState(inputMatchbyId, initialState);
   const [messageState, messageAction] = useFormState(inputMessage, initialState);
   const [messages, setMessages] = useState([]);
@@ -32,6 +32,7 @@ function SingleTournament({ params }) {
       const res = await fetch(`/api/tournaments/${params.id}/broadcast`, {
         method: "GET",
       });
+      console.log(res);
       const chat = await res.json();
       const newMessages = chat.messages;
       if (newMessages.length > 0) {

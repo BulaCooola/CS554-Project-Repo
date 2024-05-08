@@ -2,9 +2,12 @@
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Form() {
   const router = useRouter();
+  const [error,setError] = useState(false)
+  const [errorMess,setErrorMess] = useState("")
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -30,13 +33,23 @@ export default function Form() {
     if (response.ok) {
       router.replace("/login");
     }
+    else {
+      let resJ = await response.json()
+      setErrorMess(resJ.error)
+      setError(true)
+    }
   };
   return (
     <main className="min-h-screen flex-col items-center p-24 bg-base">
       <h1 className="text-2xl font-semibold">Welcome to TourneyPro!</h1>
       <Link className="link link-primary" href="/login">Already have an account? Login Here!</Link>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-white">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-base-200">
         <h1 className="text-2xl font-semibold my-4 mx-4">Register</h1>
+        {error && (
+          <div className="alert alert-error w-1/2 mx-auto">
+            <p className="error">{errorMess}</p>
+          </div>
+        )}
         <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto my-2">
           Email
           <input

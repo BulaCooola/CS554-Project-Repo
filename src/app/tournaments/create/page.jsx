@@ -59,8 +59,8 @@ function CreateTournament(props) {
 
   if (loading) {
     return (
-      <div>
-        Loading
+      <div className="min-h-screen justify-between p-24 bg-base">
+        <p>Loading</p>
         <p className="loading loading-dots loading-lg">Loading...</p>
       </div>
     );

@@ -49,7 +49,7 @@ function EditTournamentPage({ params }) {
       setLoading(false);}
     }
     fetchData();
-  });
+  },[]);
 
   async function handleOnChange(e) {
     setSelected(e.target.value);

@@ -182,6 +182,7 @@ const exportedMethods = {
     const teamCollection = await teams();
     const team = await this.getTeamById(id);
     if (!team) throw "Error: Could not get team.";
+    delete team._id;
     team.active = !team.active;
     let newTeam = await teamCollection.findOneAndUpdate(
       { _id: new ObjectId(id) },
@@ -222,7 +223,7 @@ const exportedMethods = {
 
     team.playerIds.push(playerId);
     team.numPlayers = team.playerIds.length;
-
+    delete team._id;
     let newTeam = await teamCollection.findOneAndUpdate(
       { _id: new ObjectId(teamId) },
       { $set: team },

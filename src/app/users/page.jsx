@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { fetchUsers } from "./api";
 import Link from "next/link";
+import Image from "next/image";
 
 function AllUsers(props) {
   const { data: session, status } = useSession();
@@ -65,18 +66,31 @@ function AllUsers(props) {
               <option value="50">50</option>
             </select>
           </div>
-          {currentUsers &&
-            currentUsers.map((user) => (
-              <div key={user._id} className="card bg-base-100 shadow-lg m-4 p-4 max-w-96 mx-auto">
-                <Link
-                  className="text-lg font-semibold link link-primary"
-                  href={`/users/${user._id}`}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
+            {currentUsers &&
+              currentUsers.map((user) => (
+                <div
+                  key={user._id}
+                  className="card bg-base-100 shadow-lg m-4 p-4 px-16 max-w-96 mx-auto "
                 >
-                  {user.firstName} {user.lastName}
-                </Link>
-                <p>{user.hometown ? user.hometown : ""}</p>
-              </div>
-            ))}
+                  <Image
+                    src={user.profilePicture}
+                    priority
+                    height="150"
+                    width="150"
+                    alt="userPfp"
+                  />
+                  <Link
+                    className="text-lg font-semibold link link-primary"
+                    href={`/users/${user._id}`}
+                  >
+                    {user.firstName} {user.lastName}
+                  </Link>
+                  <p>{user.username}</p>
+                  <p>{user.hometown ? user.hometown : ""}</p>
+                </div>
+              ))}
+          </div>
           <div className="mt-4">
             <button
               className="btn btn-outline mr-2"
@@ -115,7 +129,9 @@ function AllUsers(props) {
                   <li key={index} className="page-item m-2">
                     <a
                       onClick={() => paginate(index + 1)}
-                      className={`page-link ${currentPage === pageNumber ? "text-primary" : ""}`}
+                      className={`page-link ${
+                        currentPage === pageNumber ? "text-primary" : ""
+                      } cursor-pointer`}
                     >
                       {index + 1}
                     </a>

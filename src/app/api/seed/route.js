@@ -478,11 +478,13 @@ export async function GET(req) {
           sport === "Bowling" ||
           sport === "Other" ||
           sport === "Gymnastics" ||
-          sport === "Tennis"
+          sport === "Tennis" ||
+          sport === "Soccer" ||
+          sport === "Hockey"
         ) {
           numberOfTeamsPerSport = 4;
         }
-        if (sport === "Basketball" || sport === "Soccer" || sport === "Hockey") {
+        if (sport === "Basketball") {
           numberOfTeamsPerSport = 32;
         }
         if (
@@ -503,7 +505,7 @@ export async function GET(req) {
             memberIds: [],
           };
 
-          for (let j = 0; j < 10; j++) {
+          for (let j = 0; j < 5; j++) {
             const playerFirstName = await generateFirstName();
             const playerLastName = await generateLastName();
             const playerUsername = await generateUsername(playerFirstName, playerLastName);

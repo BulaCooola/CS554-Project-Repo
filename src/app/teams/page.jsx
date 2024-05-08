@@ -216,6 +216,22 @@ function Teams(props) {
                   </div>
                 ))}
         </div>
+        <div className="mt-4">
+          <button
+            className="btn btn-outline mr-2"
+            disabled={currentPage === 1}
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            Previous
+          </button>
+          <button
+            className="btn btn-outline"
+            disabled={currentPage === Math.ceil(filteredTeams.length / teamsPerPage)}
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Next
+          </button>
+        </div>
         <div className="flex flex-col items-center justify-center md:flex-row md:justify-center">
           <ul className="pagination flex flex-wrap">
             {Array.from({ length: Math.ceil(filteredTeams.length / teamsPerPage) }, (_, index) => (

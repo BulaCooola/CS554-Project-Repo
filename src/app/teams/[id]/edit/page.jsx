@@ -23,7 +23,7 @@ function EditTeamPage({ params }) {
   const [users, setUsers] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(undefined)
-
+  const router = useRouter()
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/teams/${params.id}`);
@@ -76,7 +76,6 @@ function EditTeamPage({ params }) {
       return <Error error={error} />
     }
     if (prevData.managerId && prevData.managerId !== session.user._id) {
-      const router = useRouter()
       router.push(`/teams/${prevData._id}`)
     } 
     return (

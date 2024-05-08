@@ -1,13 +1,13 @@
 import { userData, teamData, bracketData } from "@/data/index.js";
 import { NextResponse } from "next/server";
 import { dbConnection, closeConnection } from "@/config/mongoConnection.js";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import bcrypt from "bcrypt";
 
 export async function GET(req) {
+  
   const db = await dbConnection();
   await db.dropDatabase();
-
   // PASSWORD - Password!1
   const hashedPassword = await bcrypt.hash("Password!1", 10);
   const paddy = await userData.addUser(
@@ -174,7 +174,7 @@ export async function GET(req) {
     paddy._id.toString(),
     [paddy._id.toString()]
   );
-
+  
   const newTeams = [
     {
       name: "Team5",
@@ -273,7 +273,7 @@ export async function GET(req) {
     );
     console.log("Added team:", teamObject.name);
   }
-
+  
   const generateTeamName = async () => {
     const adjectives = [
       "Awesome",
@@ -467,7 +467,7 @@ export async function GET(req) {
     "Softball",
     "Other",
   ];
-
+  
   const createTeams = async () => {
     try {
       for (const sport of sportsCategories) {
@@ -478,11 +478,13 @@ export async function GET(req) {
           sport === "Bowling" ||
           sport === "Other" ||
           sport === "Gymnastics" ||
-          sport === "Tennis"
+          sport === "Tennis" ||
+          sport === "Soccer" ||
+          sport === "Hockey"
         ) {
           numberOfTeamsPerSport = 4;
         }
-        if (sport === "Basketball" || sport === "Soccer" || sport === "Hockey") {
+        if (sport === "Basketball") {
           numberOfTeamsPerSport = 32;
         }
         if (
@@ -503,7 +505,7 @@ export async function GET(req) {
             memberIds: [],
           };
 
-          for (let j = 0; j < 10; j++) {
+          for (let j = 0; j < 5; j++) {
             const playerFirstName = await generateFirstName();
             const playerLastName = await generateLastName();
             const playerUsername = await generateUsername(playerFirstName, playerLastName);
@@ -519,7 +521,6 @@ export async function GET(req) {
               playerPhoneNumber,
               hashedPassword
             );
-
             // push first person as coach
             team.coachId = playerObject._id.toString();
             // push into members list
@@ -555,9 +556,10 @@ export async function GET(req) {
       console.error("Error creating teams:", error);
     }
   };
-
+  
   // Call createTeams
   await createTeams();
+  noStore()
   await closeConnection();
   console.log("Done seeding database");
   return NextResponse.json({ done: true }, { status: 200 });

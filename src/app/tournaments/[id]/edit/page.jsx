@@ -22,7 +22,7 @@ function EditTournamentPage({ params }) {
   const [prevTeams, setPrevTeams] = useState(undefined);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(undefined)
-
+  const router = useRouter()
   useEffect(() => {
     async function fetchData() {
       const response1 = await fetch(`/api/tournaments/${params.id}`);
@@ -49,7 +49,7 @@ function EditTournamentPage({ params }) {
       setLoading(false);}
     }
     fetchData();
-  }, []);
+  });
 
   async function handleOnChange(e) {
     setSelected(e.target.value);
@@ -88,7 +88,6 @@ function EditTournamentPage({ params }) {
       return <Error error={error} />
     }
     if (prevData.organizerId && prevData.organizerId !== session.user._id) {
-      const router = useRouter()
       router.push(`/tournaments/${prevData._id}`)
     } 
     return (

@@ -28,7 +28,7 @@ export default function Form() {
   return (
     <main className="min-h-screen flex-col items-center p-24 bg-base">
       <h1 className="text-2xl font-semibold">Welcome Back!</h1>
-      <Link className="link link-primary" href="/register">Don't have an account yet? Sign Up Now!</Link>
+      <Link className="link link-primary" href="/register">Don&apos;t have an account yet? Sign Up Now!</Link>
       <form
         onSubmit={handleSubmit}
         className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-white"

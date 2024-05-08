@@ -1,10 +1,11 @@
 import { userData, teamData, bracketData } from "@/data/index.js";
 import { NextResponse } from "next/server";
 import { dbConnection, closeConnection } from "@/config/mongoConnection.js";
-import { revalidatePath } from "next/cache";
+import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import bcrypt from "bcrypt";
 
 export async function GET(req) {
+  noStore()
   const db = await dbConnection();
   await db.dropDatabase();
 

@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from "next/link";
 import {getUserIdAction} from "./actions"
 import Error from '@/app/components/ErrorMessage'
-function publicUser(props) {
+function PublicUser(props) {
   const [loading, setLoading] = useState(true);
   const [loadingTwo, setLoadingTwo] = useState(true);
   const [ teams, setTeams ] = useState(undefined);
@@ -62,7 +62,7 @@ function publicUser(props) {
         <p>Phone: {user.phoneNumber}</p>
         {teams &&
           <div>
-            <h1 className='text-2xl font-semibold'>{user.firstName}'s Teams</h1>
+            <h1 className='text-2xl font-semibold'>{user.firstName}&apos;s Teams</h1>
             <ul>
               {teams.map((team) => {
                 return (
@@ -78,4 +78,4 @@ function publicUser(props) {
   }
 }
 
-export default publicUser;
+export default PublicUser;

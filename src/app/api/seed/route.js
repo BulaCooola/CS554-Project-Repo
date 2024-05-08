@@ -5,10 +5,9 @@ import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import bcrypt from "bcrypt";
 
 export async function GET(req) {
-  noStore()
+  
   const db = await dbConnection();
   await db.dropDatabase();
-
   // PASSWORD - Password!1
   const hashedPassword = await bcrypt.hash("Password!1", 10);
   const paddy = await userData.addUser(
@@ -175,7 +174,7 @@ export async function GET(req) {
     paddy._id.toString(),
     [paddy._id.toString()]
   );
-
+  
   const newTeams = [
     {
       name: "Team5",
@@ -274,7 +273,7 @@ export async function GET(req) {
     );
     console.log("Added team:", teamObject.name);
   }
-
+  
   const generateTeamName = async () => {
     const adjectives = [
       "Awesome",
@@ -468,7 +467,7 @@ export async function GET(req) {
     "Softball",
     "Other",
   ];
-
+  
   const createTeams = async () => {
     try {
       for (const sport of sportsCategories) {
@@ -520,7 +519,6 @@ export async function GET(req) {
               playerPhoneNumber,
               hashedPassword
             );
-
             // push first person as coach
             team.coachId = playerObject._id.toString();
             // push into members list
@@ -556,9 +554,10 @@ export async function GET(req) {
       console.error("Error creating teams:", error);
     }
   };
-
+  
   // Call createTeams
   await createTeams();
+  noStore()
   await closeConnection();
   console.log("Done seeding database");
   return NextResponse.json({ done: true }, { status: 200 });

@@ -136,7 +136,7 @@ function Teams(props) {
             </button>
           </div>
         )}
-        <div className="navbar glass rounded-2xl p-4 m-4 flex flex-col md:flex-row md:items-center">
+        <div className="navbar glass rounded-2xl p-4 m-4 flex flex-col md:flex-row items-center">
           <div className="navbar-start">
             <p className="p-2">Sort by: </p>
             <select
@@ -145,7 +145,7 @@ function Teams(props) {
                 setSelectedSport(e.target.value);
                 setCurrentPage(1);
               }}
-              className="mt-4 p-2 md:mr-4 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 text-sm md:text-base"
+              className="p-2 md:mr-4 rounded-md border border-gray-300 focus:outline-none focus:border-blue-500 text-sm md:text-base"
             >
               <option key="All" value="All">
                 All
@@ -165,7 +165,7 @@ function Teams(props) {
             <select
               value={teamsPerPage}
               onChange={handleItemsPerPageChange}
-              className="mt-4 p-2 rounded-md border border-gray-300"
+              className="p-2 rounded-md border border-gray-300 items-center"
             >
               {[9, 10, 20, 30].map((value) => (
                 <option key={value} value={value}>

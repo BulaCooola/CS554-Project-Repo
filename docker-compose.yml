@@ -51,6 +51,13 @@ services:
     networks:
       - elastic
   
+  redis-stack:
+    image: redis/redis-stack
+    container_name: redis-stack
+    ports:
+      - 6379:6379
+    networks:
+      - redisnet
  
 volumes:
   data01:
@@ -62,4 +69,6 @@ volumes:
  
 networks:
   elastic:
+    driver: bridge
+  redisnet:
     driver: bridge

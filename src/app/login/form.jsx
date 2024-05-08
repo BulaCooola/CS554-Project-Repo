@@ -40,7 +40,7 @@ export default function Form() {
       </Link>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-white"
+        className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-base-200"
       >
         <h1 className="text-2xl font-semibold my-4 mx-4">Login</h1>
         {error && (

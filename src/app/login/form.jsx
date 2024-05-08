@@ -3,9 +3,12 @@ import { signIn, useSession } from "next-auth/react";
 import { redirect } from "next/dist/server/api-utils";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function Form() {
   const router = useRouter();
+  const [error, setError] = useState(false);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -17,6 +20,10 @@ export default function Form() {
       password: password,
       redirect: false,
     });
+    console.log(response)
+    if (!response.ok) {
+      setError(true)
+    }
     if (response.ok) {
       router.replace("/dashboard");
     }
@@ -33,9 +40,14 @@ export default function Form() {
       </Link>
       <form
         onSubmit={handleSubmit}
-        className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-white"
+        className="flex flex-col gap-2 mx-auto max-w-sm mt-10 pb-16 rounded-xl bg-base-200"
       >
         <h1 className="text-2xl font-semibold my-4 mx-4">Login</h1>
+        {error && (
+          <div className="alert alert-error w-1/2 mx-auto">
+            <p className="error" >Either email or password was incorrect</p>
+          </div>
+        )}
         <label className="input input-bordered flex items-center gap-2 w-full max-w-xs mx-auto my-2">
           Email
           <input type="email" name="email" id="email" required />

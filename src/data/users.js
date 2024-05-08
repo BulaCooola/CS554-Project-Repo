@@ -64,6 +64,18 @@ const exportedMethods = {
       throw `Error: ${e}`;
     }
 
+    const userCollection = await users();
+
+    // Check for dup emails / username
+    const emailCheck = await userCollection.findOne({ email: email });
+    if (emailCheck) {
+      throw `Error: Email already used.`;
+    }
+    const usernameCheck = await userCollection.findOne({ username: username });
+    if (usernameCheck) {
+      throw `Error: Username already used.`;
+    }
+
     // Object with inputs
     let newUser = {
       profilePicture: "https://i.imgur.com/WxNkK7J.png", // Image from https://imgur.com/gallery/i9xknax
@@ -82,21 +94,11 @@ const exportedMethods = {
     };
 
     // Get collection and insert new user
-    const userCollection = await users();
     const newInsertInformation = await userCollection.insertOne(newUser);
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
-  async editUser(
-    id,
-    profilePicture,
-    username,
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    hometown
-  ) {
+  async editUser(id, profilePicture, username, firstName, lastName, email, phoneNumber, hometown) {
     try {
       id = validation.checkId(id);
       if (profilePicture) {
@@ -203,15 +205,7 @@ const exportedMethods = {
     await client.disconnect();
     return user;
   },
-  async registerUser(
-    username,
-    firstName,
-    lastName,
-    email,
-    phoneNumber,
-    password,
-    confirmPassword
-  ) {
+  async registerUser(username, firstName, lastName, email, phoneNumber, password, confirmPassword) {
     try {
       username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
@@ -255,10 +249,7 @@ const exportedMethods = {
     } else {
       const client = await getRedisClient();
       await client.FLUSHALL();
-      await client.SET(
-        `user/${registeredUser._id.toString()}`,
-        JSON.stringify(registeredUser)
-      );
+      await client.SET(`user/${registeredUser._id.toString()}`, JSON.stringify(registeredUser));
       await client.disconnect();
       return { insertedUser: true };
     }
@@ -271,16 +262,11 @@ const exportedMethods = {
       const usersCollection = await users();
 
       const duplicateCheck = await usersCollection.findOne({ email });
-      if (!duplicateCheck)
-        throw `Either the email address or password is invalid`;
+      if (!duplicateCheck) throw `Either the email address or password is invalid`;
 
-      const passwordCheck = await bcrypt.compare(
-        password,
-        duplicateCheck.password
-      );
+      const passwordCheck = await bcrypt.compare(password, duplicateCheck.password);
 
-      if (!passwordCheck)
-        throw `Either the email address or password is invalid`;
+      if (!passwordCheck) throw `Either the email address or password is invalid`;
 
       return {
         _id: duplicateCheck._id,

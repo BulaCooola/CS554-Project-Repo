@@ -5,7 +5,6 @@ import { revalidatePath, unstable_noStore as noStore } from "next/cache";
 import bcrypt from "bcrypt";
 
 export async function GET(req) {
-  
   const db = await dbConnection();
   await db.dropDatabase();
   // PASSWORD - Password!1
@@ -174,7 +173,7 @@ export async function GET(req) {
     paddy._id.toString(),
     [paddy._id.toString()]
   );
-  
+
   const newTeams = [
     {
       name: "Team5",
@@ -273,7 +272,7 @@ export async function GET(req) {
     );
     console.log("Added team:", teamObject.name);
   }
-  
+
   const generateTeamName = async () => {
     const adjectives = [
       "Awesome",
@@ -436,11 +435,11 @@ export async function GET(req) {
     return `${lastName}`;
   };
 
-  const generateUsername = async (firstName, lastName) => {
+  const generateUsername = async (firstName, lastName, userNumber) => {
     const sanitizedFirstName = firstName.toLowerCase().trim();
     const sanitizedLastName = lastName.toLowerCase().trim();
 
-    const username = sanitizedFirstName.charAt(0) + sanitizedLastName;
+    const username = sanitizedFirstName.charAt(0) + sanitizedLastName + userNumber;
 
     return username;
   };
@@ -467,33 +466,23 @@ export async function GET(req) {
     "Softball",
     "Other",
   ];
-  
+
   const createTeams = async () => {
     try {
       for (const sport of sportsCategories) {
-        let numberOfTeamsPerSport = 8;
+        let numberOfTeamsPerSport = 4;
         let teamIdList = [];
-        if (
-          sport === "Golf" ||
-          sport === "Bowling" ||
-          sport === "Other" ||
-          sport === "Gymnastics" ||
-          sport === "Tennis" ||
-          sport === "Soccer" ||
-          sport === "Hockey"
-        ) {
-          numberOfTeamsPerSport = 4;
+        if (sport === "Lacrosse") {
+          numberOfTeamsPerSport = 8;
         }
         if (sport === "Basketball") {
           numberOfTeamsPerSport = 32;
         }
-        if (
-          sport === "Baseball" ||
-          sport === "Water Polo" ||
-          sport === "Volleyball" ||
-          sport === "Football"
-        ) {
+        if (sport === "Wrestling") {
           numberOfTeamsPerSport = 16;
+        }
+        if (sport === "Bowling") {
+          numberOfTeamsPerSport = 4;
         }
         for (let i = 0; i < numberOfTeamsPerSport; i++) {
           const teamName = await generateTeamName();
@@ -506,9 +495,14 @@ export async function GET(req) {
           };
 
           for (let j = 0; j < 5; j++) {
+            let userNumber = Math.floor(Math.random() * 9000) + 1000;
             const playerFirstName = await generateFirstName();
             const playerLastName = await generateLastName();
-            const playerUsername = await generateUsername(playerFirstName, playerLastName);
+            const playerUsername = await generateUsername(
+              playerFirstName,
+              playerLastName,
+              userNumber
+            );
             const playerEmail = `${playerUsername}@stevens.edu`;
             const playerPhoneNumber = "1234567890";
 
@@ -539,27 +533,34 @@ export async function GET(req) {
           console.log(`Added team: ${teamObject.name} ${teamObject.sport}`);
         }
 
-        const bracket = await bracketData.createBracket(
-          `${sport} Bracket`,
-          "The quick brown fox jumps over the lazy dog.",
-          "5/30/2024",
-          "6/03/2024",
-          paddy._id.toString(),
-          sport,
-          numberOfTeamsPerSport,
-          teamIdList
-        );
-        console.log(`Added ${sport} Bracket`);
+        if (
+          numberOfTeamsPerSport === 4 ||
+          numberOfTeamsPerSport === 8 ||
+          numberOfTeamsPerSport === 16 ||
+          numberOfTeamsPerSport === 32
+        ) {
+          const bracket = await bracketData.createBracket(
+            `${sport} Bracket - ${numberOfTeamsPerSport}-team`,
+            "The quick brown fox jumps over the lazy dog.",
+            "5/30/2024",
+            "6/03/2024",
+            paddy._id.toString(),
+            sport,
+            numberOfTeamsPerSport,
+            teamIdList
+          );
+          console.log(`Added ${sport} Bracket`);
+        }
       }
       console.log("Generic Teams/Players/Brackets created successfully");
     } catch (error) {
       console.error("Error creating teams:", error);
     }
   };
-  
+
   // Call createTeams
   await createTeams();
-  noStore()
+  noStore();
   await closeConnection();
   console.log("Done seeding database");
   return NextResponse.json({ done: true }, { status: 200 });

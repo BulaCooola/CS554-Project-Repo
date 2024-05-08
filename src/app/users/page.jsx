@@ -11,6 +11,7 @@ function AllUsers(props) {
   const [users, setUsers] = useState([]);
   const [pageSize, setPageSize] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     async function fetchData() {
@@ -31,14 +32,25 @@ function AllUsers(props) {
     fetchData();
   }, []);
 
+  let filteredUsers = users.filter((user) =>
+    `${user.firstName} ${user.lastName} ${user.username}`
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase())
+  );
+
   const indexOfLastUsers = currentPage * pageSize;
   const indexOfFirstUsers = indexOfLastUsers - pageSize;
-  const currentUsers = users.slice(indexOfFirstUsers, indexOfLastUsers);
+  const currentUsers = filteredUsers.slice(indexOfFirstUsers, indexOfLastUsers);
   const totalPages = Math.ceil(users.length / pageSize);
 
   const handlePageSizeChange = (e) => {
     setPageSize(parseInt(e.target.value));
     setCurrentPage(1); // Reset to first page when page size changes
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setCurrentPage(1); // Reset to first page when search query changes
   };
 
   const paginate = (pageNumber) => {
@@ -66,6 +78,13 @@ function AllUsers(props) {
               <option value="50">50</option>
             </select>
           </div>
+          <input
+            type="text"
+            placeholder="Search users..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+            className="input input-bordered mb-4"
+          />
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 ">
             {currentUsers &&
               currentUsers.map((user) => (

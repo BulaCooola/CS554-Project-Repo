@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import Error from "@/app/components/ErrorMessage";
-function singleTeam({ params }) {
+function SingleTeam({ params }) {
   const { data: session, status, update } = useSession();
 
   const [team, setTeam] = useState(undefined);
@@ -220,4 +220,4 @@ function singleTeam({ params }) {
   }
 }
 
-export default singleTeam;
+export default SingleTeam;

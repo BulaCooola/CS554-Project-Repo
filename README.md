@@ -74,6 +74,7 @@ Simply press either 1 or 2. ***(We recommend cloud)***
 **DISCLAIMER:** 
 1. **Running elasticsearch (localhost:3000/search) on the local branch will not be able to search from the local database but instead the cloud database. Clicking on these results will end up being a 404**
 2. When running on cloud, your redis AND mongo will also be on cloud therefore **you won't be able to see your keys.** 
+3. If you switch between the two, on switch you must refresh cache, restart the server, and login again.
 
 Once you created your secret, you can now build the project
 ```

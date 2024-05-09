@@ -49,86 +49,8 @@ export async function GET(req) {
       email: "podre@stevens.edu",
       phoneNumber: "1234567890",
     },
-    {
-      username: "player6",
-      firstName: "Player",
-      lastName: "Six",
-      email: "player6@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player7",
-      firstName: "Player",
-      lastName: "Seven",
-      email: "player7@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player8",
-      firstName: "Player",
-      lastName: "Eight",
-      email: "player8@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player9",
-      firstName: "Player",
-      lastName: "Nine",
-      email: "player9@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player10",
-      firstName: "Player",
-      lastName: "Ten",
-      email: "player10@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player11",
-      firstName: "Player",
-      lastName: "Eleven",
-      email: "player11@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player12",
-      firstName: "Player",
-      lastName: "Twelve",
-      email: "player12@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player13",
-      firstName: "Player",
-      lastName: "Thirteen",
-      email: "player13@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player14",
-      firstName: "Player",
-      lastName: "Fourteen",
-      email: "player14@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player15",
-      firstName: "Player",
-      lastName: "Fifteen",
-      email: "player15@stevens.edu",
-      phoneNumber: "2401231234",
-    },
-    {
-      username: "player16",
-      firstName: "Player",
-      lastName: "Sixteen",
-      email: "player16@stevens.edu",
-      phoneNumber: "2401231234",
-    },
   ];
 
-  // Add 14 generic players
   for (let i = 0; i < playersData.length; i++) {
     const player = playersData[i];
     const playerObject = await userData.addUser(
@@ -140,137 +62,6 @@ export async function GET(req) {
       hashedPassword
     );
     console.log("Added player:", playerObject);
-  }
-
-  const ducks = await teamData.createTeam(
-    "Ducks",
-    "Lacrosse",
-    "United States of America",
-    phill._id.toString(),
-    [phill._id.toString()]
-  );
-
-  const cadets = await teamData.createTeam(
-    "Cadets",
-    "Lacrosse",
-    "United States of America",
-    phill._id.toString(),
-    [phill._id.toString()]
-  );
-
-  const team3 = await teamData.createTeam(
-    "Team3",
-    "Lacrosse",
-    "United States of America",
-    phill._id.toString(),
-    [phill._id.toString()]
-  );
-
-  const team4 = await teamData.createTeam(
-    "Team4",
-    "Lacrosse",
-    "United States of America",
-    phill._id.toString(),
-    [phill._id.toString()]
-  );
-
-  const newTeams = [
-    {
-      name: "Team5",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team6",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team7",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team8",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team9",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team10",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team11",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team12",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team13",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team14",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team15",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-    {
-      name: "Team166",
-      sport: "Lacrosse",
-      country: "United States of America",
-      coachId: phill._id.toString(),
-      memberIds: [phill._id.toString()],
-    },
-  ];
-
-  for (let i = 0; i < newTeams.length; i++) {
-    const team = newTeams[i];
-    const teamObject = await teamData.createTeam(
-      team.name,
-      team.sport,
-      team.country,
-      team.coachId,
-      team.memberIds
-    );
-    console.log("Added team:", teamObject.name);
   }
 
   const generateTeamName = async () => {
@@ -439,7 +230,8 @@ export async function GET(req) {
     const sanitizedFirstName = firstName.toLowerCase().trim();
     const sanitizedLastName = lastName.toLowerCase().trim();
 
-    const username = sanitizedFirstName.charAt(0) + sanitizedLastName + userNumber;
+    const username =
+      sanitizedFirstName.charAt(0) + sanitizedLastName + userNumber;
 
     return username;
   };

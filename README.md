@@ -81,6 +81,11 @@ Once you created your secret, you can now build the project
 npm run dev
 ```
 
+To seed the database, send a get request to [http://localhost:3000/api/seed](http://localhost:3000/api/seed) using postman or curl 
+```
+http://localhost:3000/api/seed
+```
+
 Open [http://localhost:3000](http://localhost:3000) in your browser to initiate the application.
 
 ## Proposal

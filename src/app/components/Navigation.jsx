@@ -23,10 +23,10 @@ function Navigation(props) {
             });
             console.log(response);
           }}
-          className="btn btn-ghost"
+          className="btn btn-ghost text-xs"
         >
           Flush Cache
-          <p className="text-xs">If switching from different databases</p>
+          (If switching from different databases)
         </button>
       </div>
       <div className="flex-none">

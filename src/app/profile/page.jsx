@@ -146,7 +146,7 @@ function PlayerProfile(props) {
           />
           <form action={formAction} className="my-4">
             <h3 className="text-sm font-semibold">Update Profile Picture</h3>
-            <input className="border border-black" type="file" name="file" className="file-input file-input-bordered w-full max-w-xs"/>
+            <input className="border border-black file-input file-input-bordered w-full max-w-xs" type="file" name="file"/>
             <input hidden name="userId" readOnly value={session.user._id} />
             <button className="btn btn-active btn-neutral">Submit</button>
           </form>

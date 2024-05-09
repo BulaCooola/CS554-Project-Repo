@@ -131,9 +131,9 @@ function Teams(props) {
         <h1 className="text-2xl font-semibold">List of teams</h1>
         {session && (
           <div className="card-actions justify-end">
-            <button className="btn btn-primary">
-              <Link href={`/teams/create`}>Create Team</Link>
-            </button>
+            
+              <Link className="btn btn-primary" href={`/teams/create`}>Create Team</Link>
+            
           </div>
         )}
         <div className="navbar glass rounded-2xl p-4 m-4 flex flex-col md:flex-row items-center">

@@ -201,6 +201,7 @@ function SingleTeam({ params }) {
         {selectedSection === "previous-competitions" && (
           <div>
             <h2>Previous Competitions</h2>
+            <ul>
             {competitions.map((competition) => {
               return (
                 <li key={competition._id}>
@@ -213,6 +214,7 @@ function SingleTeam({ params }) {
                 </li>
               );
             })}
+              </ul>
           </div>
         )}
       </div>

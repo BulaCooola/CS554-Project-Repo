@@ -83,9 +83,9 @@ function AllTournaments(props) {
           <h1 className="text-2xl font-semibold">List of tournaments</h1>
           {session && (
             <div className="card-actions justify-end">
-              <button className="btn btn-primary">
-                <Link href={`/tournaments/create`}>Create Bracket</Link>
-              </button>
+              
+                <Link className="btn btn-primary" href={`/tournaments/create`}>Create Bracket</Link>
+              
             </div>
           )}
           <div className="mt-4 mb-2">

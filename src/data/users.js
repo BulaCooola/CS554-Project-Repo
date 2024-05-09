@@ -306,6 +306,12 @@ const exportedMethods = {
     const userList = await userCollection.find({ _id: { $in: arr } }).toArray();
     return userList;
   },
+  async flushRedis() {
+    const client = await getRedisClient();
+    await client.FLUSHALL();
+    await client.disconnect();
+    return { success: true };
+  },
 };
 
 export default exportedMethods;

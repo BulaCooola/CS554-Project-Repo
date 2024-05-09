@@ -144,13 +144,11 @@ function PlayerProfile(props) {
             width="150"
             alt="userPfp"
           />
-          <form action={formAction}>
-            <label>
-              Upload New Profile Picture:
-              <input className="border border-black" type="file" name="file" />
-            </label>
+          <form action={formAction} className="my-4">
+            <h3 className="text-sm font-semibold">Update Profile Picture</h3>
+            <input className="border border-black" type="file" name="file" className="file-input file-input-bordered w-full max-w-xs"/>
             <input hidden name="userId" readOnly value={session.user._id} />
-            <button>Submit</button>
+            <button className="btn btn-active btn-neutral">Submit</button>
           </form>
           {state && state.message && (
             <ul>

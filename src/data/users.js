@@ -2,20 +2,8 @@ import validation from "@/data/validation.js";
 import { users } from "../config/mongoCollections.js";
 import { ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
-import { createClient } from "redis";
+import { getRedisClient } from "@/data/redis-connect";
 
-async function getRedisClient() {
-  const client = createClient({
-    password: "dabF6WDYby0CsgETBOXKs1tBXvS3ixQR",
-    socket: {
-      host: "redis-15251.c256.us-east-1-2.ec2.redns.redis-cloud.com",
-      port: 15251,
-    },
-  })
-    .on("error", (err) => console.log("Redis Client Error", err))
-    .connect();
-  return client;
-}
 const exportedMethods = {
   async getAllUsers() {
     const client = await getRedisClient();
@@ -98,7 +86,16 @@ const exportedMethods = {
     if (!newInsertInformation.insertedId) throw "Insert failed!";
     return await this.getUserById(newInsertInformation.insertedId.toString());
   },
-  async editUser(id, profilePicture, username, firstName, lastName, email, phoneNumber, hometown) {
+  async editUser(
+    id,
+    profilePicture,
+    username,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    hometown
+  ) {
     try {
       id = validation.checkId(id);
       if (profilePicture) {
@@ -205,7 +202,15 @@ const exportedMethods = {
     await client.disconnect();
     return user;
   },
-  async registerUser(username, firstName, lastName, email, phoneNumber, password, confirmPassword) {
+  async registerUser(
+    username,
+    firstName,
+    lastName,
+    email,
+    phoneNumber,
+    password,
+    confirmPassword
+  ) {
     try {
       username = validation.checkString(username, "Username");
       firstName = validation.checkString(firstName, "First Name");
@@ -249,7 +254,10 @@ const exportedMethods = {
     } else {
       const client = await getRedisClient();
       await client.FLUSHALL();
-      await client.SET(`user/${registeredUser._id.toString()}`, JSON.stringify(registeredUser));
+      await client.SET(
+        `user/${registeredUser._id.toString()}`,
+        JSON.stringify(registeredUser)
+      );
       await client.disconnect();
       return { insertedUser: true };
     }
@@ -262,11 +270,16 @@ const exportedMethods = {
       const usersCollection = await users();
 
       const duplicateCheck = await usersCollection.findOne({ email });
-      if (!duplicateCheck) throw `Either the email address or password is invalid`;
+      if (!duplicateCheck)
+        throw `Either the email address or password is invalid`;
 
-      const passwordCheck = await bcrypt.compare(password, duplicateCheck.password);
+      const passwordCheck = await bcrypt.compare(
+        password,
+        duplicateCheck.password
+      );
 
-      if (!passwordCheck) throw `Either the email address or password is invalid`;
+      if (!passwordCheck)
+        throw `Either the email address or password is invalid`;
 
       return {
         _id: duplicateCheck._id,

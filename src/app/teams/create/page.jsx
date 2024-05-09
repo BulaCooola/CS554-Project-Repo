@@ -40,7 +40,10 @@ function CreateTeam(props) {
   }, []);
 
   if (loading) {
-    return <div>Loading</div>;
+    return (<div className="min-h-screen justify-between p-24 bg-base">
+        <p>Loading</p>
+        <p className="loading loading-dots loading-lg">Loading...</p>
+      </div>)
   } else {
     return (
       <main className="flex min-h-screen flex-col items-center justify-between p-24 bg-base">

@@ -67,7 +67,13 @@ export async function addTeam(prevState, formData) {
     return { message: errors };
   } else {
     try {
-      let newTeam = await teamData.createTeam(name, sport, location, session.user._id, playerIds);
+      let newTeam = await teamData.createTeam(
+        name,
+        sport,
+        location,
+        session.user._id,
+        playerIds
+      );
       id = newTeam._id.toString();
       success = true;
     } catch (error) {
@@ -184,7 +190,10 @@ export async function addTournament(prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -290,7 +299,10 @@ export async function editTournament(tournamentId, prevState, formData) {
     errors.push(error);
   }
   try {
-    description = validation.checkLongText(description, "Tournament description");
+    description = validation.checkLongText(
+      description,
+      "Tournament description"
+    );
   } catch (error) {
     errors.push(error);
   }
@@ -351,7 +363,10 @@ export async function editTournament(tournamentId, prevState, formData) {
       teams: teams,
     };
     try {
-      let updatedBracket = await bracketData.editBracket(tournamentId, updateData);
+      let updatedBracket = await bracketData.editBracket(
+        tournamentId,
+        updateData
+      );
       id = updatedBracket._id.toString();
       success = true;
     } catch (error) {
@@ -519,7 +534,12 @@ export async function toggleActive(teamId, prevState, formData) {
   }
 }
 
-export async function addMessage(tournamentId, organizerId, prevState, formData) {
+export async function addMessage(
+  tournamentId,
+  organizerId,
+  prevState,
+  formData
+) {
   let success = false;
   let errors = [];
   let message;

@@ -14,15 +14,37 @@
 This web application uses the following independent technologies which require installation.
 - **imagemagick**
 - **Elasticsearch**
+- **redis**
+- **Docker / Docker Desktop**
 
-### How to Use
+### Redis (Local) And Docker Desktop 
+To install Docker Desktop, click this link and download the version for your operating system [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
+
+
+To install Redis Stack using Docker, do the following.
+* If you don't have docker desktop:
+    ```
+    $ docker pull redis/redis-stack
+    ```
+* If you do have docker desktop, search for redis/redis-stack and pull from there
+
+Next, do the following commands in the command prompt
+```
+$ docker pull redis/redis-stack
+$ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 -e REDIS_ARGS="--requirepass mypassword" redis/redis-stack:latest
+$ docker exec -it redis-stack redis-cli
+```
+
+
+
+## How to Use
 Open a **bash** terminal and install the dependencies.
 
 ```
 npm i
 ``` 
 
-The secret key has already been provided in the code. But, if you want to create your own secret key follow these instructions! 
+We now need to run a script file to set up our important environment variables. 
 To generate, simply run any of these commands into a bash terminal. 
 * Option 1
     ```
@@ -36,20 +58,16 @@ To generate, simply run any of these commands into a bash terminal.
     ```
     ./create-env.sh
     ```
+You will then see a wizard saying if you want to run the website on local or cloud.
+```
+1. Local 
+2. Cloud
+```
+Simply press either 1 or 2. ***(We recommend cloud)***
 
-* If you do not have a bash terminal and have a powershell terminal, follow one of the following options:
-* Option 1: Run create-env.py python script
-   ```
-    py -'version number' create-env.py
-   ```  
-* Option 2: Paste this into your terminal. 
-    ```
-    npx auth secret
-    ``` 
-    Make sure that you add the new secret to your `.env` file.
-    ```
-    NEXTAUTH_SECRET="your auto generated secret"
-    ```
+**DISCLAIMER:** 
+1. **Running elasticsearch (localhost:3000/search) on the local branch will not be able to search from the local database but instead the cloud database. Clicking on these results will end up being a 404**
+2. When running on cloud, your redis AND mongo will also be on cloud therefore **you won't be able to see your keys.** 
 
 Once you created your secret, you can now build the project
 ```

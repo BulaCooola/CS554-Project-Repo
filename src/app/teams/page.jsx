@@ -9,6 +9,7 @@ function Teams(props) {
   const { data: session, status } = useSession();
 
   const [teamsLoading, setTeamsLoading] = useState(true);
+  const [loading, setLoading] = useState(true)
   const [sports, setSports] = useState(undefined);
   const [teams, setTeams] = useState([]);
   // Filter useStates
@@ -24,7 +25,7 @@ function Teams(props) {
       const sports = await response.json();
       console.log(sports.sports);
       setSports(sports.sports);
-      setTeamsLoading(false);
+      setLoading(false);
     }
     fetchData();
   }, []);
@@ -116,7 +117,7 @@ function Teams(props) {
     setSortCriteria("Losses");
   };
 
-  if (teamsLoading) {
+  if (teamsLoading || loading) {
     return (
       <div className="min-h-screen justify-between p-24 bg-base">
         <h1 className="text-2xl font-semibold">List of teams</h1>

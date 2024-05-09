@@ -425,18 +425,18 @@ export async function inputMatch(tournamentId, prevState, formData) {
 export async function search(prevState, formData) {
   let text = formData.get("search");
   text = text.trim();
-  // const client = new Client({
-  //   cloud: {
-  //     id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",
-  //   },
-  //   auth: {
-  //     username: "elastic",
-  //     password: "aEwEWwaMzZeluHagQY9Gqo6R",
-  //   },
-  // });
   const client = new Client({
-    node: "http://127.0.0.1:9200",
+    cloud: {
+      id: "5319e1eb9868466ba95f10fb82e23885:dXMtZWFzdC0xLmF3cy5mb3VuZC5pbyRlZTExNmQ0NjVmMDE0YTg0OWI2ZmFjNGVhOTQyZjA3ZSRlNmE3MzQ5YmRmZmM0YjJkYjNlNzQ3OWEwNmJkYjYwYw==",
+    },
+    auth: {
+      username: "elastic",
+      password: "aEwEWwaMzZeluHagQY9Gqo6R",
+    },
   });
+  // const client = new Client({
+  //   node: "http://127.0.0.1:9200",
+  // });
   let data = await client.search({
     query: {
       query_string: {

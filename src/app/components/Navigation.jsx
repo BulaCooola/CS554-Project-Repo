@@ -10,10 +10,24 @@ function Navigation(props) {
   }
   return (
     <div className="navbar bg-primary">
-      <div className="flex-1">
+      <div className="navbar-start flex-1">
         <Link href="/" className="btn btn-ghost text-xl text-white">
           TourneyPro
         </Link>
+      </div>
+      <div className="navbar-center">
+        <button
+          onClick={async () => {
+            const response = await fetch("/api/flushcache", {
+              method: "GET",
+            });
+            console.log(response);
+          }}
+          className="btn btn-ghost"
+        >
+          Flush Cache
+          <p className="text-xs">If switching from different databases</p>
+        </button>
       </div>
       <div className="flex-none">
         <ul className="menu menu-center menu-horizontal px-1 mx-auto">

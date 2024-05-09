@@ -24,4 +24,4 @@ with open(".env", "w") as env_file:
     env_file.write(f"MONGO_LINK={mongo_link}\n")
     env_file.write(f"NEXTAUTH_SECRET={nextauth_secret}\n")
     env_file.write(f"NEXTAUTH_URL=http://localhost/api/auth/{nextauth_secret}\n")
-print(".env file created with NEXTAUTH_SECRET and NEXTAUTH_URL")
+print(".env file created with MONGO_LINK, NEXTAUTH_SECRET and NEXTAUTH_URL")

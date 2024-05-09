@@ -3,7 +3,7 @@ import { ObjectId } from "mongodb";
 import validation from "@/data/validation.js";
 import userData from "@/data/users";
 import teamData from "@/data/teams";
-import { createClient } from "redis";
+import { getRedisClient } from "@/data/redis-connect";
 
 async function createMatches(bracketSize, teams) {
   const matches = [];
@@ -63,18 +63,7 @@ async function createMatches(bracketSize, teams) {
   }
   return matches;
 }
-async function getRedisClient() {
-  const client = createClient({
-    password: "dabF6WDYby0CsgETBOXKs1tBXvS3ixQR",
-    socket: {
-      host: "redis-15251.c256.us-east-1-2.ec2.redns.redis-cloud.com",
-      port: 15251,
-    },
-  })
-    .on("error", (err) => console.log("Redis Client Error", err))
-    .connect();
-  return client;
-}
+
 const exportedMethods = {
   async getAllBrackets() {
     const client = await getRedisClient();

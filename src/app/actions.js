@@ -177,8 +177,7 @@ export async function addTournament(prevState, formData) {
   teams = formData.getAll("teams");
 
   // fix empty teams being [""] instead of []
-  if (teams.length === 1 &&  teams[0] === "")
-    teams = [];
+  if (teams.length === 1 && teams[0] === "") teams = [];
 
   try {
     session.user._id = validation.checkId(session.user._id);

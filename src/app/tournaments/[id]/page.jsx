@@ -166,7 +166,7 @@ function SingleTournament({ params }) {
                         <li key={index}>
                           <p className="chat-header">{message.userName}</p>
                           <div className="chat-bubble text-white">{message.text}</div>
-                          <div class="chat-footer opacity-50">Delivered at {message.timestamp}</div>
+                          <div className="chat-footer opacity-50">Delivered at {message.timestamp}</div>
                         </li>
                       ))}
                 </ul>

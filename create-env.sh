@@ -16,6 +16,7 @@ read -p "Enter your choice (1 or 2): " connection_type
 # Local Connection
 if [ "$connection_type" == "1" ]; then
     echo "MONGO_LINK=mongodb://127.0.0.1:27017/" >> .env
+    echo "REDIS_CONNECTION=LOCAL" >> .env
     echo "Local MongoDB connection configured:"
     echo "mongodb://127.0.0.1:27017/"
 fi
@@ -23,6 +24,7 @@ fi
 # Cloud Connection
 if [ "$connection_type" == "2" ]; then
     echo "MONGO_LINK=mongodb+srv://pphelps:TourneyPro1@tourneypro.lzylpud.mongodb.net/?retryWrites=true&w=majority&appName=TourneyPro" >> .env
+    echo "REDIS_CONNECTION=CLOUD" >> .env
     echo "Cloud MongoDB connection configured"
 fi
 

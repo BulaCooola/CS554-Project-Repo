@@ -8,10 +8,12 @@ print("2. Cloud")
 connection_type = input("Enter your choice (1 or 2): ")
 
 if connection_type == "1":
+    redis_connection = "LOCAL"
     mongo_link = "mongodb://127.0.0.1:27017/"
     print("Local MongoDB connection configured:", mongo_link)
 elif connection_type == "2":
     # Adjust this connection string according to your cloud MongoDB setup
+    redis_connection = "CLOUD"
     mongo_link = "mongodb+srv://username:password@cluster.mongodb.net/dbname"
     print("Cloud MongoDB connection configured:", mongo_link)
 else:
@@ -21,6 +23,7 @@ else:
 print("Generating nextauth_secret...")
 nextauth_secret = secrets.token_hex(32)
 with open(".env", "w") as env_file:
+    env_file.write(f"REDIS_CONNECTION={redis_connection}\n")
     env_file.write(f"MONGO_LINK={mongo_link}\n")
     env_file.write(f"NEXTAUTH_SECRET={nextauth_secret}\n")
     env_file.write(f"NEXTAUTH_URL=http://localhost/api/auth/{nextauth_secret}\n")

@@ -70,6 +70,7 @@ function Navigation(props) {
               </li>
             </>
           ) : (
+            <li>
             <div className="dropdown dropdown-end">
               <div tabIndex={0} role="button" className="btn btn-ghost btn-circle avatar">
                 <div className="w-9 rounded-full text-white">
@@ -94,6 +95,7 @@ function Navigation(props) {
                 </li>
               </ul>
             </div>
+            </li>
           )}
         </ul>
       </div>

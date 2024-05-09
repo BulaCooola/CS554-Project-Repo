@@ -17,6 +17,12 @@ This web application uses the following independent technologies which require i
 - **redis**
 - **Docker / Docker Desktop**
 
+### ImageMagick
+To install ImageMagick, download it from this link for your respective device [https://imagemagick.org/script/download.php]
+Note: When installing, be sure to check "Install Legacy Utilities" and (depending on your system) "Add to system path", for the correct
+utilities to be installed. Specifically, when testing on Windows, for some users the computer had to be restarted/ImageMagick manually
+added to system path before it would work.
+
 ### Redis (Local) And Docker Desktop 
 To install Docker Desktop, click this link and download the version for your operating system [https://www.docker.com/products/docker-desktop/](https://www.docker.com/products/docker-desktop/)
 
@@ -31,7 +37,7 @@ To install Redis Stack using Docker, do the following.
 Next, do the following commands in the command prompt
 ```
 $ docker pull redis/redis-stack
-$ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 -e REDIS_ARGS="--requirepass mypassword" redis/redis-stack:latest
+$ docker run -d --name redis-stack -p 6379:6379 -p 8001:8001 redis/redis-stack:latest
 $ docker exec -it redis-stack redis-cli
 ```
 

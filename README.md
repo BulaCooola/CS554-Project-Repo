@@ -3,8 +3,8 @@
 
 ### Collaborators
 * Branden Bulatao: [BulaCooola](https://github.com/BulaCooola)
-* Lennon Okun: [Mudkip101004](https://github.com/Mudkip101004)
-* Paul Odre: [lennonokun](https://github.com/lennonokun)
+* Lennon Okun: [lennonokun](https://github.com/lennonokun)
+* Paul Odre: [Mudkip101004](https://github.com/Mudkip101004)
 * Padraig Phelps: [Padraig-Phelps](https://github.com/Padraig-Phelps)
 
 ## Demo Video
